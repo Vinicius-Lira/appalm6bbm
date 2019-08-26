@@ -9,6 +9,8 @@ const router = express.Router();
 const index = require('./routes/index');
 const teste = require('./routes/teste');
 
+const Teste = require('./models/teste');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
