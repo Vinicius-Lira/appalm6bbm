@@ -1,11 +1,25 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+    <head lang="pt-BR">
+        <meta charset="utf-8">
+        <title>Hello Vue</title>
+    </head>
+    <body>
+        <div id="app">
+            <h1 >{{ msg }}</h1>
+            <input v-model="msg">
+
+            <button v-show="msg">
+                Send word to allies for help!
+            </button>
+        </div>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.min.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                msg: 'teste'
+            }
+        })
+    </script>
 </html>
