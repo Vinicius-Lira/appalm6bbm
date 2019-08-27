@@ -1,9 +1,11 @@
 'use strict';
 
+const env = require('../../config/env');
+
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('testePonteon', 'cbm', 'cbm6bbmb4', {
-    host: "localhost",
-    dialect: 'mysql'
+const sequelize = new Sequelize(env.DB_DATABASE, env.DB_USERNAME, env.DB_PASSWORD, {
+    host: env.DB_HOST,
+    dialect: env.DB_CONNECTION
 });
 
 sequelize.authenticate().then(function() {
