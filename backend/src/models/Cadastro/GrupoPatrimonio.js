@@ -21,6 +21,12 @@ const GrupoPatrimonio = sequelize.define('grupopatrimonio', {
     descricao: {
         type: Sequelize.STRING
     }
+},
+{
+  charset: 'utf8',
+  collate: 'utf8_general_ci',
+  freezeTableName: true,
+  tableName: 'grupopatrimonio'
 });
 
 GrupoPatrimonio.sync({force: false});

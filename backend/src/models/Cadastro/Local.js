@@ -21,6 +21,12 @@ const Local = sequelize.define('local', {
     descricao: {
         type: Sequelize.STRING
     }
+},
+{
+  charset: 'utf8',
+  collate: 'utf8_general_ci',
+  freezeTableName: true,
+  tableName: 'local'
 });
 
 Local.sync({force: false});

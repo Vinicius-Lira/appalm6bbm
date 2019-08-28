@@ -21,6 +21,12 @@ const Hierarquia = sequelize.define('hierarquia', {
     descricao: {
         type: Sequelize.STRING
     }
+},
+{
+  charset: 'utf8',
+  collate: 'utf8_general_ci',
+  freezeTableName: true,
+  tableName: 'hierarquia'
 });
 
 Hierarquia.sync({force: false});

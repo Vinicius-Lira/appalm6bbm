@@ -18,6 +18,12 @@ const Funcoes = sequelize.define('funcao', {
     funcao: {
         type: Sequelize.STRING
     }
+},
+{
+  charset: 'utf8',
+  collate: 'utf8_general_ci',
+  freezeTableName: true,
+  tableName: 'funcao'
 });
 
 Funcoes.sync({force: false});

@@ -26,20 +26,17 @@ const Setor = sequelize.define('setor', {
         unique: false,
         references: {
             model: {
-                tableName: 'locals'
+                tableName: 'local'
             },
             key: 'id'
         }
-    }
-},
-{
-    engine: 'InnoDB'
-},
-{
-    name: {
-      singular: 'setor',
-      plural: 'setores',
     },
- });
+},
+{
+    charset: 'utf8',
+    collate: 'utf8_general_ci',
+    freezeTableName: true,
+    tableName: 'setor'
+});
 
 Setor.sync({force: false});

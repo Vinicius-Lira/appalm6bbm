@@ -38,7 +38,7 @@ const Pessoa = sequelize.define('pessoa', {
         type: Sequelize.INTEGER,
         references: {
             model: {
-                tableName: 'setors'
+                tableName: 'setor'
             },
             key: 'id'
         }
@@ -55,16 +55,12 @@ const Pessoa = sequelize.define('pessoa', {
     telefone: {
         type: Sequelize.STRING(16)
     }
-},{
-    charset: 'utf8',
-    collate: 'utf8_general_ci',
-    timestamps: true
 },
 {
-    name: {
-      singular: 'pessoa',
-      plural: 'pessoas',
-    },
- });
+    charset: 'utf8',
+    collate: 'utf8_general_ci',
+    freezeTableName: true,
+    tableName: 'pessoa'
+});
 
 Pessoa.sync({force: false});

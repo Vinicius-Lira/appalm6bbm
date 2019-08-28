@@ -11,17 +11,18 @@ const teste = require('./routes/teste');
 
 // const Teste = require('./models/teste');
 
-const Funcoes = require('./models/Cadastro/Funcoes');
+const Funcao = require('./models/Cadastro/Funcao');
 const Hierarquia = require('./models/Cadastro/Hierarquia');
 const Local = require('./models/Cadastro/Local');
-const Setor = require('./models/Cadastro/Setor');
 const GrupoPatrimonio = require('./models/Cadastro/GrupoPatrimonio');
+
+const Setor = require('./models/Cadastro/Setor');
 const Pessoa = require('./models/Cadastro/Pessoa');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use('/', index);
+// app.use('/', index);
 app.use('/teste', teste);
 
 
