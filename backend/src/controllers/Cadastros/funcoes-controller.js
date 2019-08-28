@@ -19,7 +19,9 @@ conn.connect(function(error) {
 });
 
 exports.get = (req, res, next) => {
-    conn.query("select * from funcao", function(error, rows, field){
+    const id = req.params.id;
+    console.log(id);
+    conn.query(id != "" ? "select * from funcao where id= ?" : "select * from funcao", [id], function(error, rows, field){
         if(!!error){
             console.log("Error in the query!");
         }else {
@@ -31,6 +33,20 @@ exports.get = (req, res, next) => {
         }
     });
 }
+
+// exports.get = (req, res, next) => {
+//     conn.query("select * from funcao", function(error, rows, field){
+//         if(!!error){
+//             console.log("Error in the query!");
+//         }else {
+//             console.log("Success!");
+//             console.log(rows);
+//             res.status(200).send({
+//                 data: rows
+//             });
+//         }
+//     });
+// }
 
 exports.post = (req, res, next) => {
     res.status(201).send(req.body);
