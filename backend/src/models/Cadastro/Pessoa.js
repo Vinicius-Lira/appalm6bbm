@@ -16,14 +16,17 @@ sequelize.authenticate().then(function() {
 
 const Pessoa = sequelize.define('pessoa', {
     usuario: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
     },
     nome: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
     },
     email: {
         type: Sequelize.STRING,
-        unique: true
+        unique: true,
+        allowNull: false
     },
     idHierarquia: {
         type: Sequelize.INTEGER,
@@ -53,7 +56,8 @@ const Pessoa = sequelize.define('pessoa', {
         }
     },
     telefone: {
-        type: Sequelize.STRING(16)
+        type: Sequelize.STRING(16),
+        allowNull: false
     }
 },
 {

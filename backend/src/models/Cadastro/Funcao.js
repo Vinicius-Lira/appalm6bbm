@@ -16,7 +16,8 @@ sequelize.authenticate().then(function() {
 
 const Funcoes = sequelize.define('funcao', {
     funcao: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
     }
 },
 {

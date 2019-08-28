@@ -16,10 +16,12 @@ sequelize.authenticate().then(function() {
 
 const Local = sequelize.define('local', {
     local: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
     },
     descricao: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
     }
 },
 {

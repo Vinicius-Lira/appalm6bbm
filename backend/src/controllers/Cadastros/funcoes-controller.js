@@ -21,7 +21,7 @@ conn.connect(function(error) {
 exports.get = (req, res, next) => {
     const id = req.params.id;
     console.log(id);
-    conn.query(id != "" ? "select * from funcao where id= ?" : "select * from funcao", [id], function(error, rows, field){
+    conn.query("select * from funcao where id= ?", [id], function(error, rows, field){
         if(!!error){
             console.log("Error in the query!");
         }else {
@@ -34,26 +34,66 @@ exports.get = (req, res, next) => {
     });
 }
 
-// exports.get = (req, res, next) => {
-//     conn.query("select * from funcao", function(error, rows, field){
-//         if(!!error){
-//             console.log("Error in the query!");
-//         }else {
-//             console.log("Success!");
-//             console.log(rows);
-//             res.status(200).send({
-//                 data: rows
-//             });
-//         }
-//     });
-// }
+exports.getAll = (req, res, next) => {
+    conn.query("select * from funcao", function(error, rows, field){
+        if(!!error){
+            console.log("Error in the query!");
+        }else {
+            console.log("Success!");
+            console.log(rows);
+            res.status(200).send({
+                data: rows
+            });
+        }
+    });
+}
 
 exports.post = (req, res, next) => {
-    res.status(201).send(req.body);
+    const funcao = req.body.funcao;
+
+    var data=new Date()
+    var dia=data.getDate();
+    var mes=data.getMonth();
+    var ano=data.getFullYear();
+    var hora= data.getHours();
+    var minutos=data.getMinutes();
+    var segundos=data.getSeconds();
+    const dataAtual = ano + '-' + ((mes++) < 10 ? "0" + mes : mes) + '-' + dia + " " + hora +":"+(minutos < 10 ? "0" + minutos : minutos) + ":" + (segundos < 10 ? "0" + segundos : segundos );
+
+    conn.query("insert into funcao(funcao, createdAt, updatedAt) values(?, ?, ?)", [funcao, dataAtual, dataAtual], function(error, rows, field){
+        if(!!error){
+            console.log("Error in the query!");
+            res.status(201).send({
+                data: false
+            });
+        }else {
+            console.log("Success!");
+            res.status(201).send({
+                data: true
+            });
+        }
+    });
 };
 
 exports.put = (req, res, next) => {
-    const id = req.params.id;
+    const id = req.body.id;
+    const funcao = req.body.funcao;
+
+
+    conn.query("insert into funcao(funcao, createdAt, updatedAt) values(?, ?, ?)", [funcao, dataAtual, dataAtual], function(error, rows, field){
+        if(!!error){
+            console.log("Error in the query!");
+            res.status(201).send({
+                data: false
+            });
+        }else {
+            console.log("Success!");
+            res.status(201).send({
+                data: true
+            });
+        }
+    });
+
     res.status(200).send({
         id: id,
         item: req.body

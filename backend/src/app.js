@@ -7,23 +7,22 @@ const router = express.Router();
 
 // Carrega as Rotas
 const index = require('./routes/index');
-const teste = require('./routes/teste');
-
-// const Teste = require('./models/teste');
-
-const Funcao = require('./models/Cadastro/Funcao');
-const Hierarquia = require('./models/Cadastro/Hierarquia');
-const Local = require('./models/Cadastro/Local');
-const GrupoPatrimonio = require('./models/Cadastro/GrupoPatrimonio');
-
-const Setor = require('./models/Cadastro/Setor');
-const Pessoa = require('./models/Cadastro/Pessoa');
+const funcaoRoutes = require('./routes/cadastro/funcao-routes');
+const grupoPatrimonioRoutes = require('./routes/cadastro/gruposPatrimonio-routes');
+const hierarquiaRoutes = require('./routes/cadastro/hierarquia-routes');
+const localRoutes = require('./routes/cadastro/local-routes');
+const pessoaRoutes = require('./routes/cadastro/pessoa-routes');
+const setorRoutes = require('./routes/cadastro/setor-routes');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.use('/', index);
-app.use('/teste', teste);
-
+app.use('/', index);
+app.use('/funcao', funcaoRoutes);
+app.use('/grupospatrimonio', grupoPatrimonioRoutes);
+app.use('/hierarquia', hierarquiaRoutes);
+app.use('/local', localRoutes);
+app.use('/pessoa', pessoaRoutes);
+app.use('/setor', setorRoutes);
 
 module.exports = app;

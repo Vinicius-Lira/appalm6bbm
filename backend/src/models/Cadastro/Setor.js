@@ -16,10 +16,12 @@ sequelize.authenticate().then(function() {
 
 const Setor = sequelize.define('setor', {
     setor: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
     },
     descricao: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
     },
     idLocal: {
         type: Sequelize.INTEGER,
