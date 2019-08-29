@@ -41,11 +41,64 @@ exports.getAll = (req, res, next) => {
         }else {
             console.log("Success!");
             console.log(rows);
-            res.status(200).send({
-                data: rows
+            res.status(200).json({
+                rows: rows,
+                fields: getNomeColunas(field)
             });
         }
     });
+
+    function getNomeColunas(fields) {
+        var column = [];
+
+        for(var counter = 0; counter < fields.length; counter++){
+            column[counter] = fields[counter].name;
+        }
+        column = [
+          {
+            value: 'Avatar',
+            align: 'left',
+            sortable: false
+          },
+          {
+            text: 'Name',
+            value: 'Name',
+            align: 'left',
+            sortable: true
+          },
+          {
+            text: 'User Name',
+            value: 'Username',
+            align: 'left',
+            sortable: true
+          },
+          {
+            text: 'Email',
+            value: 'Email',
+            align: 'left',
+            sortable: true
+          },
+          {
+            text: 'Phone',
+            value: 'Phone',
+            align: 'left',
+            sortable: true
+          },
+          {
+            text: 'Company',
+            value: 'Company',
+            align: 'left',
+            sortable: true
+          },
+          {
+            text: 'Website',
+            value: 'Website',
+            align: 'left',
+            sortable: true
+          }
+      ];
+        return column;
+    }
 }
 
 exports.post = (req, res, next) => {

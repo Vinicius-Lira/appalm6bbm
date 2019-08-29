@@ -3,20 +3,18 @@
     class="table"
     :headers="headers"
     :items="users"
+    :fields="fields"
     :rows-per-page-items="[10, 25]">
+
+    {{ fields }}
+
     <template slot="items" slot-scope="props">
-      <td class="text-xs-left">
-        <v-avatar size="42">
-          <img :src="randomAvatar()" alt="avatar">
-        </v-avatar>
-      </td>
-      <td class="text-xs-left">{{ props.item.name }}</td>
-      <td class="text-xs-left">{{ props.item.username }}</td>
-      <td class="text-xs-left">{{ props.item.email }}</td>
-      <td class="text-xs-left">{{ props.item.phone }}</td>
-      <td class="text-xs-left">{{ props.item.company.name }}</td>
-      <td class="text-xs-left">{{ props.item.website }}</td>
-      <!-- <td class="text-xs-left">{{ props.item.address.city }}</td> -->
+        <td class="text-xs-left">{{ props.item.name }}</td>
+        <td class="text-xs-left">{{ props.item.username }}</td>
+        <td class="text-xs-left">{{ props.item.email }}</td>
+        <td class="text-xs-left">{{ props.item.phone }}</td>
+        <td class="text-xs-left">{{ props.item.company.name }}</td>
+        <td class="text-xs-left">{{ props.item.website }}</td>
     </template>
   </v-data-table>
 </template>
@@ -29,13 +27,14 @@ const avatars = [
   'https://avataaars.io/?accessoriesType=Prescription02&avatarStyle=Circle&clotheColor=Black&clotheType=ShirtVNeck&eyeType=Surprised&eyebrowType=Angry&facialHairColor=Blonde&facialHairType=Blank&hairColor=Blonde&hatColor=PastelOrange&mouthType=Smile&skinColor=Black&topType=LongHairNotTooLong',
   'https://avataaars.io/?accessoriesType=Round&avatarStyle=Circle&clotheColor=PastelOrange&clotheType=Overall&eyeType=Close&eyebrowType=AngryNatural&facialHairColor=Blonde&facialHairType=Blank&graphicType=Pizza&hairColor=Black&hatColor=PastelBlue&mouthType=Serious&skinColor=Light&topType=LongHairBigHair',
   'https://avataaars.io/?accessoriesType=Kurt&avatarStyle=Circle&clotheColor=Gray01&clotheType=BlazerShirt&eyeType=Surprised&eyebrowType=Default&facialHairColor=Red&facialHairType=Blank&graphicType=Selena&hairColor=Red&hatColor=Blue02&mouthType=Twinkle&skinColor=Pale&topType=LongHairCurly',
-  'https://avataaars.io/?'
+  'https://avataaars.io/?accessoriesType=Kurt&avatarStyle=Circle&clotheColor=Gray01&clotheType=BlazerShirt&eyeType=Surprised&eyebrowType=Default&facialHairColor=Red&facialHairType=Blank&graphicType=Selena&hairColor=Red&hatColor=Blue02&mouthType=Twinkle&skinColor=Pale&topType=LongHairCurly'
 ];
 
 export default {
   data() {
     return {
       users: [],
+      fields: [],
       headers: [
         {
           value: 'Avatar',
@@ -96,6 +95,10 @@ export default {
       var result = response && response.data;
 
       vm.users = result;
+    });
+
+    vm.axios.get('http://localhost:3000/funcao/funcoes').then(response => {
+        vm.fields = response.data.fields;
     });
   }
 }

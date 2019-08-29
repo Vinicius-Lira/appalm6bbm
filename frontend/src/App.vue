@@ -15,7 +15,7 @@
     <template v-else>
       <transition>
         <keep-alive>
-          <router-view></router-view>teste
+          <router-view></router-view>
         </keep-alive>
       </transition>
     </template>
