@@ -50,53 +50,15 @@ exports.getAll = (req, res, next) => {
 
     function getNomeColunas(fields) {
         var column = [];
-
+        var counterColumn = 0;
         for(var counter = 0; counter < fields.length; counter++){
-            column[counter] = fields[counter].name;
+            if(fields[counter].name != "createdAt" && fields[counter].name != "updatedAt" && fields[counter].name != "id"){
+                column[counterColumn] = fields[counter].name;
+                counterColumn++;
+            }
+
         }
-        column = [
-          {
-            value: 'Avatar',
-            align: 'left',
-            sortable: false
-          },
-          {
-            text: 'Name',
-            value: 'Name',
-            align: 'left',
-            sortable: true
-          },
-          {
-            text: 'User Name',
-            value: 'Username',
-            align: 'left',
-            sortable: true
-          },
-          {
-            text: 'Email',
-            value: 'Email',
-            align: 'left',
-            sortable: true
-          },
-          {
-            text: 'Phone',
-            value: 'Phone',
-            align: 'left',
-            sortable: true
-          },
-          {
-            text: 'Company',
-            value: 'Company',
-            align: 'left',
-            sortable: true
-          },
-          {
-            text: 'Website',
-            value: 'Website',
-            align: 'left',
-            sortable: true
-          }
-      ];
+        
         return column;
     }
 }

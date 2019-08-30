@@ -6,9 +6,8 @@
     :fields="fields"
     :rows-per-page-items="[10, 25]">
 
-    {{ fields }}
-
     <template slot="items" slot-scope="props">
+        <td class="text-xs-left">{{ fields[0] }}</td>
         <td class="text-xs-left">{{ props.item.name }}</td>
         <td class="text-xs-left">{{ props.item.username }}</td>
         <td class="text-xs-left">{{ props.item.email }}</td>
@@ -35,56 +34,35 @@ export default {
     return {
       users: [],
       fields: [],
-      headers: [
-        {
-          value: 'Avatar',
-          align: 'left',
-          sortable: false
-        },
-        {
-          text: 'Name',
-          value: 'Name',
-          align: 'left',
-          sortable: true
-        },
-        {
-          text: 'User Name',
-          value: 'Username',
-          align: 'left',
-          sortable: true
-        },
-        {
-          text: 'Email',
-          value: 'Email',
-          align: 'left',
-          sortable: true
-        },
-        {
-          text: 'Phone',
-          value: 'Phone',
-          align: 'left',
-          sortable: true
-        },
-        {
-          text: 'Company',
-          value: 'Company',
-          align: 'left',
-          sortable: true
-        },
-        {
-          text: 'Website',
-          value: 'Website',
-          align: 'left',
-          sortable: true
-        }
-      ]
+      headers: []
     }
   },
 
   methods: {
     randomAvatar () {
-
       return avatars[Math.floor(Math.random() * avatars.length)];
+    },
+    getHeaders() {
+        const vm = this;
+        var fields = vm.fields;
+        var headers = [];
+        for(var counter = 0; counter < fields.length; counter++){
+            headers[counter] = {
+              text: fields[counter],
+              value: fields[counter],
+              align: 'left',
+              sortable: true
+            };
+        }
+
+        headers[headers.length + 1] = {
+            text: 'Ação',
+            value: 'Ação',
+            align: 'left',
+            sortable: false
+        };
+
+        return headers;
     }
   },
 
@@ -98,7 +76,28 @@ export default {
     });
 
     vm.axios.get('http://localhost:3000/funcao/funcoes').then(response => {
+        console.log(response.data);
         vm.fields = response.data.fields;
+
+        var fields = vm.fields;
+        var headers = [];
+        for(var counter = 0; counter < fields.length; counter++){
+            var text = fields[counter];
+            headers[counter] = {
+              text: text.toUpperCase(),
+              value: fields[counter],
+              align: 'left',
+              sortable: true
+            };
+        }
+
+        headers[headers.length + 1] = {
+            text: 'Ação',
+            value: 'Ação',
+            align: 'left',
+            sortable: false
+        };
+        vm. headers = headers;
     });
   }
 }
