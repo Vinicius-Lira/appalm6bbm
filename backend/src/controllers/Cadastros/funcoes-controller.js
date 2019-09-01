@@ -40,27 +40,11 @@ exports.getAll = (req, res, next) => {
             console.log("Error in the query!");
         }else {
             console.log("Success!");
-            console.log(rows);
-            res.status(200).json({
-                rows: rows,
-                fields: getNomeColunas(field)
-            });
+
+            res.status(200).send(rows);
         }
     });
 
-    function getNomeColunas(fields) {
-        var column = [];
-        var counterColumn = 0;
-        for(var counter = 0; counter < fields.length; counter++){
-            if(fields[counter].name != "createdAt" && fields[counter].name != "updatedAt" && fields[counter].name != "id"){
-                column[counterColumn] = fields[counter].name;
-                counterColumn++;
-            }
-
-        }
-        
-        return column;
-    }
 }
 
 exports.post = (req, res, next) => {

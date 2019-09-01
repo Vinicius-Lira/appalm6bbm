@@ -7,6 +7,7 @@
 
     <template slot="items" slot-scope="props">
         <td class="text-xs-left">{{ props.item.funcao }}</td>
+        <td class="text-xs-left">{{ props.item.username }}</td>
     </template>
 
     <template v-slot:item.acao="{ item }">
@@ -69,7 +70,7 @@ export default {
     });
 
     vm.axios.get('http://localhost:3000/funcao/funcoes').then(response => {
-        // console.log(response.data);
+        console.log(response.data);
         vm.itens = response.data;
     });
   }

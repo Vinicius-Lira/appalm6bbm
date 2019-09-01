@@ -1,49 +1,36 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue';
-import App from './App';
+import Vue from 'vue'
+import App from './App.vue'
 import router from './router';
+import Vuetify from 'vuetify';
+// import Vuetify from './plugins/vuetify';
 
 import 'vuetify/dist/vuetify.min.css';
 import 'font-awesome/css/font-awesome.css';
-
-import Vuetify from 'vuetify';
-
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
-import './styles/global.css';
 
-import axios from 'axios'
-import VueAxios from 'vue-axios'
+Vue.use(Vuetify)
+export default new Vuetify({ })
 
-Vue.use(VueAxios, axios);
-
-import VueChartkick from 'vue-chartkick';
-import Chart from 'chart.js';
-import fullCalendar from 'vue-fullcalendar';
 import { setupComponents } from './config/setup-components';
-
-import swatches from 'vue-swatches';
-import "vue-swatches/dist/vue-swatches.min.css"
-
-Vue.use(VueChartkick, { adapter: Chart });
-Vue.component('full-calendar', fullCalendar);
-Vue.component('swatches', swatches);
 
 setupComponents(Vue);
 
-Vue.use(Vuetify);
-
 Vue.config.productionTip = false
 
-/* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  components: { App },
-  template: '<App/>',
-  data: {
-    themeColor: '#d33c30',
-    userEmail: 'admin@yopmail.com',
-    userPassword: '123456'
-  }
-})
+    vuetify: new Vuetify(),
+    router,
+    render: h => h(App)
+}).$mount('#app')
+
+// new Vue({
+//   el: '#app',
+//   router,
+//   components: { App },
+//   template: '<App/>',
+//   data: {
+//     themeColor: '#d33c30',
+//     userEmail: 'admin@yopmail.com',
+//     userPassword: '123456'
+//   }
+// });
