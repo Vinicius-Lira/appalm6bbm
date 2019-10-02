@@ -1,9 +1,0 @@
-{
-  "name": "Gestão almoxarifado 6ºBBM",
-  "version": "1.0.0",
-  "description": "",
-  "private": true,
-  "scripts": {
-    "start": "node ./backend/bin/server.js"
-  },
-}
