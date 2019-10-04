@@ -57,7 +57,7 @@
                 <v-dialog v-model="dialog" max-width="1000px">
 
                     <template v-slot:activator="{ on }">
-                        <v-btn color="primary" class="mb-2"  v-on="on">Nova</v-btn>
+                        <v-btn color="primary" class="mb-2"  v-on="on">Novo</v-btn>
                     </template>
 
                     <v-card>
@@ -70,9 +70,17 @@
                                 <v-row>
                                     <v-col cols="12" sm="12" md="12">
                                         <v-text-field
-                                            v-model="editedItem.escala"
-                                            :rules="[v => !!v || 'Obrigatório prencher a escala!']"
+                                            v-model="editedItem.abreviacao"
+                                            :rules="[v => !!v || 'Obrigatório prencher a abreviação!']"
                                             label="Abreviação"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="12">
+                                        <v-text-field
+                                            v-model="editedItem.descricao"
+                                            :rules="[v => !!v || 'Obrigatório prencher a descrição!']"
+                                            label="Descrição"
                                             outlined
                                         ></v-text-field>
                                     </v-col>
@@ -116,6 +124,7 @@
 
 <script>
 export default {
+    name: 'obm',
     data: () => ({
         dialog: false,
         search: "",
@@ -132,22 +141,25 @@ export default {
         },
         headers: [
             {
-                text: 'Escala',
+                text: 'Abreviação',
                 align: 'left',
                 sortable: true,
-                value: 'escala',
+                value: 'abreviacao',
             },
+            { text: 'Descrição', value: 'descricao' },
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            escala: "",
+            abreviacao: "",
+            descricao: "",
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            escala: "",
+            abreviacao: "",
+            descricao: "",
             createdAt: "",
             updatedAt: ""
         },
@@ -155,7 +167,7 @@ export default {
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Nova Escala' : 'Editar Escala'
+            return this.editedIndex === -1 ? 'Nova OBM' : 'Editar OBM'
         }
     },
     watch: {
@@ -168,7 +180,7 @@ export default {
     },
     methods: {
         initialize () {
-            this.axios.get('http://localhost:3000/escala').then(response => {
+            this.axios.get('http://localhost:3000/batalhao').then(response => {
                 this.desserts = response.data;
             });
         },
@@ -180,7 +192,7 @@ export default {
         },
 
         deleteItem (item) {
-            this.axios.delete('http://localhost:3000/escala/' + item.id + "/delete").then(response => {
+            this.axios.delete('http://localhost:3000/batalhao/' + item.id + "/delete").then(response => {
                 if(response.data){
                     this.snackbar = true;
                     this.color = 'success';
@@ -202,11 +214,11 @@ export default {
             }, 300);
         },
         validaCampos() {
-            return  this.editedItem.escala != '';
+            return  this.editedItem.abreviacao != '' && this.editedItem.descricao != '';
         },
         save () {
             if (this.editedIndex > -1) {
-                this.axios.put('http://localhost:3000/escala', this.editedItem).then(response => {
+                this.axios.put('http://localhost:3000/batalhao', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -222,9 +234,9 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post('http://localhost:3000/escala', this.editedItem).then(response => {
+                    this.axios.post('http://localhost:3000/batalhao', this.editedItem).then(response => {
                         if(response.data.id){
-                            this.textoSnackbar = "Escala inserida com sucesso!";
+                            this.textoSnackbar = "Batalhão inserido com sucesso!";
                             this.snackbar = true;
                             this.color = 'success';
                             this.initialize();

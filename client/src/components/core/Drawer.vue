@@ -76,40 +76,15 @@
           text: 'Início'
         },
         {
-          to: '/batalhoes',
+          to: '/cadastro',
           icon: 'mdi-clipboard-outline',
-          text: 'Batalhões'
+          text: 'Cadastros'
         },
         {
-          to: '/escalas',
-          icon: 'mdi-scale',
-          text: 'Escalas'
+          to: '/patrimonio',
+          icon: 'mdi-clipboard-outline',
+          text: 'Patrimônio'
         },
-        {
-          to: '/exames',
-          icon: 'mdi-file-document',
-          text: 'Exames'
-        },
-        {
-          to: '/hierarquias',
-          icon: 'mdi-chart-bubble',
-          text: 'Hierarquia'
-        },
-        {
-          to: '/pessoas',
-          icon: 'mdi-account-multiple',
-          text: 'Pessoas'
-        },
-        {
-          to: '/setores',
-          icon: 'mdi-map-marker',
-          text: 'Setores'
-        },
-        {
-          to: '/notifications',
-          icon: 'mdi-settings',
-          text: 'Configurações'
-        }
       ]
     }),
 

@@ -124,6 +124,7 @@
 
 <script>
 export default {
+    name: 'obm',
     data: () => ({
         dialog: false,
         search: "",
@@ -166,7 +167,7 @@ export default {
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Novo Batalhão' : 'Editar Batalhão'
+            return this.editedIndex === -1 ? 'Nova OBM' : 'Editar OBM'
         }
     },
     watch: {

@@ -24,24 +24,35 @@
                                 outlined
                             ></v-text-field>
                         </v-col>
-
                     </v-row>
                 </v-container>
+                <v-snackbar
+                        v-model="snackbar"
+                        :bottom="y === 'bottom'"
+                        :color="color"
+                        :left="x === 'left'"
+                        :multi-line="mode === 'multi-line'"
+                        :right="x === 'right'"
+                        :timeout="timeout"
+                        :top="y === 'top'"
+                        :vertical="mode === 'vertical'"
 
-                <snackbar
-                    :textoSnackbar="textoSnackbar"
-                    :color="color"
-                    :snackbar="snackbar"
-                    v-on:closeSnackbar="closeSnackbar"
-                ></snackbar>
-
+                        class="snackbar"
+                    >
+                        {{ textoSnackbar }}
+                        <v-btn
+                            dark
+                            text
+                            icon
+                            @click="snackbar = false"
+                        >
+                            <v-icon
+                                class="mr-2"
+                                @click="snackbar = false"
+                            >mdi-close</v-icon>
+                        </v-btn>
+                </v-snackbar>
                 <div class="flex-grow-1"></div>
-
-                <parametros-exame-dialog
-                    v-on:setFalseDialog="closeDialogParametros"
-                    v-bind:dialog="dialogParametros"
-                    v-bind:idExame="editedItem.id"
-                ></parametros-exame-dialog>
 
                 <v-dialog v-model="dialog" max-width="1000px">
 
@@ -57,15 +68,15 @@
                         <v-card-text>
                             <v-container>
                                 <v-row>
-                                    <v-col cols="12" sm="12" md="6">
+                                    <v-col cols="12" sm="12" md="12">
                                         <v-text-field
-                                            v-model="editedItem.exame"
-                                            :rules="[v => !!v || 'Obrigatório prencher o exame!']"
-                                            label="Exame"
+                                            v-model="editedItem.abreviacao"
+                                            :rules="[v => !!v || 'Obrigatório prencher a abreviação!']"
+                                            label="Abreviação"
                                             outlined
                                         ></v-text-field>
                                     </v-col>
-                                    <v-col cols="12" sm="12" md="6">
+                                    <v-col cols="12" sm="12" md="12">
                                         <v-text-field
                                             v-model="editedItem.descricao"
                                             :rules="[v => !!v || 'Obrigatório prencher a descrição!']"
@@ -84,19 +95,10 @@
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
-
             </v-toolbar>
         </template>
 
         <template v-slot:item.action="{ item }">
-            <v-icon
-                small
-                class="mr-2"
-                @click="openDialogParametros(item)"
-            >
-                mdi-eye
-            </v-icon>
-
             <v-icon
                 small
                 class="mr-2"
@@ -121,26 +123,28 @@
 </template>
 
 <script>
-
 export default {
+    name: 'obm',
     data: () => ({
         dialog: false,
         search: "",
         textoSnackbar: "",
         color: 'success',
+        mode: '',
         snackbar: false,
-        dialogParametros: false,
-        dialogViewParametros: false,
+        timeout: 6000,
+        x: null,
+        y: 'top',
         rowsPerPageItems: [8, 12, 15],
         pagination: {
             rowsPerPage: 20
         },
         headers: [
             {
-                text: 'Exame',
+                text: 'Abreviação',
                 align: 'left',
                 sortable: true,
-                value: 'exame',
+                value: 'abreviacao',
             },
             { text: 'Descrição', value: 'descricao' },
             { text: 'Ações', value: 'action', sortable: false },
@@ -148,13 +152,13 @@ export default {
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            exame: "",
+            abreviacao: "",
             descricao: "",
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            exame: "",
+            abreviacao: "",
             descricao: "",
             createdAt: "",
             updatedAt: ""
@@ -163,7 +167,7 @@ export default {
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Novo exame' : 'Editar exame'
+            return this.editedIndex === -1 ? 'Nova OBM' : 'Editar OBM'
         }
     },
     watch: {
@@ -176,23 +180,11 @@ export default {
     },
     methods: {
         initialize () {
-            this.axios.get('http://localhost:3000/exame').then(response => {
+            this.axios.get('http://localhost:3000/batalhao').then(response => {
                 this.desserts = response.data;
             });
         },
-        closeSnackbar () {
-            this.snackbar = false;
-        },
-        openDialogParametros(item) {
-            this.editedIndex = this.desserts.indexOf(item);
-            this.editedItem = Object.assign({}, item);
-            this.dialogParametros = true;
-        },
-        closeDialogParametros() {
-            this.dialogParametros = false;
-            this.editedItem = Object.assign({}, this.defaultItem);
-            this.editedIndex = -1
-        },
+
         editItem (item) {
             this.editedIndex = this.desserts.indexOf(item);
             this.editedItem = Object.assign({}, item);
@@ -200,16 +192,16 @@ export default {
         },
 
         deleteItem (item) {
-            this.axios.delete('http://localhost:3000/exame/' + item.id + "/delete").then(response => {
+            this.axios.delete('http://localhost:3000/batalhao/' + item.id + "/delete").then(response => {
                 if(response.data){
                     this.snackbar = true;
                     this.color = 'success';
-                    this.textoSnackbar = "Exame apagada com sucesso!";
+                    this.textoSnackbar = "Pessoa apagada com sucesso!";
                     this.initialize();
                 }else {
                     this.snackbar = true;
                     this.color = 'error';
-                    this.textoSnackbar = "Ocorreu um erro, o exame parâmetros associado a ele!";
+                    this.textoSnackbar = "Ocorreu um erro ao tentar apagar o registro!";
                 }
             });
         },
@@ -222,11 +214,11 @@ export default {
             }, 300);
         },
         validaCampos() {
-            return  this.editedItem.exame != '' && this.editedItem.descricao != '';
+            return  this.editedItem.abreviacao != '' && this.editedItem.descricao != '';
         },
         save () {
             if (this.editedIndex > -1) {
-                this.axios.put('http://localhost:3000/exame', this.editedItem).then(response => {
+                this.axios.put('http://localhost:3000/batalhao', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -242,9 +234,9 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post('http://localhost:3000/exame', this.editedItem).then(response => {
+                    this.axios.post('http://localhost:3000/batalhao', this.editedItem).then(response => {
                         if(response.data.id){
-                            this.textoSnackbar = "Exame inserido com sucesso!";
+                            this.textoSnackbar = "Batalhão inserido com sucesso!";
                             this.snackbar = true;
                             this.color = 'success';
                             this.initialize();

@@ -6,42 +6,20 @@
 // import auth from './../middleware/auth';
 
 export default [
-  {
-    path: '',
-    // Relative to /src/views
-    name: 'dashboard',
-    view: 'Dashboard'
-  },
-  {
-    path: '/pessoas',
-    name: 'Pessoas',
-    view: 'Pessoas',
-    meta: {
-        requiresAuth: true
+    {
+        path: '',
+        // Relative to /src/views
+        name: 'dashboard',
+        view: 'Dashboard'
+    },
+    {
+        path: '/cadastro',
+        name: 'Cadastro',
+        view: 'Cadastros'
+    },
+    {
+        path: '/patrimonio',
+        name: 'Patrimônio',
+        view: 'Patrimonio'
     }
-  },
-  {
-    path: '/batalhoes',
-    name: 'Batalhões',
-    view: 'Batalhoes',
-    meta: {
-        requiresAuth: true
-    }
-  },
-  {
-    path: '/escalas',
-    view: 'Escalas'
-  },
-  {
-    path: '/hierarquias',
-    view: 'Hierarquia'
-  },
-  {
-    path: '/setores',
-    view: 'Setores'
-  },
-  {
-    path: '/exames',
-    view: 'Exames'
-  }
 ]

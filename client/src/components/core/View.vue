@@ -13,7 +13,7 @@
         name: 'CoreView',
         metaInfo () {
             return {
-                title: 'Prontuário BM'
+                title: 'Almoxarifado B4'
             }
         }
     }

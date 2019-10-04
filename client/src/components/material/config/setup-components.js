@@ -14,8 +14,9 @@ import LocationStatistic from '../components/statistics/LocationStatistic.vue';
 import SiteViewStatistic from '../components/statistics/SiteViewStatistic.vue';
 import TotalEarningsStatistic from '../components/statistics/TotalEarningsStatistic.vue';
 
-function setupComponents(Vue){
 
+
+function setupComponents(Vue){
     Vue.component('toolbar', Toolbar);
     Vue.component('navigation', Navigation);
     Vue.component('breadcrumbs', Breadcrumbs);
