@@ -167,7 +167,7 @@ export default {
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Nova OBM' : 'Editar OBM'
+            return this.editedIndex === -1 ? 'Nova Situação' : 'Editar Situação'
         }
     },
     watch: {
@@ -180,7 +180,7 @@ export default {
     },
     methods: {
         initialize () {
-            this.axios.get('http://localhost:3000/batalhao').then(response => {
+            this.axios.get('http://localhost:3000/situacaoPatrimonio').then(response => {
                 this.desserts = response.data;
             });
         },
@@ -192,11 +192,11 @@ export default {
         },
 
         deleteItem (item) {
-            this.axios.delete('http://localhost:3000/batalhao/' + item.id + "/delete").then(response => {
+            this.axios.delete('http://localhost:3000/situacaoPatrimonio/' + item.id + "/delete").then(response => {
                 if(response.data){
                     this.snackbar = true;
                     this.color = 'success';
-                    this.textoSnackbar = "Pessoa apagada com sucesso!";
+                    this.textoSnackbar = "Registro apagado com sucesso!";
                     this.initialize();
                 }else {
                     this.snackbar = true;
@@ -218,7 +218,7 @@ export default {
         },
         save () {
             if (this.editedIndex > -1) {
-                this.axios.put('http://localhost:3000/batalhao', this.editedItem).then(response => {
+                this.axios.put('http://localhost:3000/situacaoPatrimonio', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -234,9 +234,9 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post('http://localhost:3000/batalhao', this.editedItem).then(response => {
+                    this.axios.post('http://localhost:3000/situacaoPatrimonio', this.editedItem).then(response => {
                         if(response.data.id){
-                            this.textoSnackbar = "Batalhão inserido com sucesso!";
+                            this.textoSnackbar = "Registro inserido com sucesso!";
                             this.snackbar = true;
                             this.color = 'success';
                             this.initialize();
