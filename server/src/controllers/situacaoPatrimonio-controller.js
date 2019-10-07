@@ -26,11 +26,11 @@ exports.getAll = (req, res, next) => {
 }
 
 exports.post = (req, res, next) => {
-    var abreviacao = req.body.abreviacao;
+    var situacao = req.body.situacao;
     var descricao = req.body.descricao;
 
     var data = {
-        abreviacao: abreviacao,
+        situacao: situacao,
         descricao: descricao,
         createdAt: Helpers.getDataHoraAtual()
     };
@@ -43,14 +43,14 @@ exports.post = (req, res, next) => {
 
 exports.update = (req, res, next) => {
     var id = req.body.id;
-    var abreviacao = req.body.abreviacao;
+    var situacao = req.body.situacao;
     var descricao = req.body.descricao;
 
     var data = {
-        abreviacao: abreviacao,
+        situacao: situacao,
         descricao: descricao
     };
-    
+
     SituacaoPatrimonio.update(data, {
         where: {
             id: id

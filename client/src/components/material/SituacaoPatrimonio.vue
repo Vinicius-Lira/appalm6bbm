@@ -70,9 +70,9 @@
                                 <v-row>
                                     <v-col cols="12" sm="12" md="12">
                                         <v-text-field
-                                            v-model="editedItem.abreviacao"
+                                            v-model="editedItem.situacao"
                                             :rules="[v => !!v || 'Obrigatório prencher a abreviação!']"
-                                            label="Abreviação"
+                                            label="Situação"
                                             outlined
                                         ></v-text-field>
                                     </v-col>
@@ -141,10 +141,10 @@ export default {
         },
         headers: [
             {
-                text: 'Abreviação',
+                text: 'Situação',
                 align: 'left',
                 sortable: true,
-                value: 'abreviacao',
+                value: 'situacao',
             },
             { text: 'Descrição', value: 'descricao' },
             { text: 'Ações', value: 'action', sortable: false },
@@ -152,13 +152,13 @@ export default {
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            abreviacao: "",
+            situacao: "",
             descricao: "",
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            abreviacao: "",
+            situacao: "",
             descricao: "",
             createdAt: "",
             updatedAt: ""

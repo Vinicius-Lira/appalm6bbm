@@ -120,19 +120,30 @@ export default {
         initialize () {
             this.desserts = [];
 
-            this.axios.get('http://localhost:3000/pessoa').then(response => {
-                this.desserts = response.data;
-                for(var i = 0; i < response.data.length; i++){
-                    response.data[i].tipoPessoa == true ? response.data[i].tipoPessoa = 'true' : response.data[i].tipoPessoa = 'false';
-                }
-                this.desserts = response.data;
-            });
-
             this.axios.get('http://localhost:3000/hierarquia').then(response => {
                 this.hierarquias = response.data;
+            });
+
+            this.axios.get('http://localhost:3000/batalhao').then(response => {
+                this.obms = response.data;
+            });
+
+            this.axios.get('http://localhost:3000/setor').then(response => {
+                this.setores = response.data;
+            });
+
+            this.axios.get('http://localhost:3000/pessoa').then(response => {
+                this.desserts = response.data;
 
                 var i = 0;
                 var x = 0;
+
+                for(i in this.desserts){
+                    this.desserts[i].tipoPessoa == true ? this.desserts[i].tipoPessoa = 'true' : this.desserts[i].tipoPessoa = 'false';
+                }
+
+                i = 0;
+                x = 0;
 
                 for(i in this.desserts){
                     for(x in this.hierarquias){
@@ -141,13 +152,9 @@ export default {
                         }
                     }
                 }
-            });
 
-            this.axios.get('http://localhost:3000/batalhao').then(response => {
-                this.obms = response.data;
-
-                var i = 0;
-                var x = 0;
+                i = 0;
+                x = 0;
 
                 for(i in this.desserts){
                     for(x in this.obms){
@@ -156,12 +163,9 @@ export default {
                         }
                     }
                 }
-            });
 
-            this.axios.get('http://localhost:3000/setor').then(response => {
-                this.setores = response.data;
-                var i = 0;
-                var x = 0;
+                i = 0;
+                x = 0;
 
                 for(i in this.desserts){
                     for(x in this.setores){

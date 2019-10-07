@@ -25,7 +25,7 @@ sequelize.authenticate().then(function() {
 });
 
 const Situacao = sequelize.define('situacaopatrimonio', {
-    abreviacao: {
+    situacao: {
         type: Sequelize.STRING,
         allowNull: false
     },

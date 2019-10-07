@@ -70,17 +70,9 @@
                                 <v-row>
                                     <v-col cols="12" sm="12" md="12">
                                         <v-text-field
-                                            v-model="editedItem.abreviacao"
-                                            :rules="[v => !!v || 'Obrigatório prencher a abreviação!']"
-                                            label="Abreviação"
-                                            outlined
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="12" md="12">
-                                        <v-text-field
-                                            v-model="editedItem.descricao"
-                                            :rules="[v => !!v || 'Obrigatório prencher a descrição!']"
-                                            label="Descrição"
+                                            v-model="editedItem.grupo"
+                                            :rules="[v => !!v || 'Obrigatório prencher a grupo!']"
+                                            label="Grupo"
                                             outlined
                                         ></v-text-field>
                                     </v-col>
@@ -141,25 +133,22 @@ export default {
         },
         headers: [
             {
-                text: 'Abreviação',
+                text: 'Grupo',
                 align: 'left',
                 sortable: true,
-                value: 'abreviacao',
+                value: 'grupo',
             },
-            { text: 'Descrição', value: 'descricao' },
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            abreviacao: "",
-            descricao: "",
+            grupo: "",
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            abreviacao: "",
-            descricao: "",
+            grupo: "",
             createdAt: "",
             updatedAt: ""
         },
@@ -167,7 +156,7 @@ export default {
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Nova OBM' : 'Editar OBM'
+            return this.editedIndex === -1 ? 'Novo Grupo' : 'Editar Grupo'
         }
     },
     watch: {
@@ -180,7 +169,7 @@ export default {
     },
     methods: {
         initialize () {
-            this.axios.get('http://localhost:3000/batalhao').then(response => {
+            this.axios.get('http://localhost:3000/grupoPatrimonio').then(response => {
                 this.desserts = response.data;
             });
         },
@@ -192,7 +181,7 @@ export default {
         },
 
         deleteItem (item) {
-            this.axios.delete('http://localhost:3000/batalhao/' + item.id + "/delete").then(response => {
+            this.axios.delete('http://localhost:3000/grupoPatrimonio/' + item.id + "/delete").then(response => {
                 if(response.data){
                     this.snackbar = true;
                     this.color = 'success';
@@ -218,7 +207,7 @@ export default {
         },
         save () {
             if (this.editedIndex > -1) {
-                this.axios.put('http://localhost:3000/batalhao', this.editedItem).then(response => {
+                this.axios.put('http://localhost:3000/grupoPatrimonio', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -234,7 +223,7 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post('http://localhost:3000/batalhao', this.editedItem).then(response => {
+                    this.axios.post('http://localhost:3000/grupoPatrimonio', this.editedItem).then(response => {
                         if(response.data.id){
                             this.textoSnackbar = "Batalhão inserido com sucesso!";
                             this.snackbar = true;

@@ -68,15 +68,45 @@
                         <v-card-text>
                             <v-container>
                                 <v-row>
-                                    <v-col cols="12" sm="12" md="12">
+                                    <v-col cols="4" sm="12" md="4">
                                         <v-text-field
-                                            v-model="editedItem.abreviacao"
-                                            :rules="[v => !!v || 'Obrigatório prencher a abreviação!']"
-                                            label="Abreviação"
+                                            v-model="editedItem.codigo"
+                                            :rules="[v => !!v || 'Obrigatório prencher o código!']"
+                                            label="Código"
                                             outlined
                                         ></v-text-field>
                                     </v-col>
-                                    <v-col cols="12" sm="12" md="12">
+
+                                    <v-col cols="4" sm="12" md="4">
+                                        <v-select v-model="editedItem.vinculo"
+                                            :items="vinculos"
+                                            label="Vículo"
+                                            :rules="[v => !!v || 'Obrigatória selecionar o vínculo']"
+                                            outlined
+                                            required
+                                        ></v-select>
+                                    </v-col>
+
+                                    <v-col cols="4" sm="12" md="4">
+                                        <v-text-field
+                                            v-model="editedItem.dataEntrada"
+                                            :rules="[v => !!v || 'Obrigatório prencher a data entrada!']"
+                                            label="dataEntrada"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="6" sm="12" md="6">
+                                        <v-text-field
+                                            v-model="editedItem.identificacao"
+                                            :rules="[v => !!v || 'Obrigatório prencher a identificação!']"
+                                            label="Identificação"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="6" sm="12" md="6">
                                         <v-text-field
                                             v-model="editedItem.descricao"
                                             :rules="[v => !!v || 'Obrigatório prencher a descrição!']"
@@ -84,6 +114,124 @@
                                             outlined
                                         ></v-text-field>
                                     </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="4" sm="12" md="4">
+                                        <v-text-field
+                                            v-model="editedItem.observacoes"
+                                            :rules="[v => !!v || 'Obrigatório prencher a observações!']"
+                                            label="Observações"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="4" sm="12" md="4">
+                                        <v-select v-model="editedItem.idResponsavel"
+                                            :items="responsaveis"
+                                            label="Responsável"
+                                            :rules="[v => !!v || 'Obrigatória selecionar o responsável']"
+                                            outlined
+                                            required
+                                            item-value="id" item-text="nome"
+                                        ></v-select>
+                                    </v-col>
+
+                                    <v-col cols="4" sm="12" md="4">
+                                        <v-select v-model="editedItem.idGrupo"
+                                            :items="grupos"
+                                            label="Grupo"
+                                            :rules="[v => !!v || 'Obrigatória selecionar o grupo']"
+                                            outlined
+                                            required
+                                            item-value="id" item-text="grupo"
+                                        ></v-select>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="4" sm="12" md="4">
+                                        <v-select v-model="editedItem.idSetor"
+                                            :items="setores"
+                                            label="Setor"
+                                            :rules="[v => !!v || 'Obrigatória selecionar o setor']"
+                                            outlined
+                                            required
+                                            item-value="id" item-text="setor"
+                                        ></v-select>
+                                    </v-col>
+
+                                    <v-col cols="4" sm="12" md="4">
+                                        <v-select v-model="editedItem.idSituacao"
+                                            :items="situacoes"
+                                            label="Situação"
+                                            :rules="[v => !!v || 'Obrigatória selecionar a situação']"
+                                            outlined
+                                            required
+                                            item-value="id" item-text="situacao"
+                                        ></v-select>
+                                    </v-col>
+
+                                    <v-col cols="4" sm="12" md="4">
+                                        <v-text-field
+                                            v-model="editedItem.valorEconomico"
+                                            :rules="[v => !!v || 'Obrigatório prencher o valor econômico!']"
+                                            label="Valor econônico"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="4" sm="12" md="4">
+                                        <v-text-field
+                                            v-model="editedItem.dataCarga"
+                                            :rules="[v => !!v || 'Obrigatório prencher a data carca!']"
+                                            label="Data carga"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="4" sm="12" md="4">
+                                        <v-select v-model="editedItem.baixado"
+                                            :items="valorBaixado"
+                                            label="Baixado"
+                                            :rules="[v => !!v || 'Obrigatória selecionar se está baixado']"
+                                            outlined
+                                            required
+                                            item-value="value" item-text="text"
+                                        ></v-select>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="6" md="4">
+                                       <v-file-input
+                                           color="deep-purple accent-4"
+                                           counter
+                                           label="Foto"
+                                           multiple
+                                           placeholder=""
+                                           prepend-icon="mdi-camera"
+                                           outlined
+                                           :show-size="1000"
+                                           @change="setImage"
+                                       >
+                                           <template v-slot:selection="{ index, text }">
+                                               <v-chip
+                                                   v-if="index < 2"
+                                                   color="deep-purple accent-4"
+                                                   dark
+                                                   label
+                                                   small
+                                               >
+                                                   {{ text }}
+                                               </v-chip>
+
+                                               <span
+                                                   v-else-if="index === 2"
+                                                   class="overline grey--text text--darken-3 mx-2"
+                                               >
+                                                   +{{ foto.length - 2 }} Arquivo
+                                               </span>
+                                           </template>
+                                       </v-file-input>
+                                   </v-col>
                                 </v-row>
                             </v-container>
                         </v-card-text>
@@ -139,27 +287,83 @@ export default {
         pagination: {
             rowsPerPage: 20
         },
+        vinculos: [
+            "Município",
+            "Estado",
+            "Outro"
+        ],
+        responsaveis: [],
+        grupos: [],
+        setores: [],
+        situacoes: [],
+        valorBaixado: [
+            {
+                value: "SIM",
+                text: "SIM"
+            },
+            {
+                value: 'NÃO',
+                text: "NÃO"
+            }
+        ],
         headers: [
             {
-                text: 'Abreviação',
+                text: 'Código',
                 align: 'left',
                 sortable: true,
-                value: 'abreviacao',
+                value: 'codigo',
             },
+            { text: 'Vínculo', value: 'vinculo' },
+            { text: 'Identificação', value: 'identificacao' },
             { text: 'Descrição', value: 'descricao' },
+            { text: 'Observações', value: 'observacoes' },
+            { text: 'Data Entrada', value: 'dataEntrada' },
+            { text: 'Responsável', value: 'responsavel' },
+            { text: 'Grupo', value: 'grupo' },
+            { text: 'Setor', value: 'setor' },
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            abreviacao: "",
+            codigo: "",
+            vinculo: "",
+            identificacao: "",
             descricao: "",
+            observacoes: "",
+            dataEntrada: "",
+            responsavel: "",
+            grupo: "",
+            setor: "",
+            idResponsavel: null,
+            idGrupo: null,
+            idSetor: null,
+            idSituacao: null,
+            valorEconomico: "",
+            dataCarga: "",
+            foto: "",
+            baixado: "",
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            abreviacao: "",
+            codigo: "",
+            vinculo: "",
+            identificacao: "",
             descricao: "",
+            observacoes: "",
+            dataEntrada: "",
+            responsavel: "",
+            grupo: "",
+            setor: "",
+            idResponsavel: null,
+            idGrupo: null,
+            idSetor: null,
+            idSituacao: null,
+            valorEconomico: "",
+            dataCarga: "",
+            foto: "",
+            baixado: "",
             createdAt: "",
             updatedAt: ""
         },
@@ -180,9 +384,27 @@ export default {
     },
     methods: {
         initialize () {
-            this.axios.get('http://localhost:3000/batalhao').then(response => {
+            this.axios.get('http://localhost:3000/patrimonio').then(response => {
                 this.desserts = response.data;
             });
+
+            this.responsaveis = [];
+            this.axios.get('http://localhost:3000/pessoa').then(response => {
+                this.responsaveis = response.data;
+            });
+            this.grupos = [];
+            this.axios.get('http://localhost:3000/grupoPatrimonio').then(response => {
+                this.grupos = response.data;
+            });
+            this.setores = [];
+            this.axios.get('http://localhost:3000/setor').then(response => {
+                this.setores = response.data;
+            });
+            this.situacoes = [];
+            this.axios.get('http://localhost:3000/situacaoPatrimonio').then(response => {
+                this.situacoes = response.data;
+            });
+
         },
 
         editItem (item) {
@@ -192,11 +414,11 @@ export default {
         },
 
         deleteItem (item) {
-            this.axios.delete('http://localhost:3000/batalhao/' + item.id + "/delete").then(response => {
+            this.axios.delete('http://localhost:3000/patrimonio/' + item.id + "/delete").then(response => {
                 if(response.data){
                     this.snackbar = true;
                     this.color = 'success';
-                    this.textoSnackbar = "Pessoa apagada com sucesso!";
+                    this.textoSnackbar = "Registro apagada com sucesso!";
                     this.initialize();
                 }else {
                     this.snackbar = true;
@@ -218,7 +440,7 @@ export default {
         },
         save () {
             if (this.editedIndex > -1) {
-                this.axios.put('http://localhost:3000/batalhao', this.editedItem).then(response => {
+                this.axios.put('http://localhost:3000/patrimonio', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -234,7 +456,7 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post('http://localhost:3000/batalhao', this.editedItem).then(response => {
+                    this.axios.post('http://localhost:3000/patrimonio', this.editedItem).then(response => {
                         if(response.data.id){
                             this.textoSnackbar = "Batalhão inserido com sucesso!";
                             this.snackbar = true;
@@ -256,6 +478,23 @@ export default {
                 }
             }
         },
+        setImage: function (e) {
+           const file = e[0];
+           if (!file.type.includes('image/')) {
+               alert('Por favor selecione a foto!');
+               return;
+           }
+           if (typeof FileReader === 'function') {
+               const reader = new FileReader();
+               reader.onload = (event) => {
+                   this.imgSrc = event.target.result;
+                   this.editedItem.foto = this.imgSrc;
+               }
+               reader.readAsDataURL(file);
+           } else {
+               alert('Sorry, FileReader API not supported');
+           }
+       }
 
     }
 }
