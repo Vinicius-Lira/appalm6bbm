@@ -73,6 +73,7 @@
                                             v-model="editedItem.codigo"
                                             :rules="[v => !!v || 'Obrigatório prencher o código!']"
                                             label="Código"
+                                            v-mask="[ '#####','#######', '###/#####', '####/#####']"
                                             outlined
                                         ></v-text-field>
                                     </v-col>
@@ -91,8 +92,9 @@
                                         <v-text-field
                                             v-model="editedItem.dataEntrada"
                                             :rules="[v => !!v || 'Obrigatório prencher a data entrada!']"
-                                            label="dataEntrada"
+                                            label="Data Entrada"
                                             outlined
+                                            v-mask="'##/##/####'"
                                         ></v-text-field>
                                     </v-col>
                                 </v-row>
@@ -176,6 +178,8 @@
                                             :rules="[v => !!v || 'Obrigatório prencher o valor econômico!']"
                                             label="Valor econônico"
                                             outlined
+
+                                            v-money="money"
                                         ></v-text-field>
                                     </v-col>
                                 </v-row>
@@ -186,6 +190,7 @@
                                             :rules="[v => !!v || 'Obrigatório prencher a data carca!']"
                                             label="Data carga"
                                             outlined
+                                            v-mask="'##/##/####'"
                                         ></v-text-field>
                                     </v-col>
 
@@ -271,6 +276,8 @@
 </template>
 
 <script>
+import {VMoney} from 'v-money';
+
 export default {
     name: 'obm',
     data: () => ({
@@ -292,6 +299,14 @@ export default {
             "Estado",
             "Outro"
         ],
+        money: {
+            decimal: ',',
+            thousands: '.',
+            prefix: 'R$ ',
+            suffix: '',
+            precision: 2,
+            masked: false
+        },
         responsaveis: [],
         grupos: [],
         setores: [],
@@ -367,11 +382,12 @@ export default {
             createdAt: "",
             updatedAt: ""
         },
-    }),
 
+    }),
+    directives: {money: VMoney},
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Nova OBM' : 'Editar OBM'
+            return this.editedIndex === -1 ? 'Novo Patrimônio' : 'Editar Patrimônio'
         }
     },
     watch: {
@@ -384,9 +400,6 @@ export default {
     },
     methods: {
         initialize () {
-            this.axios.get('http://localhost:3000/patrimonio').then(response => {
-                this.desserts = response.data;
-            });
 
             this.responsaveis = [];
             this.axios.get('http://localhost:3000/pessoa').then(response => {
@@ -403,6 +416,34 @@ export default {
             this.situacoes = [];
             this.axios.get('http://localhost:3000/situacaoPatrimonio').then(response => {
                 this.situacoes = response.data;
+            });
+
+            this.axios.get('http://localhost:3000/patrimonio').then(response => {
+                this.desserts = response.data;
+                var i = 0;
+                var j = 0;
+                for(i in this.desserts){
+                    for(j in this.responsaveis){
+                        if(this.responsaveis[j].id == this.desserts[i].idResponsavel){
+                            this.desserts[i].responsavel = this.responsaveis[j].nome;
+                        }
+                    }
+                    j = 0;
+                    for(j in this.grupos){
+                        if(this.grupos[j].id == this.desserts[i].idGrupo){
+                            this.desserts[i].grupo = this.grupos[j].grupo;
+                        }
+                    }
+                    j = 0;
+                    for(j in this.setores){
+                        if(this.setores[j].id == this.desserts[i].idSetor){
+                            this.desserts[i].setor = this.setores[j].setor;
+                        }
+                    }
+                }
+
+                this.desserts[i].dataEntrada = this.desserts[i].dataEntrada.split("T")[0].split("-").reverse().join("/");
+                this.desserts[i].dataCarga = this.desserts[i].dataCarga.split("T")[0].split("-").reverse().join("/");
             });
 
         },
