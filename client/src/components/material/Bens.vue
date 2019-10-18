@@ -187,7 +187,7 @@
                                     <v-col cols="4" sm="12" md="4">
                                         <v-text-field
                                             v-model="editedItem.dataCarga"
-                                            :rules="[v => !!v || 'Obrigatório prencher a data carca!']"
+                                            :rules="[v => !!v || 'Obrigatório prencher a data carga!']"
                                             label="Data carga"
                                             outlined
                                             v-mask="'##/##/####'"
@@ -237,6 +237,14 @@
                                            </template>
                                        </v-file-input>
                                    </v-col>
+                                </v-row>
+                                <v-row
+                                    justify="center"
+                                >
+                                    <v-col cols="12" sm="12" md="12">
+
+                                        <img v-bind:src="editedItem.foto" :style="{width: '100%'}"/>
+                                    </v-col>
                                 </v-row>
                             </v-container>
                         </v-card-text>
@@ -333,7 +341,7 @@ export default {
             { text: 'Descrição', value: 'descricao' },
             { text: 'Observações', value: 'observacoes' },
             { text: 'Data Entrada', value: 'dataEntrada' },
-            { text: 'Responsável', value: 'responsavel' },
+            { text: 'Responsável', value: 'responsavelNome' },
             { text: 'Grupo', value: 'grupo' },
             { text: 'Setor', value: 'setor' },
             { text: 'Ações', value: 'action', sortable: false },
@@ -341,6 +349,7 @@ export default {
         desserts: [],
         editedIndex: -1,
         editedItem: {
+            id: "",
             codigo: "",
             vinculo: "",
             identificacao: "",
@@ -362,25 +371,26 @@ export default {
             updatedAt: ""
         },
         defaultItem: {
-            codigo: "",
-            vinculo: "",
-            identificacao: "",
-            descricao: "",
-            observacoes: "",
-            dataEntrada: "",
-            responsavel: "",
-            grupo: "",
-            setor: "",
+            id: null,
+            codigo: null,
+            vinculo: null,
+            identificacao: null,
+            descricao: null,
+            observacoes: null,
+            dataEntrada: null,
+            responsavel: null,
+            grupo: null,
+            setor: null,
             idResponsavel: null,
             idGrupo: null,
             idSetor: null,
             idSituacao: null,
-            valorEconomico: "",
-            dataCarga: "",
-            foto: "",
-            baixado: "",
-            createdAt: "",
-            updatedAt: ""
+            valorEconomico: null,
+            dataCarga: null,
+            foto: null,
+            baixado: null,
+            createdAt: null,
+            updatedAt: null
         },
 
     }),
@@ -421,29 +431,11 @@ export default {
             this.axios.get('http://localhost:3000/patrimonio').then(response => {
                 this.desserts = response.data;
                 var i = 0;
-                var j = 0;
+                console.log(this.desserts);
                 for(i in this.desserts){
-                    for(j in this.responsaveis){
-                        if(this.responsaveis[j].id == this.desserts[i].idResponsavel){
-                            this.desserts[i].responsavel = this.responsaveis[j].nome;
-                        }
-                    }
-                    j = 0;
-                    for(j in this.grupos){
-                        if(this.grupos[j].id == this.desserts[i].idGrupo){
-                            this.desserts[i].grupo = this.grupos[j].grupo;
-                        }
-                    }
-                    j = 0;
-                    for(j in this.setores){
-                        if(this.setores[j].id == this.desserts[i].idSetor){
-                            this.desserts[i].setor = this.setores[j].setor;
-                        }
-                    }
+                    // console.log(this.desserts[i].dataEntrada + " " + this.desserts[i].dataCarga);
+                    this.desserts[i].baixado = this.desserts[i].baixado == true ? 'SIM' : 'NÃO';
                 }
-
-                this.desserts[i].dataEntrada = this.desserts[i].dataEntrada.split("T")[0].split("-").reverse().join("/");
-                this.desserts[i].dataCarga = this.desserts[i].dataCarga.split("T")[0].split("-").reverse().join("/");
             });
 
         },
