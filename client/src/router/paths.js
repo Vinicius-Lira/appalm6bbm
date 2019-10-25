@@ -21,5 +21,13 @@ export default [
         path: '/patrimonio',
         name: 'Patrimônio',
         view: 'Patrimonio'
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        view: 'Login',
+        meta: {
+            requiresAuth: true
+        }
     }
 ]

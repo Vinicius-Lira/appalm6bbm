@@ -1,8 +1,8 @@
 // Lib imports
-import Vue from 'vue'
-import Router from 'vue-router'
-import Meta from 'vue-meta'
-
+import Vue from 'vue';
+import Router from 'vue-router';
+import Meta from 'vue-meta';
+import axios from 'axios';
 // Routes
 import paths from './paths'
 
@@ -36,22 +36,45 @@ const router = new Router({
 
 });
 
-// router.beforeEach((to, from, next) => {
-//     console.log(localStorage.getItem('login'));
-//     if(localStorage.getItem('login')){
-//         return next();
-//     }else {
-//         localStorage.setItem('login', 'true');
-//     }
-//
-//     next({
-//         path: '',
-//         query: {
-//             redirect: to.fullPath
-//         }
-//     });
-// });
+async function validAuth(){
+   if(localStorage.getItem("tokenlogin") === null){
+       return true;
+   }else {
+       var dataToken = {
+           token: localStorage.getItem("tokenlogin")
+       }
+       let res = await axios.post("http://localhost:3000/login/validToken", dataToken);
 
+       return res;
+   }
+}
+
+router.beforeEach((to, from, next) => {
+
+   validAuth().then(response => {
+       var res = response.data;
+       if(to.path != '/login'){
+           if (!res) {
+               if(localStorage.getItem("tokenlogin")){
+                   localStorage.removeItem("tokenlogin");
+               }
+               return next({
+                   path: '/login'
+               });
+           }
+       }
+
+       if(res && to.path == '/login'){
+           return next({
+               path: '/'
+           });
+       }
+
+       next();
+   });
+
+
+});
 
 Vue.use(Meta)
 

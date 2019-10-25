@@ -17,6 +17,7 @@ const situacaoPatrimonio = require('./routes/situacaoPatrimonio-routes');
 const responsavelSetor = require('./routes/responsavelSetor-routes');
 const permissao = require('./routes/permissao-routes');
 const patrimonio = require('./routes/patrimonio-routes');
+const login = require('./routes/login-routes');
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 1000000}));
@@ -34,6 +35,7 @@ app.use(function(req, res, next) {
 app.use('/', index);
 app.use('/batalhao', batalhao);
 app.use('/hierarquia', hierarquia);
+app.use('/login', login);
 app.use('/pessoa', pessoa);
 app.use('/setor', setor);
 app.use('/descargaPatrimonio', descargaPatrimonio);
