@@ -19,16 +19,8 @@
         </template>
 
         <v-list-item two-line>
-            <v-list-item-avatar color="white">
-                <v-img
-                src="https://cdn.vuetifyjs.com/images/logos/v.png"
-                height="34"
-                contain
-                />
-            </v-list-item-avatar>
-
             <v-list-item-title class="title">
-                Prontuario BM
+                Almoxarifado 6BBM
             </v-list-item-title>
         </v-list-item>
 
@@ -38,10 +30,10 @@
             <div />
 
             <v-list-item
-            v-for="(link, i) in links"
-            :key="i"
-            :to="link.to"
-            active-class="error white--text"
+              v-for="(link, i) in links"
+              :key="i"
+              :to="link.to"
+              active-class="error white--text"
             >
                 <v-list-item-action>
                 <v-icon>{{ link.icon }}</v-icon>
@@ -50,6 +42,62 @@
             <v-list-item-title v-text="link.text" />
             </v-list-item>
         </v-list>
+
+        <v-card
+          max-width="500"
+          class="mx-auto"
+        >
+          <v-list>
+            <v-list-group
+              :key="'menu'"
+              :prepend-icon="'mdi-city'"
+              no-action
+              :style="{ color: '#fff' }"
+            >
+
+              <template v-slot:activator>
+                <v-list-item>
+                  <v-list-item-title v-text="'Patrimônio'"></v-list-item-title>
+                </v-list-item>
+              </template>
+
+              <v-list-item
+                :key="'Bens'"
+                :to="'/patrimonio'"
+                active-class="error white--text"
+              >
+                <v-list-item-content>
+                  <v-list-item-title v-text="'Bens'"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item
+                :key="'Movimentações'"
+                :to="'/patrimonio'"
+                active-class="error white--text"
+              >
+                <v-list-item-content>
+                  <v-list-item-title v-text="'Movimentações'"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item
+                :key="'Baixa'"
+                :to="'/patrimonio'"
+                active-class="error white--text"
+              >
+                <v-list-item-content>
+                  <v-list-item-title v-text="'Baixa'"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+            </v-list-group>
+
+            
+          </v-list>
+
+
+        </v-card>
 
     </v-navigation-drawer>
 </template>
