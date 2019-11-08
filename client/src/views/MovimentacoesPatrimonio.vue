@@ -69,19 +69,64 @@
                             <v-container>
                                 <v-row>
                                     <v-col cols="12" sm="12" md="12">
-                                        <v-text-field
-                                            v-model="editedItem.abreviacao"
-                                            :rules="[v => !!v || 'Obrigatório prencher a abreviação!']"
-                                            label="Abreviação"
+                                        <v-autocomplete
+                                            label="Patrimônio"
+                                            :items="patrimonios"
+                                            item-text="descricao"
+                                            item-value="id"
                                             outlined
-                                        ></v-text-field>
+                                        ></v-autocomplete>
                                     </v-col>
-                                    <v-col cols="12" sm="12" md="12">
-                                        <v-text-field
-                                            v-model="editedItem.descricao"
-                                            :rules="[v => !!v || 'Obrigatório prencher a descrição!']"
-                                            label="Descrição"
+                                    
+                                </v-row>
+
+                                <v-row>
+                                    <v-col cols="12" sm="12" md="8">
+                                        <v-autocomplete
+                                            label="Novo Responsável"
+                                            :items="pessoas"
+                                            item-text="nome"
+                                            item-value="id"
                                             outlined
+                                        ></v-autocomplete>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="4">
+                                        <v-select
+                                            :items="setores"
+                                            item-text="setor"
+                                            item-value="id"
+                                            label="Setor Novo"
+                                            outlined
+                                        ></v-select>
+                                    </v-col>
+                                </v-row>
+
+                                <v-row>
+                                    <v-col cols="12" sm="12" md="4">
+                                        <v-select
+                                            :items="situacoes"
+                                            item-text="situacao"
+                                            item-value="id"
+                                            label="Situação"
+                                            outlined
+                                        ></v-select>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="4">
+                                        <v-text-field 
+                                            label="Detalhe"
+                                            outlined                                       
+                                        >
+                                        </v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="4">
+                                        <v-text-field
+                                            v-model="editedItem.dataMovimentacao"
+                                            :rules="[v => !!v || 'Obrigatório prencher a data movimentação!']"
+                                            label="Data Movimentação"
+                                            outlined
+                                            v-mask="'##/##/####'"
                                         ></v-text-field>
                                     </v-col>
                                 </v-row>
@@ -141,33 +186,60 @@ export default {
         },
         headers: [
             {
-                text: 'Abreviação',
+                text: 'Código Patri.',
                 align: 'left',
                 sortable: true,
-                value: 'abreviacao',
+                value: 'codigo',
             },
             { text: 'Descrição', value: 'descricao' },
+            { text: 'Responsável Novo', value: 'responsavelNovo' },
+            { text: 'Responsável Ant.', value: 'responsavelAnterior' },
+            { text: 'Setor Novo', value: 'setorNovo' },
+            { text: 'Setor Ant.', value: 'setorAnterior' },
+            { text: 'Detalhe Atual', value: 'detalheAtual' },
+            { text: 'Detalhe Ant.', value: 'detalheAnterior' },
+            { text: 'Data Mov.', value: 'dataMovimentacao' },
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            abreviacao: "",
-            descricao: "",
+            idPatrimonio: "",
+            idResponsavelAnterior: "",
+            idResponsavelAtual: "",
+            idSetorAnterior: "",
+            idSetorAtual: "",
+            idSituacaoAnterior: "",
+            idSituacaoAtual: "",
+            detalheAnterior: "",
+            detalheAtual: "",
+            dataMovimentacao: "",
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            abreviacao: "",
-            descricao: "",
+            idPatrimonio: "",
+            idResponsavelAnterior: "",
+            idResponsavelAtual: "",
+            idSetorAnterior: "",
+            idSetorAtual: "",
+            idSituacaoAnterior: "",
+            idSituacaoAtual: "",
+            detalheAnterior: "",
+            detalheAtual: "",
+            dataMovimentacao: "",
             createdAt: "",
             updatedAt: ""
         },
+        patrimonios: [],
+        setores: [],
+        situacoes: [],
+        pessoas: [],
     }),
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Nova OBM' : 'Editar OBM'
+            return this.editedIndex === -1 ? 'Nova Movimentação' : 'Editar Movimentação'
         }
     },
     watch: {
@@ -180,8 +252,24 @@ export default {
     },
     methods: {
         initialize () {
-            this.axios.get('http://localhost:3000/batalhao').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio').then(response => {
                 this.desserts = response.data;
+            });
+
+            this.axios.get(process.env.VUE_APP_URL_API + '/pessoa').then(response => {
+                this.pessoas = response.data;
+            });
+
+            this.axios.get(process.env.VUE_APP_URL_API + '/setor').then(response => {
+                this.setores = response.data;
+            });
+
+            this.axios.get(process.env.VUE_APP_URL_API + '/situacaoPatrimonio').then(response => {
+                this.situacoes = response.data;
+            });
+
+            this.axios.get(process.env.VUE_APP_URL_API + '/patrimonio').then(response => {
+                this.patrimonios = response.data;
             });
         },
 
@@ -192,7 +280,7 @@ export default {
         },
 
         deleteItem (item) {
-            this.axios.delete('http://localhost:3000/batalhao/' + item.id + "/delete").then(response => {
+            this.axios.delete(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio/' + item.id + "/delete").then(response => {
                 if(response.data){
                     this.snackbar = true;
                     this.color = 'success';
@@ -218,7 +306,7 @@ export default {
         },
         save () {
             if (this.editedIndex > -1) {
-                this.axios.put('http://localhost:3000/batalhao', this.editedItem).then(response => {
+                this.axios.put(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -234,7 +322,7 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post('http://localhost:3000/batalhao', this.editedItem).then(response => {
+                    this.axios.post(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio', this.editedItem).then(response => {
                         if(response.data.id){
                             this.textoSnackbar = "Batalhão inserido com sucesso!";
                             this.snackbar = true;

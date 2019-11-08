@@ -1,10 +1,3 @@
-/**
- * Define all of your application routes here
- * for more information on routes, see the
- * official documentation https://router.vuejs.org/en/
- */
-// import auth from './../middleware/auth';
-
 export default [
     {
         path: '',
@@ -13,14 +6,49 @@ export default [
         view: 'Dashboard'
     },
     {
-        path: '/cadastro',
-        name: 'Cadastro',
-        view: 'Cadastros'
+        path: '/grupoPatrimonio',
+        name: 'Grupos Patrimônio',
+        view: 'GrupoPatrimonio'
+    },
+    {
+        path: '/hierarquia',
+        name: 'Hierarquias',
+        view: 'Hierarquia'
+    },
+    {
+        path: '/obms',
+        name: 'OBM',
+        view: 'Obms'
+    },
+    {
+        path: '/pessoas',
+        name: 'Pessoas',
+        view: 'Pessoas'
+    },
+    {
+        path: '/setores',
+        name: 'Setores',
+        view: 'Setores'
+    },
+    {
+        path: '/situacaoPatrimonio',
+        name: 'Situações Patrimônio',
+        view: 'SituacaoPatrimonio'
     },
     {
         path: '/patrimonio',
         name: 'Patrimônio',
         view: 'Patrimonio'
+    },
+    {
+        path: '/patrimonioMovimentacoes',
+        name: 'Movimentação Patrimônio',
+        view: 'MovimentacoesPatrimonio'
+    },
+    {
+        path: '/patrimonioBaixas',
+        name: 'Baixa Patrimônio',
+        view: 'BaixaPatrimonio'
     },
     {
         path: '/login',
