@@ -2,6 +2,10 @@
 
 const Helpers = require('./../../helpers/helpers');
 const Pessoa = require('./../models/Pessoa');
+const Hierarquia = require('./../models/Hierarquia');
+const Obm = require('./../models/Obm');
+const Setor = require('./../models/Setor');
+
 
 exports.get = (req, res, next) => {
     const id = req.params.id;
@@ -21,9 +25,53 @@ exports.get = (req, res, next) => {
 }
 
 exports.getAll = (req, res, next) => {
-    Pessoa.findAll().then(response => {
-        res.status(200).json(JSON.parse(JSON.stringify(response)));
+    Hierarquia.findAll().then(response => {
+        var hierarquias = JSON.parse(JSON.stringify(response));
+        Obm.findAll().then(response => {
+            var obms = JSON.parse(JSON.stringify(response));
+            Setor.findAll().then(response => {
+                var setores = JSON.parse(JSON.stringify(response));
+
+                Pessoa.findAll().then(response => {
+                    var pessoas = JSON.parse(JSON.stringify(response));
+                    var i = 0;
+                    var x = 0;                    
+
+                    for(i in pessoas){
+                        for(x in hierarquias){
+                            if(hierarquias[x].id == pessoas[i].idHierarquia){
+                                pessoas[i].hierarquia = hierarquias[x].hierarquia;
+                                break;
+                            }
+                        }
+
+                        x = 0;
+                        for(x in obms){
+                            if(obms[x].id == pessoas[i].idBatalhao){
+                                pessoas[i].obm = obms[x].abreviacao;
+                                break;
+                            }
+                        }
+
+                        x = 0;
+                        for(x in setores){
+                            if(setores[x].id == pessoas[i].idSetor){
+                                pessoas[i].setor = setores[x].setor;
+                                break;
+                            }
+                        }
+                        x = 0;
+                        // pessoas[i].dataNascimento = Helpers.formatDate(pessoas[i].dataNascimento);
+                        // console.log(pessoas[i].dataNascimento);
+                    }
+                    
+                    res.status(200).json(pessoas);
+                });
+
+            });
+        });
     });
+    
 }
 
 exports.post = (req, res, next) => {
@@ -33,6 +81,9 @@ exports.post = (req, res, next) => {
     var idHierarquia = req.body.idHierarquia;
     var idSetor = req.body.idSetor;
     var idBatalhao = req.body.idBatalhao;
+    var tipoPessoa = req.body.tipoPessoa;
+    var dataNascimento = req.body.dataNascimento;
+    var sexo = req.body.sexo;
 
     var data = {
         nome: nome,
@@ -42,6 +93,9 @@ exports.post = (req, res, next) => {
         idHierarquia: idHierarquia,
         idSetor: idSetor,
         idBatalhao: idBatalhao,
+        tipoPessoa: tipoPessoa,
+        dataNascimento: dataNascimento,
+        sexo: sexo,
         createdAt: Helpers.getDataHoraAtual()
     };
 
@@ -49,7 +103,6 @@ exports.post = (req, res, next) => {
         res.status(200).json(response);
     });
 }
-
 
 exports.update = (req, res, next) => {
     var id = req.body.id;
@@ -59,6 +112,9 @@ exports.update = (req, res, next) => {
     var idHierarquia = req.body.idHierarquia;
     var idSetor = req.body.idSetor;
     var idBatalhao = req.body.idBatalhao;
+    var tipoPessoa = req.body.tipoPessoa;
+    var dataNascimento = req.body.dataNascimento;
+    var sexo = req.body.sexo;
 
     var data = {
         nome: nome,
@@ -68,8 +124,12 @@ exports.update = (req, res, next) => {
         idHierarquia: idHierarquia,
         idSetor: idSetor,
         idBatalhao: idBatalhao,
+        tipoPessoa: tipoPessoa,
+        dataNascimento: dataNascimento,
+        sexo: sexo,
         createdAt: Helpers.getDataHoraAtual()
     };
+
     Pessoa.update(data, {
         where: {
             id: id

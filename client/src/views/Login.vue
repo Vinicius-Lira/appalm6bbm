@@ -117,7 +117,6 @@ export default {
         }
     },
     created () {
-        // console.log(this.$route.name);
         if (typeof(Storage) !== "undefined") {
             if(localStorage.getItem("login")) {
                 this.login.lembrar = localStorage.getItem("login");

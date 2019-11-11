@@ -70,6 +70,7 @@
                                 <v-row>
                                     <v-col cols="12" sm="12" md="12">
                                         <v-autocomplete
+                                            v-model=" editedItem.idPatrimonio"
                                             label="Patrimônio"
                                             :items="patrimonios"
                                             item-text="descricao"
@@ -83,6 +84,7 @@
                                 <v-row>
                                     <v-col cols="12" sm="12" md="8">
                                         <v-autocomplete
+                                            v-model=" editedItem.idResponsavelAtual"
                                             label="Novo Responsável"
                                             :items="pessoas"
                                             item-text="nome"
@@ -92,6 +94,7 @@
                                     </v-col>
                                     <v-col cols="12" sm="12" md="4">
                                         <v-select
+                                            v-model=" editedItem.idSetorAtual"
                                             :items="setores"
                                             item-text="setor"
                                             item-value="id"
@@ -104,6 +107,7 @@
                                 <v-row>
                                     <v-col cols="12" sm="12" md="4">
                                         <v-select
+                                            v-model=" editedItem.idSituacaoAtual"
                                             :items="situacoes"
                                             item-text="situacao"
                                             item-value="id"
@@ -114,6 +118,7 @@
 
                                     <v-col cols="12" sm="12" md="4">
                                         <v-text-field 
+                                            v-model=" editedItem.detalheAtual"
                                             label="Detalhe"
                                             outlined                                       
                                         >
@@ -191,13 +196,10 @@ export default {
                 sortable: true,
                 value: 'codigo',
             },
-            { text: 'Descrição', value: 'descricao' },
+            { text: 'Identificação', value: 'identificacao' },
             { text: 'Responsável Novo', value: 'responsavelNovo' },
-            { text: 'Responsável Ant.', value: 'responsavelAnterior' },
-            { text: 'Setor Novo', value: 'setorNovo' },
-            { text: 'Setor Ant.', value: 'setorAnterior' },
-            { text: 'Detalhe Atual', value: 'detalheAtual' },
-            { text: 'Detalhe Ant.', value: 'detalheAnterior' },
+            { text: 'Setor Novo', value: 'setorAtual' },
+            { text: 'Detalhe Novo', value: 'detalheAtual' },
             { text: 'Data Mov.', value: 'dataMovimentacao' },
             { text: 'Ações', value: 'action', sortable: false },
         ],
@@ -284,7 +286,7 @@ export default {
                 if(response.data){
                     this.snackbar = true;
                     this.color = 'success';
-                    this.textoSnackbar = "Pessoa apagada com sucesso!";
+                    this.textoSnackbar = "Movimentação apagada com sucesso!";
                     this.initialize();
                 }else {
                     this.snackbar = true;
@@ -300,9 +302,6 @@ export default {
                 this.editedItem = Object.assign({}, this.defaultItem)
                 this.editedIndex = -1
             }, 300);
-        },
-        validaCampos() {
-            return  this.editedItem.abreviacao != '' && this.editedItem.descricao != '';
         },
         save () {
             if (this.editedIndex > -1) {
@@ -321,27 +320,24 @@ export default {
                     }
                 });
             } else {
-                if(this.validaCampos()){
-                    this.axios.post(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio', this.editedItem).then(response => {
-                        if(response.data.id){
-                            this.textoSnackbar = "Batalhão inserido com sucesso!";
-                            this.snackbar = true;
-                            this.color = 'success';
-                            this.initialize();
-                            this.close();
-                        }else {
-                            this.snackbar = true;
-                            this.color = 'error';
-                            this.textoSnackbar = "Ocorreu um erro ao cadastrar!";
-                            this.close();
-                        }
-                    });
-                }else {
-                    this.snackbar = true;
-                    this.color = 'error';
-                    this.textoSnackbar = "Existe campos vazios ou incorretos!";
-                    this.close();
-                }
+                this.editedItem.idResponsavelAnterior = 235;
+                this.editedItem.idSetorAnterior = 1;
+                this.editedItem.idSituacaoAnterior = 1;
+                this.editedItem.detalheAnterior = "anterior";
+                this.axios.post(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio', this.editedItem).then(response => {
+                    if(response.data.id){
+                        this.textoSnackbar = "Movimentação inserida com sucesso!";
+                        this.snackbar = true;
+                        this.color = 'success';
+                        this.initialize();
+                        this.close();
+                    }else {
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Ocorreu um erro ao cadastrar!";
+                        this.close();
+                    }
+                });
             }
         },
 

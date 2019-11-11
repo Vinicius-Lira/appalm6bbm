@@ -9,6 +9,70 @@
             'items-per-page-options': [8,10,12,14]
         }"
     >
+
+
+         <template v-slot:top>
+            <v-toolbar flat color="white">
+
+                <v-container>
+                    <v-row>
+                        <v-col cols="12" sm="12" md="5">
+                            <v-text-field
+                                v-model="search"
+                                append-icon="mdi-magnify"
+                                label="Buscar"
+                                single-line
+                                hide-details
+                                outlined
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                </v-container>
+
+                <div class="flex-grow-1"></div>
+
+                <nova-pessoa
+                    v-bind:dialogNovo="dialogNovo"
+                    v-bind:hierarquias="hierarquias"
+                    v-bind:obms="obms"
+                    v-bind:setores="setores"
+                    @close="closeNovo"
+                ></nova-pessoa>
+
+                <editar-pessoa
+                    v-bind:dialogEditar="dialogEditar"
+                    v-bind:hierarquias="hierarquias"
+                    v-bind:obms="obms"
+                    v-bind:setores="setores"
+                    v-bind:escalas="escalas"
+                    v-bind:pessoa="pessoa"
+                    @close="closeEditar"
+                ></editar-pessoa>
+
+                <v-dialog v-model="dialog" max-width="1000px">
+                    <template v-slot:activator="{ on }">
+                        <v-btn color="primary" class="mb-2" @click="nova"  >Nova</v-btn>
+                    </template>
+                </v-dialog>
+            </v-toolbar>
+        </template>
+
+        <template v-slot:item.action="{ item }">
+           <v-icon
+                small
+                class="mr-2"
+                @click="editarPessoa(item)"
+            >
+                mdi-pencil
+            </v-icon>
+            <v-icon
+                small
+                @click="deleteItem(item)"
+            >
+                mdi-delete
+            </v-icon>
+        </template>
+
         <template v-slot:no-data>
             <v-btn color="primary" @click="initialize">Reset</v-btn>
         </template>
@@ -22,25 +86,12 @@ export default {
     data: () => ({
         dialog: false,
         search: "",
-        estadosCivils: [
-            "SOLTEIRO",
-            "CASADO",
-            "DIVORCIADO"
-        ],
-        lts: [
-            {
-                text: "SIM",
-                value: 'true'
-            },
-            {
-                text: "NÃO",
-                value: 'false'
-            }
-        ],
         hierarquias: [],
         obms: [],
         setores: [],
         escalas: [],
+        dialogNovo: false,
+        dialogEditar: false,
         tipoPessoas: [
             {
                 tipo: "Administrador",
@@ -52,13 +103,6 @@ export default {
             }
         ],
         imgSrc: null,
-        textoSnackbar: "",
-        color: 'success',
-        mode: '',
-        snackbar: false,
-        timeout: 6000,
-        x: null,
-        y: 'top',
         rowsPerPageItems: [8, 12, 15],
         pagination: {
             rowsPerPage: 20
@@ -73,110 +117,86 @@ export default {
             { text: 'Matrícula', value: 'matricula' },
             { text: 'Hierarquia', value: 'hierarquia' },
             { text: 'OBM', value: 'obm' },
-            { text: 'Setor', value: 'setor' }
+            { text: 'Setor', value: 'setor' },
+            { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
-        editedItem: {
-            nome: "",
-            email: "",
-            matricula: "",
-            hierarquia: "",
-            obm: "",
-            setor: "",
-            idHierarquia: 0,
-            idBatalhao: 0,
-            idSetor: 0
-        },
-        defaultItem: {
-            nome: "",
-            email: "",
-            matricula: "",
-            hierarquia: "",
-            obm: "",
-            setor: "",
-            idHierarquia: 0,
-            idBatalhao: 0,
-            idSetor: 0
+        pessoa: {},
+        snackbar: {
+            text: "",
+            color: "",
+            state: false,
         },
     }),
-
     computed: {
         formTitle () {
             return this.editedIndex === -1 ? 'Nova Pessoa' : 'Editar Pessoa'
         }
     },
-
     watch: {
         dialog (val) {
             val || this.close()
         },
     },
-
     created () {
         this.initialize();
     },
     methods: {
+        nova() {
+            this.dialogNovo = true;
+        }, 
+        closeEditar() {
+            this.dialogEditar = false;
+            this.initialize();
+        },
+        closeNovo() {
+            this.dialogNovo = false;
+            this.initialize();
+        },
+        deleteItem (item) {
+            this.axios.delete(process.env.VUE_APP_URL_API + '/pessoa/' + item.id + "/delete").then(response => {
+                if(response.data){
+                    this.snackbar.color = 'success';
+                    this.snackbar.text = "Pessoa apagada com sucesso!";
+                    this.initialize();
+                }
+                if(!response.data) {
+                    this.snackbar.color = 'error';
+                    this.snackbar.text = "Ocorreu um erro ao tentar apagar o registro!";
+                }
+                this.snackbar.state = true;
+            });
+        },
+        editarPessoa(item) {
+            this.pessoa = Object.assign({}, item);
+            this.dialogEditar = true;
+        },
         initialize () {
             this.desserts = [];
 
-            this.axios.get('http://localhost:3000/hierarquia').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/hierarquia').then(response => {
                 this.hierarquias = response.data;
             });
 
-            this.axios.get('http://localhost:3000/batalhao').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/batalhao').then(response => {
                 this.obms = response.data;
             });
 
-            this.axios.get('http://localhost:3000/setor').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/setor').then(response => {
                 this.setores = response.data;
             });
 
-            this.axios.get('http://localhost:3000/pessoa').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/pessoa').then(response => {
                 this.desserts = response.data;
-
+                
                 var i = 0;
-                var x = 0;
-
-                for(i in this.desserts){
-                    this.desserts[i].tipoPessoa == true ? this.desserts[i].tipoPessoa = 'true' : this.desserts[i].tipoPessoa = 'false';
-                }
-
-                i = 0;
-                x = 0;
-
-                for(i in this.desserts){
-                    for(x in this.hierarquias){
-                        if(this.hierarquias[x].id == this.desserts[i].idHierarquia){
-                            this.desserts[i].hierarquia = this.hierarquias[x].hierarquia;
-                        }
-                    }
-                }
-
-                i = 0;
-                x = 0;
-
-                for(i in this.desserts){
-                    for(x in this.obms){
-                        if(this.obms[x].id == this.desserts[i].idBatalhao){
-                            this.desserts[i].obm = this.obms[x].abreviacao;
-                        }
-                    }
-                }
-
-                i = 0;
-                x = 0;
-
-                for(i in this.desserts){
-                    for(x in this.setores){
-                        if(this.setores[x].id == this.desserts[i].idSetor){
-                            this.desserts[i].setor = this.setores[x].setor;
-                        }
+                for(i in this.desserts) {
+                    if(this.desserts[i].dataNascimento) {
+                        this.desserts[i].dataNascimento = this.desserts[i].dataNascimento.toString().split('T')[0].split('-').reverse().join('/');
                     }
                 }
             });
-
-
         }
     }
 }

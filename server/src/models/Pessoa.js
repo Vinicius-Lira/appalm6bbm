@@ -67,7 +67,19 @@ const Pessoa = sequelize.define('pessoa', {
             },
             key: 'id'
         }
-    }
+    },
+    tipoPessoa: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
+    dataNascimento: {
+        type: Sequelize.DATE,
+        allowNull: false
+    },
+    sexo: {
+        type: Sequelize.STRING(10),
+        allowNull: false
+    },
 },
 {
   charset: 'utf8',

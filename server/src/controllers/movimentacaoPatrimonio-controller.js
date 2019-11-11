@@ -1,6 +1,9 @@
 'use strict';
 const Helpers = require("./../../helpers/helpers");
 const MovimentacaoPatrimonio = require('./../models/MovimentacaoPatrimonio');
+const Patrimonio = require('./../models/Patrimonio');
+const Pessoa = require('./../models/Pessoa');
+const Setor = require('./../models/Setor');
 
 exports.get = (req, res, next) => {
     const id = req.params.id;
@@ -21,7 +24,60 @@ exports.get = (req, res, next) => {
 
 exports.getAll = (req, res, next) => {
     MovimentacaoPatrimonio.findAll().then(response => {
-        res.status(200).json(JSON.parse(JSON.stringify(response)));
+        var movimentacoes = JSON.parse(JSON.stringify(response));
+        Patrimonio.findAll().then(response => {
+            const patrimonios = response;
+            Pessoa.findAll().then(response => {
+                const pessoas = response;
+                Setor.findAll().then(response => {
+                    const setores = response;
+
+                    for(var i in movimentacoes) {
+                        var k = 0;
+                        for(k in patrimonios){
+                            if(movimentacoes[i].idPatrimonio === patrimonios[k].id) {
+                                movimentacoes[i].codigo = patrimonios[k].codigo;
+                                movimentacoes[i].identificacao = patrimonios[k].identificacao;
+                                break;
+                            }
+                        }
+                        k = 0;
+                        for(k in pessoas) {
+                            if(movimentacoes[i].idResponsavelAtual === pessoas[k].id){
+                                movimentacoes[i].responsavelNovo = pessoas[k].nome;
+                                break;
+                            }
+                        }
+                        k = 0;
+                        for(k in pessoas) {
+                            if(movimentacoes[i].idResponsavelAnterior === pessoas[k].id){
+                                movimentacoes[i].responsavelAnterior = pessoas[k].nome;
+                                break;
+                            }
+                        }
+                        k = 0;
+                        for(k in setores) {
+                            if(movimentacoes[i].idSetorAnterior === setores[k].id){
+                                movimentacoes[i].setorAnterior = setores[k].setor;
+                                break;
+                            }
+                        }
+                        k = 0;
+                        for(k in setores) {
+                            if(movimentacoes[i].idSetorAtual === setores[k].id){
+                                movimentacoes[i].setorAtual = setores[k].setor;
+                                break;
+                            }
+                        }
+                        movimentacoes[i].dataMovimentacao = movimentacoes[i].dataMovimentacao.split('T')[0].split('-').reverse().join('/');
+                    }
+                    
+                    res.status(200).json(movimentacoes);
+                });
+            });
+        });
+        
+        
     });
 }
 
@@ -50,7 +106,7 @@ exports.post = (req, res, next) => {
         dataMovimentacao: dataMovimentacao,
         createdAt: Helpers.getDataHoraAtual()
     };
-
+    console.log(data);
     MovimentacaoPatrimonio.create(data).then(response => {
         res.status(200).json(response);
     });

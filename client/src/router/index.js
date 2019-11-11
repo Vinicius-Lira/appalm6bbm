@@ -43,7 +43,7 @@ async function validAuth(){
        var dataToken = {
            token: localStorage.getItem("tokenlogin")
        }
-       let res = await axios.post("http://localhost:3000/login/validToken", dataToken);
+       let res = await axios.post(process.env.VUE_APP_URL_API + "/login/validToken", dataToken);
 
        return res;
    }
@@ -72,8 +72,6 @@ router.beforeEach((to, from, next) => {
 
        next();
    });
-
-
 });
 
 Vue.use(Meta)
