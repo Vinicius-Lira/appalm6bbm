@@ -136,11 +136,6 @@
             ],
             sexos: [ "FEMININO", "MASCULINO" ],
         }),
-        watch: {
-            dialogNovo(val) {
-                console.log(val);
-            }
-        },
         computed: {
             dialog: {
                 get() {

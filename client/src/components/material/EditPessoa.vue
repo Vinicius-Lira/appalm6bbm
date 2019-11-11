@@ -176,7 +176,6 @@
             },
             save () {
                 if(this.validaCampos()){
-                    console.log(this.pessoa);
                     this.axios.put(process.env.VUE_APP_URL_API + '/pessoa', this.pessoa).then(response => {
                         if(response.data){
                             this.snackbar.color = 'success';
