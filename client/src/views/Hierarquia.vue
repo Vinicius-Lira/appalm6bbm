@@ -57,7 +57,7 @@
                 <v-dialog v-model="dialog" max-width="1000px">
 
                     <template v-slot:activator="{ on }">
-                        <v-btn color="primary" class="mb-2"  v-on="on">Nova</v-btn>
+                        <v-btn color="primary" class="mb-2"  @click="novo">Nova</v-btn>
                     </template>
 
                     <v-card>
@@ -178,31 +178,88 @@ export default {
         this.initialize()
     },
     methods: {
+        novo() {
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.cadastrar) {
+                            this.dialog = true;
+                        }
+                        if(!response.data.cadastrar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para cadastrar!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }
+        },
         initialize () {
-            this.axios.get('http://localhost:3000/hierarquia').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/hierarquia').then(response => {
                 this.desserts = response.data;
             });
         },
 
         editItem (item) {
-            this.editedIndex = this.desserts.indexOf(item);
-            this.editedItem = Object.assign({}, item);
-            this.dialog = true;
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.cadastrar) {
+                            this.editedIndex = this.desserts.indexOf(item);
+                            this.editedItem = Object.assign({}, item);
+                            this.dialog = true;
+                        }
+                        if(!response.data.cadastrar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para editar!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }
         },
 
         deleteItem (item) {
-            this.axios.delete('http://localhost:3000/hierarquia/' + item.id + "/delete").then(response => {
-                if(response.data){
-                    this.snackbar = true;
-                    this.color = 'success';
-                    this.textoSnackbar = "Hierarquia apagada com sucesso!";
-                    this.initialize();
-                }else {
-                    this.snackbar = true;
-                    this.color = 'error';
-                    this.textoSnackbar = "Ocorreu um erro ao tentar apagar o registro!";
-                }
-            });
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.cadastrar) {
+                            this.axios.delete(process.env.VUE_APP_URL_API + '/hierarquia/' + item.id + "/delete").then(response => {
+                                if(response.data){
+                                    this.snackbar = true;
+                                    this.color = 'success';
+                                    this.textoSnackbar = "Hierarquia apagada com sucesso!";
+                                    this.initialize();
+                                }else {
+                                    this.snackbar = true;
+                                    this.color = 'error';
+                                    this.textoSnackbar = "Ocorreu um erro ao tentar apagar o registro!";
+                                }
+                            });
+                        }
+                        if(!response.data.cadastrar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para apagar!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }
         },
 
         close () {
@@ -217,7 +274,7 @@ export default {
         },
         save () {
             if (this.editedIndex > -1) {
-                this.axios.put('http://localhost:3000/hierarquia', this.editedItem).then(response => {
+                this.axios.put(process.env.VUE_APP_URL_API + '/hierarquia', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -233,7 +290,7 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post('http://localhost:3000/hierarquia', this.editedItem).then(response => {
+                    this.axios.post(process.env.VUE_APP_URL_API + '/hierarquia', this.editedItem).then(response => {
                         if(response.data.id){
                             this.textoSnackbar = "Hierarquia inserido com sucesso!";
                             this.snackbar = true;

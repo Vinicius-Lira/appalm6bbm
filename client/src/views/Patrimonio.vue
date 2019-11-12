@@ -8,11 +8,12 @@
             'items-per-page-options': [8,10,12,14]
         }"
     >
-
+        
         <template v-slot:top>
             <v-toolbar flat color="white">
-
+                
                 <v-container>
+                    
                     <v-row>
                         <v-col cols="12" sm="12" md="5">
                             <v-text-field
@@ -57,7 +58,7 @@
                 <v-dialog v-model="dialog" max-width="1000px">
 
                     <template v-slot:activator="{ on }">
-                        <v-btn color="primary" class="mb-2"  v-on="on">Novo</v-btn>
+                        <v-btn color="primary" class="mb-2"  @click="novo">Novo</v-btn>
                     </template>
 
                     <v-card>
@@ -409,6 +410,27 @@ export default {
         this.initialize()
     },
     methods: {
+        novo() {
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.patrimonioCadastrar) {
+                            this.dialog = true;
+                        }
+                        if(!response.data.patrimonioCadastrar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para adicionar patrimônios!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }
+        },
         initialize () {
 
             this.responsaveis = [];
@@ -439,24 +461,59 @@ export default {
         },
 
         editItem (item) {
-            this.editedIndex = this.desserts.indexOf(item);
-            this.editedItem = Object.assign({}, item);
-            this.dialog = true;
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.patrimonioCadastrar) {
+                            this.editedIndex = this.desserts.indexOf(item);
+                            this.editedItem = Object.assign({}, item);
+                            this.dialog = true;
+                        }
+                        if(!response.data.patrimonioCadastrar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para editar patrimônios!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }  
         },
-
         deleteItem (item) {
-            this.axios.delete(process.env.VUE_APP_URL_API + '/patrimonio/' + item.id + "/delete").then(response => {
-                if(response.data){
-                    this.snackbar = true;
-                    this.color = 'success';
-                    this.textoSnackbar = "Registro apagada com sucesso!";
-                    this.initialize();
-                }else {
-                    this.snackbar = true;
-                    this.color = 'error';
-                    this.textoSnackbar = "Ocorreu um erro ao tentar apagar o registro!";
-                }
-            });
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.patrimonioCadastrar) {
+                            this.axios.delete(process.env.VUE_APP_URL_API + '/patrimonio/' + item.id + "/delete").then(response => {
+                                if(response.data){
+                                    this.snackbar = true;
+                                    this.color = 'success';
+                                    this.textoSnackbar = "Registro apagada com sucesso!";
+                                    this.initialize();
+                                }else {
+                                    this.snackbar = true;
+                                    this.color = 'error';
+                                    this.textoSnackbar = "Ocorreu um erro ao tentar apagar o registro!";
+                                }
+                            });
+                        }
+                        if(!response.data.patrimonioCadastrar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para apagar patrimônios!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }  
         },
 
         close () {

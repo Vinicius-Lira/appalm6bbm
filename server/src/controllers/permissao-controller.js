@@ -1,27 +1,29 @@
 'use strict';
 const Helpers = require("./../../helpers/helpers");
 const Permissao = require('./../models/Permissao');
+const Pessoa = require('./../models/Pessoa');
 
 exports.get = (req, res, next) => {
-    const id = req.params.id;
+    const usuario = req.params.usuario;
     Permissao.findAll().then(response => {
-        var find = [];
-        var data = JSON.parse(JSON.stringify(response));
-        for(var i = 0; i < data.length; i++){
-            if(data[i].id == id) {
-                find = data[i] ;
-                break;
+        var permissoes = JSON.parse(JSON.stringify(response));
+        Pessoa.findAll().then(response => {
+            var pessoas = JSON.parse(JSON.stringify(response));
+            var countPessoa = 0;
+            var resposta = null;
+            for(countPessoa in pessoas) {
+                if(pessoas[countPessoa].usuario.localeCompare(usuario) == 0) {
+                    for(var i = 0; i < permissoes.length; i++){
+                        if(permissoes[i].idResponsavel == pessoas[countPessoa].id) {
+                            resposta = permissoes[i];
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
-        }
-
-        res.status(200).json(find);
-    });
-
-}
-
-exports.getAll = (req, res, next) => {
-    Permissao.findAll().then(response => {
-        res.status(200).json(JSON.parse(JSON.stringify(response)));
+            res.status(200).json(resposta);
+        });
     });
 }
 

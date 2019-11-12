@@ -152,7 +152,7 @@ export default {
                             if(this.login.lembrar) {
                                 localStorage.setItem("usuario", this.login.usuario);
                             }
-                            window.location.replace(process.env.VUE_APP_UR);
+                            window.location.replace(process.env.VUE_APP_URL_HOME);
                         }else {
                             this.mensagem = "Seu navegador não é compatível com o sitema!";
                             this.erroLogin = true;

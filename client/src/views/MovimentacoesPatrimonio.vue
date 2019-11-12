@@ -57,7 +57,7 @@
                 <v-dialog v-model="dialog" max-width="1000px">
 
                     <template v-slot:activator="{ on }">
-                        <v-btn color="primary" class="mb-2"  v-on="on">Novo</v-btn>
+                        <v-btn color="primary" class="mb-2"  @click="novo">Novo</v-btn>
                     </template>
 
                     <v-card>
@@ -253,6 +253,27 @@ export default {
         this.initialize()
     },
     methods: {
+        novo() {
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.patrimonioMovimentar) {
+                            this.dialog = true;
+                        }
+                        if(!response.data.patrimonioMovimentar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para movimentar patrimônios!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }
+        },
         initialize () {
             this.axios.get(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio').then(response => {
                 this.desserts = response.data;
@@ -276,24 +297,60 @@ export default {
         },
 
         editItem (item) {
-            this.editedIndex = this.desserts.indexOf(item);
-            this.editedItem = Object.assign({}, item);
-            this.dialog = true;
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.patrimonioMovimentar) {
+                            this.editedIndex = this.desserts.indexOf(item);
+                            this.editedItem = Object.assign({}, item);
+                            this.dialog = true;
+                        }
+                        if(!response.data.patrimonioMovimentar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para editar movimentações de patrimônios!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }
         },
-
         deleteItem (item) {
-            this.axios.delete(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio/' + item.id + "/delete").then(response => {
-                if(response.data){
-                    this.snackbar = true;
-                    this.color = 'success';
-                    this.textoSnackbar = "Movimentação apagada com sucesso!";
-                    this.initialize();
-                }else {
-                    this.snackbar = true;
-                    this.color = 'error';
-                    this.textoSnackbar = "Ocorreu um erro ao tentar apagar o registro!";
-                }
-            });
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.patrimonioMovimentar) {
+                            this.axios.delete(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio/' + item.id + "/delete").then(response => {
+                                if(response.data){
+                                    this.snackbar = true;
+                                    this.color = 'success';
+                                    this.textoSnackbar = "Movimentação apagada com sucesso!";
+                                    this.initialize();
+                                }else {
+                                    this.snackbar = true;
+                                    this.color = 'error';
+                                    this.textoSnackbar = "Ocorreu um erro ao tentar apagar o registro!";
+                                }
+                            });
+                        }
+                        if(!response.data.patrimonioMovimentar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para apagar movimentações de patrimônios!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }
+            
         },
 
         close () {

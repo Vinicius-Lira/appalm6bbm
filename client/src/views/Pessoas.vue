@@ -144,7 +144,25 @@ export default {
     },
     methods: {
         nova() {
-            this.dialogNovo = true;
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.cadastrar) {
+                            this.dialogNovo = true;
+                        }
+                        if(!response.data.cadastrar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para cadastrar!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }
         }, 
         closeEditar() {
             this.dialogEditar = false;
@@ -155,22 +173,58 @@ export default {
             this.initialize();
         },
         deleteItem (item) {
-            this.axios.delete(process.env.VUE_APP_URL_API + '/pessoa/' + item.id + "/delete").then(response => {
-                if(response.data){
-                    this.snackbar.color = 'success';
-                    this.snackbar.text = "Pessoa apagada com sucesso!";
-                    this.initialize();
-                }
-                if(!response.data) {
-                    this.snackbar.color = 'error';
-                    this.snackbar.text = "Ocorreu um erro ao tentar apagar o registro!";
-                }
-                this.snackbar.state = true;
-            });
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.cadastrar) {
+                            this.axios.delete(process.env.VUE_APP_URL_API + '/pessoa/' + item.id + "/delete").then(response => {
+                                if(response.data){
+                                    this.snackbar.color = 'success';
+                                    this.snackbar.text = "Pessoa apagada com sucesso!";
+                                    this.initialize();
+                                }
+                                if(!response.data) {
+                                    this.snackbar.color = 'error';
+                                    this.snackbar.text = "Ocorreu um erro ao tentar apagar o registro!";
+                                }
+                                this.snackbar.state = true;
+                            });
+                        }
+                        if(!response.data.cadastrar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para apagar!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }
         },
         editarPessoa(item) {
-            this.pessoa = Object.assign({}, item);
-            this.dialogEditar = true;
+            if(localStorage.getItem("usuario")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                    if(response.data) {
+                        if(response.data.cadastrar) {
+                            this.pessoa = Object.assign({}, item);
+                            this.dialogEditar = true;
+                        }
+                        if(!response.data.cadastrar) {
+                            this.snackbar = true;
+                            this.color = 'error';
+                            this.textoSnackbar = "Você não tem permissão para editar!";
+                        }
+                    }
+                    if(!response.data){
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
+                    }
+                });    
+            }
         },
         initialize () {
             this.desserts = [];
