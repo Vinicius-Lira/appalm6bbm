@@ -264,12 +264,12 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.patrimonioDescarregar) {
+                        if(response.data.patrimonioDescarregarEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
                             this.editedItem = Object.assign({}, item);
                             this.dialog = true;
                         }
-                        if(!response.data.patrimonioDescarregar) {
+                        if(!response.data.patrimonioDescarregarEditar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para editar baixas de patrimônios!";
@@ -287,7 +287,7 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.patrimonioDescarregar) {
+                        if(response.data.patrimonioDescarregarApagar) {
                              this.axios.delete(process.env.VUE_APP_URL_API + '/descargaPatrimonio/' + item.id + "/delete").then(response => {
                                 if(response.data){
                                     this.snackbar = true;
@@ -301,7 +301,7 @@ export default {
                                 }
                             });
                         }
-                        if(!response.data.patrimonioDescarregar) {
+                        if(!response.data.patrimonioDescarregarApagar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para apagar baixas de patrimônios!";

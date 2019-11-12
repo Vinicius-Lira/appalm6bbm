@@ -115,16 +115,6 @@
                                             outlined
                                         ></v-select>
                                     </v-col>
-
-                                    <v-col cols="12" sm="12" md="4">
-                                        <v-text-field 
-                                            v-model=" editedItem.detalheAtual"
-                                            label="Detalhe"
-                                            outlined                                       
-                                        >
-                                        </v-text-field>
-                                    </v-col>
-
                                     <v-col cols="12" sm="12" md="4">
                                         <v-text-field
                                             v-model="editedItem.dataMovimentacao"
@@ -199,7 +189,6 @@ export default {
             { text: 'Identificação', value: 'identificacao' },
             { text: 'Responsável Novo', value: 'responsavelNovo' },
             { text: 'Setor Novo', value: 'setorAtual' },
-            { text: 'Detalhe Novo', value: 'detalheAtual' },
             { text: 'Data Mov.', value: 'dataMovimentacao' },
             { text: 'Ações', value: 'action', sortable: false },
         ],
@@ -213,8 +202,6 @@ export default {
             idSetorAtual: "",
             idSituacaoAnterior: "",
             idSituacaoAtual: "",
-            detalheAnterior: "",
-            detalheAtual: "",
             dataMovimentacao: "",
             createdAt: "",
             updatedAt: ""
@@ -227,8 +214,6 @@ export default {
             idSetorAtual: "",
             idSituacaoAnterior: "",
             idSituacaoAtual: "",
-            detalheAnterior: "",
-            detalheAtual: "",
             dataMovimentacao: "",
             createdAt: "",
             updatedAt: ""
@@ -300,12 +285,12 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.patrimonioMovimentar) {
+                        if(response.data.patrimonioMovimentarEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
                             this.editedItem = Object.assign({}, item);
                             this.dialog = true;
                         }
-                        if(!response.data.patrimonioMovimentar) {
+                        if(!response.data.patrimonioMovimentarEditar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para editar movimentações de patrimônios!";
@@ -323,7 +308,7 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.patrimonioMovimentar) {
+                        if(response.data.patrimonioMovimentarApagar) {
                             this.axios.delete(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio/' + item.id + "/delete").then(response => {
                                 if(response.data){
                                     this.snackbar = true;
@@ -337,7 +322,7 @@ export default {
                                 }
                             });
                         }
-                        if(!response.data.patrimonioMovimentar) {
+                        if(!response.data.patrimonioMovimentarApagar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para apagar movimentações de patrimônios!";
@@ -377,10 +362,6 @@ export default {
                     }
                 });
             } else {
-                this.editedItem.idResponsavelAnterior = 235;
-                this.editedItem.idSetorAnterior = 1;
-                this.editedItem.idSituacaoAnterior = 1;
-                this.editedItem.detalheAnterior = "anterior";
                 this.axios.post(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio', this.editedItem).then(response => {
                     if(response.data.id){
                         this.textoSnackbar = "Movimentação inserida com sucesso!";

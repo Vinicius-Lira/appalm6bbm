@@ -88,14 +88,6 @@ const MovimentacaoPatrimonio = sequelize.define('movimentacaopatrimonio', {
             key: 'id'
         }
     },
-    detalheAnterior: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    detalheAtual: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
     dataMovimentacao: {
         type: Sequelize.DATE,
         allowNull: false

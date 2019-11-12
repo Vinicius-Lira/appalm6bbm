@@ -464,12 +464,12 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.patrimonioCadastrar) {
+                        if(response.data.patrimonioEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
                             this.editedItem = Object.assign({}, item);
                             this.dialog = true;
                         }
-                        if(!response.data.patrimonioCadastrar) {
+                        if(!response.data.patrimonioEditar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para editar patrimônios!";
@@ -487,7 +487,7 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.patrimonioCadastrar) {
+                        if(response.data.patrimonioApagar) {
                             this.axios.delete(process.env.VUE_APP_URL_API + '/patrimonio/' + item.id + "/delete").then(response => {
                                 if(response.data){
                                     this.snackbar = true;
@@ -501,7 +501,7 @@ export default {
                                 }
                             });
                         }
-                        if(!response.data.patrimonioCadastrar) {
+                        if(!response.data.patrimonioApagar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para apagar patrimônios!";

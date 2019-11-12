@@ -89,8 +89,6 @@ exports.post = (req, res, next) => {
     var idSetorAtual = req.body.idSetorAtual;
     var idSituacaoAnterior = req.body.idSituacaoAnterior;
     var idSituacaoAtual = req.body.idSituacaoAtual;
-    var detalheAnterior = req.body.detalheAnterior;
-    var detalheAtual = req.body.detalheAtual;
     var dataMovimentacao = req.body.dataMovimentacao;
 
     var data = {
@@ -101,17 +99,43 @@ exports.post = (req, res, next) => {
         idSetorAtual: idSetorAtual,
         idSituacaoAnterior: idSituacaoAnterior,
         idSituacaoAtual: idSituacaoAtual,
-        detalheAnterior: detalheAnterior,
-        detalheAtual: detalheAtual,
         dataMovimentacao: dataMovimentacao,
         createdAt: Helpers.getDataHoraAtual()
     };
-    console.log(data);
-    MovimentacaoPatrimonio.create(data).then(response => {
-        res.status(200).json(response);
-    });
-}
 
+    Patrimonio.findAll().then(response => {
+        const patrimonios = JSON.parse(JSON.stringify(response));
+        var counter = 0;
+        var patrimonioMovimentado  = {};
+        for(counter in patrimonios) {
+            if(patrimonios[counter].id === data.idPatrimonio) {
+                patrimonioMovimentado = patrimonios[counter];
+                data.idResponsavelAnterior = patrimonios[counter].idResponsavel;
+                data.idSetorAnterior = patrimonios[counter].idSetor;
+                data.idSituacaoAnterior = patrimonios[counter].idSituacao;
+
+                patrimonioMovimentado.idResponsavel = data.idResponsavelAtual;
+                patrimonioMovimentado.idSetor = data.idSetorAtual;
+                patrimonioMovimentado.idSituacao = data.idSituacaoAtual;
+            }
+        }
+        Patrimonio.update(patrimonioMovimentado, {
+            where: {
+                id: patrimonioMovimentado.id
+            }
+        }).then(response => {
+            if(response) {
+                MovimentacaoPatrimonio.create(data).then(response => {
+                    res.status(200).json(response);
+                });
+            }
+
+            if(!response) {
+                res.status(200).json(false);
+            }
+        }); 
+    });   
+}
 
 exports.update = (req, res, next) => {
     var id = req.body.id;
@@ -122,8 +146,6 @@ exports.update = (req, res, next) => {
     var idSetorAtual = req.body.idSetorAtual;
     var idSituacaoAnterior = req.body.idSituacaoAnterior;
     var idSituacaoAtual = req.body.idSituacaoAtual;
-    var detalheAnterior = req.body.detalheAnterior;
-    var detalheAtual = req.body.detalheAtual;
     var dataMovimentacao = req.body.dataMovimentacao;
 
     var data = {
@@ -134,8 +156,6 @@ exports.update = (req, res, next) => {
         idSetorAtual: idSetorAtual,
         idSituacaoAnterior: idSituacaoAnterior,
         idSituacaoAtual: idSituacaoAtual,
-        detalheAnterior: detalheAnterior,
-        detalheAtual: detalheAtual,
         dataMovimentacao: dataMovimentacao,
     };
 

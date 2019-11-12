@@ -27,21 +27,50 @@ exports.get = (req, res, next) => {
     });
 }
 
+exports.getById = (req, res, next) => {
+    const idResponsavel = req.params.idResponsavel;
+    Permissao.findAll().then(response => {
+        var permissoes = JSON.parse(JSON.stringify(response));
+        var counter = 0;
+
+        for(counter in permissoes) {
+            if(permissoes[counter].idResponsavel == idResponsavel) {
+                res.status(200).json(permissoes[counter]);
+                break;
+            }
+        }
+    });
+}
+
 exports.post = (req, res, next) => {
     var idResponsavel = req.body.idResponsavel;
-    var cadastrar = req.body.cadastrar;
+    var cadastrosCadastrar = req.body.cadastrosCadastrar;
+    var cadastrosEditar = req.body.cadastrosEditar;
+    var cadastrosApagar = req.body.cadastrosApagar;
     var patrimonioCadastrar = req.body.patrimonioCadastrar;
     var patrimonioEditar = req.body.patrimonioEditar;
+    var patrimonioApagar = req.body.patrimonioApagar;
     var patrimonioMovimentar = req.body.patrimonioMovimentar;
+    var patrimonioMovimentarEditar = req.body.patrimonioMovimentarEditar;
+    var patrimonioMovimentarApagar = req.body.patrimonioMovimentarApagar;
     var patrimonioDescarregar = req.body.patrimonioDescarregar;
+    var patrimonioDescarregarEditar = req.body.patrimonioDescarregarEditar;
+    var patrimonioDescarregarApagar = req.body.patrimonioDescarregarApagar;
 
     var data = {
         idResponsavel: idResponsavel,
-        cadastrar: cadastrar,
+        cadastrosCadastrar: cadastrosCadastrar,
+        cadastrosEditar: cadastrosEditar,
+        cadastrosApagar: cadastrosApagar,
         patrimonioCadastrar: patrimonioCadastrar,
         patrimonioEditar: patrimonioEditar,
+        patrimonioApagar: patrimonioApagar,
         patrimonioMovimentar: patrimonioMovimentar,
+        patrimonioMovimentarEditar: patrimonioMovimentarEditar,
+        patrimonioMovimentarApagar: patrimonioMovimentarApagar,
         patrimonioDescarregar: patrimonioDescarregar,
+        patrimonioDescarregarEditar: patrimonioDescarregarEditar,
+        patrimonioDescarregarApagar: patrimonioDescarregarApagar,
         createdAt: Helpers.getDataHoraAtual()
     };
 
@@ -54,19 +83,34 @@ exports.post = (req, res, next) => {
 exports.update = (req, res, next) => {
     var id = req.body.id;
     var idResponsavel = req.body.idResponsavel;
-    var cadastrar = req.body.cadastrar;
+    var cadastrosCadastrar = req.body.cadastrosCadastrar;
+    var cadastrosEditar = req.body.cadastrosEditar;
+    var cadastrosApagar = req.body.cadastrosApagar;
     var patrimonioCadastrar = req.body.patrimonioCadastrar;
     var patrimonioEditar = req.body.patrimonioEditar;
+    var patrimonioApagar = req.body.patrimonioApagar;
     var patrimonioMovimentar = req.body.patrimonioMovimentar;
+    var patrimonioMovimentarEditar = req.body.patrimonioMovimentarEditar;
+    var patrimonioMovimentarApagar = req.body.patrimonioMovimentarApagar;
     var patrimonioDescarregar = req.body.patrimonioDescarregar;
+    var patrimonioDescarregarEditar = req.body.patrimonioDescarregarEditar;
+    var patrimonioDescarregarApagar = req.body.patrimonioDescarregarApagar;
 
     var data = {
         idResponsavel: idResponsavel,
-        cadastrar: cadastrar,
+        cadastrosCadastrar: cadastrosCadastrar,
+        cadastrosEditar: cadastrosEditar,
+        cadastrosApagar: cadastrosApagar,
         patrimonioCadastrar: patrimonioCadastrar,
         patrimonioEditar: patrimonioEditar,
+        patrimonioApagar: patrimonioApagar,
         patrimonioMovimentar: patrimonioMovimentar,
-        patrimonioDescarregar: patrimonioDescarregar
+        patrimonioMovimentarEditar: patrimonioMovimentarEditar,
+        patrimonioMovimentarApagar: patrimonioMovimentarApagar,
+        patrimonioDescarregar: patrimonioDescarregar,
+        patrimonioDescarregarEditar: patrimonioDescarregarEditar,
+        patrimonioDescarregarApagar: patrimonioDescarregarApagar,
+        createdAt: Helpers.getDataHoraAtual()
     };
 
     Permissao.update(data, {
@@ -74,7 +118,7 @@ exports.update = (req, res, next) => {
             id: id
         }
     }).then(response => {
-        res.status(200).json(response);
+        res.status(200).json(response.data);
     });
 }
 

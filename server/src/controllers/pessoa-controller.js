@@ -5,6 +5,7 @@ const Pessoa = require('./../models/Pessoa');
 const Hierarquia = require('./../models/Hierarquia');
 const Obm = require('./../models/Obm');
 const Setor = require('./../models/Setor');
+const Permissao = require('./../models/Permissao');
 
 
 exports.get = (req, res, next) => {
@@ -61,8 +62,6 @@ exports.getAll = (req, res, next) => {
                             }
                         }
                         x = 0;
-                        // pessoas[i].dataNascimento = Helpers.formatDate(pessoas[i].dataNascimento);
-                        // console.log(pessoas[i].dataNascimento);
                     }
                     
                     res.status(200).json(pessoas);
@@ -100,7 +99,28 @@ exports.post = (req, res, next) => {
     };
 
     Pessoa.create(data).then(response => {
-        res.status(200).json(response);
+        var pessoa = JSON.parse(JSON.stringify(response));
+        if(response) {
+            var data = {
+                idResponsavel: pessoa.id,
+                cadastrosCadastrar: false,
+                cadastrosEditar: false,
+                cadastrosApagar: false,
+                patrimonioCadastrar: false,
+                patrimonioEditar: false,
+                patrimonioApagar: false,
+                patrimonioMovimentar: false,
+                patrimonioMovimentarEditar: false,
+                patrimonioMovimentarApagar: false,
+                patrimonioDescarregar: false,
+                patrimonioDescarregarEditar: false,
+                patrimonioDescarregarApagar: false,
+                createdAt: Helpers.getDataHoraAtual()
+            };
+            Permissao.create(data).then(response => {
+                res.status(200).json(response);
+            });
+        }
     });
 }
 

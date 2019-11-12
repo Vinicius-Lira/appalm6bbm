@@ -103,6 +103,14 @@
                             ></v-select>
                         </v-col>
                     </v-row>
+
+                    <v-row>
+                        <v-col cols="12" sm="12" md="12">
+                            <permissoes-pessoa
+                                v-bind:idResponsavel="pessoa.id"
+                            ></permissoes-pessoa>
+                        </v-col>
+                    </v-row>
                 </v-container>
             </v-card-text>
 
@@ -131,7 +139,8 @@
                 color: "",
                 text: "",
                 state: false,
-            }
+            },
+            idPessoa: null,
         }),
         computed: {
             dialog: {
@@ -150,6 +159,11 @@
             obms: Array,
             setores: Array,
             escalas: Array
+        },
+        watch: {
+            pessoa(val) {
+                this.idPessoa = val.id;
+            }
         },
         methods: {
             close(){

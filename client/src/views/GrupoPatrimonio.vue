@@ -172,10 +172,10 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.cadastrar) {
+                        if(response.data.cadastrosCadastrar) {
                             this.dialog = true;
                         }
-                        if(!response.data.cadastrar) {
+                        if(!response.data.cadastrosCadastrar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para cadastrar!";
@@ -198,12 +198,12 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.cadastrar) {
+                        if(response.data.cadastrosEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
                             this.editedItem = Object.assign({}, item);
                             this.dialog = true;
                         }
-                        if(!response.data.cadastrar) {
+                        if(!response.data.cadastrosEditar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para editar!";
@@ -221,7 +221,7 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.cadastrar) {
+                        if(response.data.cadastrosApagar) {
                             this.axios.delete(process.env.VUE_APP_URL_API + '/grupoPatrimonio/' + item.id + "/delete").then(response => {
                                 if(response.data){
                                     this.snackbar = true;
@@ -235,7 +235,7 @@ export default {
                                 }
                             });
                         }
-                        if(!response.data.cadastrar) {
+                        if(!response.data.cadastrosApagar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para apagar!";

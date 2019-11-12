@@ -33,6 +33,15 @@ app.use(function(req, res, next) {
     next();
  });
 
+var redirectHome = function (req, res, next) {
+    if(req.originalUrl.indexOf("/api/") < 0) {
+        res.redirect('/');
+    }
+
+    next();
+}
+
+app.use(redirectHome);
 
 app.use('/', index);
 app.use('/api/batalhao', batalhao);

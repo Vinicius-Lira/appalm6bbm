@@ -50,28 +50,39 @@ async function validAuth(){
 }
 
 router.beforeEach((to, from, next) => {
+    
+    validAuth().then(response => {
+        var res = response.data;
+        
+        if(to.path != '/login'){
+            if (!res) {
+                if(localStorage.getItem("tokenlogin")){
+                    localStorage.removeItem("tokenlogin");
+                }
+                return next({
+                    path: '/login'
+                });
+            }
 
-   validAuth().then(response => {
-       var res = response.data;
-       if(to.path != '/login'){
-           if (!res) {
-               if(localStorage.getItem("tokenlogin")){
-                   localStorage.removeItem("tokenlogin");
-               }
-               return next({
-                   path: '/login'
-               });
-           }
-       }
+            if(res && to.path == '/'){
+                if(localStorage.getItem("route")){
+                    var route = localStorage.getItem("route");
+                    localStorage.removeItem("route");
+                    return next({
+                        path: route
+                    });
+                }
+            }
+        }
 
-       if(res && to.path == '/login'){
-           return next({
-               path: '/'
-           });
-       }
-
-       next();
-   });
+        if(res && to.path == '/login'){
+            return next({
+                path: '/'
+            });
+        }
+        localStorage.setItem("route", to.path);
+        next();
+    });
 });
 
 Vue.use(Meta)

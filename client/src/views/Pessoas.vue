@@ -147,10 +147,10 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.cadastrar) {
+                        if(response.data.cadastrosCadastrar) {
                             this.dialogNovo = true;
                         }
-                        if(!response.data.cadastrar) {
+                        if(!response.data.cadastrosCadastrar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para cadastrar!";
@@ -176,7 +176,7 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.cadastrar) {
+                        if(response.data.cadastrosApagar) {
                             this.axios.delete(process.env.VUE_APP_URL_API + '/pessoa/' + item.id + "/delete").then(response => {
                                 if(response.data){
                                     this.snackbar.color = 'success';
@@ -190,7 +190,7 @@ export default {
                                 this.snackbar.state = true;
                             });
                         }
-                        if(!response.data.cadastrar) {
+                        if(!response.data.cadastrosApagar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para apagar!";
@@ -208,11 +208,11 @@ export default {
             if(localStorage.getItem("usuario")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
-                        if(response.data.cadastrar) {
+                        if(response.data.cadastrosEditar) {
                             this.pessoa = Object.assign({}, item);
                             this.dialogEditar = true;
                         }
-                        if(!response.data.cadastrar) {
+                        if(!response.data.cadastrosEditar) {
                             this.snackbar = true;
                             this.color = 'error';
                             this.textoSnackbar = "Você não tem permissão para editar!";

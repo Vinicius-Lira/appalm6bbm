@@ -9,9 +9,11 @@ import Snackbar from '@/components/helper/Snackbar';
 
 import NovaPessoa from '@/components/material/NovaPessoa';
 import EditPessoa from '@/components/material/EditPessoa';
+import PermissoesPessoa from '@/components/material/PermissoesPessoa';
 
 Vue.component('snackbar', Snackbar);
 
+Vue.component('permissoes-pessoa', PermissoesPessoa);
 Vue.component('nova-pessoa', NovaPessoa);
 Vue.component('editar-pessoa', EditPessoa);
 

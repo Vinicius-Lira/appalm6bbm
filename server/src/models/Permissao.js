@@ -34,7 +34,15 @@ const Permissao = sequelize.define('permissao', {
             key: 'id'
         }
     },
-    cadastrar: {
+    cadastrosCadastrar: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
+    cadastrosEditar: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
+    cadastrosApagar: {
         type: Sequelize.BOOLEAN,
         allowNull: false
     },
@@ -46,11 +54,31 @@ const Permissao = sequelize.define('permissao', {
         type: Sequelize.BOOLEAN,
         allowNull: false
     },
+    patrimonioApagar: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
     patrimonioMovimentar: {
         type: Sequelize.BOOLEAN,
         allowNull: false
     },
+    patrimonioMovimentarEditar: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
+    patrimonioMovimentarApagar: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
     patrimonioDescarregar: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
+    patrimonioDescarregarEditar: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
+    patrimonioDescarregarApagar: {
         type: Sequelize.BOOLEAN,
         allowNull: false
     },
