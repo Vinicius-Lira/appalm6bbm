@@ -25,6 +25,23 @@ exports.get = (req, res, next) => {
 
 }
 
+exports.getByUsuario = (req, res, next) => {
+    const usuario = req.params.usuario;
+    Pessoa.findAll().then(response => {
+        var find = [];
+        var data = JSON.parse(JSON.stringify(response));
+        for(var i = 0; i < data.length; i++){
+            if(data[i].usuario.localeCompare(usuario) == 0) {
+                find = data[i] ;
+                break;
+            }
+        }
+
+        res.status(200).json(find);
+    });
+
+}
+
 exports.getAll = (req, res, next) => {
     Hierarquia.findAll().then(response => {
         var hierarquias = JSON.parse(JSON.stringify(response));

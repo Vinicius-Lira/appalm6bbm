@@ -108,6 +108,7 @@
                         <v-col cols="12" sm="12" md="12">
                             <permissoes-pessoa
                                 v-bind:idResponsavel="pessoa.id"
+                                v-if="temPermissao"
                             ></permissoes-pessoa>
                         </v-col>
                     </v-row>
@@ -141,6 +142,7 @@
                 state: false,
             },
             idPessoa: null,
+            temPermissao: false,
         }),
         computed: {
             dialog: {
@@ -163,6 +165,20 @@
         watch: {
             pessoa(val) {
                 this.idPessoa = val.id;
+            },
+            dialogEditar(val) {
+                if(val) {
+                    const vm = this;
+                    if (typeof(Storage) !== "undefined") {
+                        if(localStorage.getItem("usuario")){
+                            this.axios.get(process.env.VUE_APP_URL_API + '/pessoa/getByUsuario/' + localStorage.getItem("usuario")).then(response => {
+                                if(response.data.tipoPessoa) {
+                                    vm.temPermissao = true;
+                                }
+                            });
+                        }
+                    }
+                }
             }
         },
         methods: {

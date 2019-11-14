@@ -5,6 +5,7 @@ const router = express.Router();
 const controller = require('./../controllers/pessoa-controller');
 
 router.get('/',  controller.getAll);
+router.get('/getByUsuario/:usuario', controller.getByUsuario);
 router.get('/:id',  controller.get);
 router.post('/',    controller.post);
 router.put('/',     controller.update);
