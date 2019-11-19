@@ -7,9 +7,15 @@
         :footer-props="{
             'items-per-page-options': [8,10,12,14]
         }"
+        v-bind:loading="loading"
+        loading-text="Carregando... Por favor aguarde"
     >
         
         <template v-slot:top>
+            <loading
+                v-bind:loading="loadingDialog"
+                @close="closeLoadingDialog"
+            ></loading>
             <v-toolbar flat color="white">
                 
                 <v-container>
@@ -290,6 +296,7 @@ import {VMoney} from 'v-money';
 export default {
     name: 'obm',
     data: () => ({
+        loadingDialog: false,
         dialog: false,
         search: "",
         textoSnackbar: "",
@@ -303,6 +310,7 @@ export default {
         pagination: {
             rowsPerPage: 20
         },
+        loading: true,
         vinculos: [
             "Município",
             "Estado",
@@ -431,6 +439,12 @@ export default {
                 });    
             }
         },
+        openLoadingDialog() {
+            this.loadingDialog = true;
+        },
+        closeLoadingDialog() {
+            this.loadingDialog = false;
+        },
         initialize () {
 
             this.responsaveis = [];
@@ -456,18 +470,20 @@ export default {
                 for(i in this.desserts){
                     this.desserts[i].baixado = this.desserts[i].baixado == true ? 'SIM' : 'NÃO';
                 }
+                this.loading = false;
             });
 
         },
-
         editItem (item) {
             if(localStorage.getItem("usuario")) {
+                this.openLoadingDialog();
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
                     if(response.data) {
                         if(response.data.patrimonioEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
                             this.editedItem = Object.assign({}, item);
                             this.dialog = true;
+                            this.closeLoadingDialog();
                         }
                         if(!response.data.patrimonioEditar) {
                             this.snackbar = true;
@@ -493,7 +509,8 @@ export default {
                                     this.snackbar = true;
                                     this.color = 'success';
                                     this.textoSnackbar = "Registro apagada com sucesso!";
-                                    this.initialize();
+
+                                    this.desserts.splice(this.desserts.indexOf(item), 1);
                                 }else {
                                     this.snackbar = true;
                                     this.color = 'error';

@@ -63,16 +63,6 @@ router.beforeEach((to, from, next) => {
                     path: '/login'
                 });
             }
-
-            if(res && to.path == '/'){
-                if(localStorage.getItem("route")){
-                    var route = localStorage.getItem("route");
-                    localStorage.removeItem("route");
-                    return next({
-                        path: route
-                    });
-                }
-            }
         }
 
         if(res && to.path == '/login'){

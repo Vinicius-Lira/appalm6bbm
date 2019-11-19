@@ -47,7 +47,7 @@
             </v-list-item>
 
                         <v-list-group
-              :key="'Patrimônio'"
+              :key="'Almoxarifado'"
               :prepend-icon="'mdi-city'"
               no-action
               class="menu-accordion"

@@ -122,8 +122,8 @@ export default {
                 this.login.lembrar = localStorage.getItem("login");
 
                 if(this.login.lembrar){
-                    if(localStorage.getItem("usuario")) {
-                        this.login.usuario = localStorage.getItem("usuario");
+                    if(localStorage.getItem("usuarioAppB4")) {
+                        this.login.usuario = localStorage.getItem("usuarioAppB4");
                     }
                 }
             }
@@ -150,7 +150,7 @@ export default {
                             }
                             localStorage.setItem("tokenlogin", response.data.token);
                             if(this.login.lembrar) {
-                                localStorage.setItem("usuario", this.login.usuario);
+                                localStorage.setItem("usuarioAppB4", this.login.usuario);
                             }
                             window.location.replace(process.env.VUE_APP_URL_HOME);
                         }else {

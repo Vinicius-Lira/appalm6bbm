@@ -11,6 +11,9 @@ import NovaPessoa from '@/components/material/NovaPessoa';
 import EditPessoa from '@/components/material/EditPessoa';
 import PermissoesPessoa from '@/components/material/PermissoesPessoa';
 
+import Loading from '@/components/material/Loading';
+
+Vue.component('loading', Loading);
 Vue.component('snackbar', Snackbar);
 
 Vue.component('permissoes-pessoa', PermissoesPessoa);

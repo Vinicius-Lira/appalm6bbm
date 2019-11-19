@@ -144,8 +144,8 @@ export default {
     },
     methods: {
         nova() {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosCadastrar) {
                             this.dialogNovo = true;
@@ -174,7 +174,7 @@ export default {
         },
         deleteItem (item) {
             if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosApagar) {
                             this.axios.delete(process.env.VUE_APP_URL_API + '/pessoa/' + item.id + "/delete").then(response => {
@@ -206,7 +206,7 @@ export default {
         },
         editarPessoa(item) {
             if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosEditar) {
                             this.pessoa = Object.assign({}, item);

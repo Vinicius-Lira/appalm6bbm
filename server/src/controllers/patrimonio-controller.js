@@ -24,54 +24,8 @@ exports.get = (req, res, next) => {
 }
 
 exports.getAll = (req, res, next) => {
-    var patrimonio = {
-        id: "",
-        codigo: "",
-        vinculo: "",
-        identificacao: "",
-        descricao: "",
-        observacoes: "",
-        dataEntrada: "",
-        idResponsavel: "",
-        responsavelNome: "",
-        idGrupo: "",
-        grupo: "",
-        idSetor: "",
-        setor: "",
-        idSituacao: "",
-        situacao: "",
-        valorEconomico: "",
-        dataCarga: "",
-        foto: "",
-        baixado: "",
-    };
-
-    var patrimonioDefault = {
-        id: "",
-        codigo: "",
-        vinculo: "",
-        identificacao: "",
-        descricao: "",
-        observacoes: "",
-        dataEntrada: "",
-        idResponsavel: "",
-        responsavelNome: "",
-        idGrupo: "",
-        grupo: "",
-        idSetor: "",
-        setor: "",
-        idSituacao: "",
-        situacao: "",
-        valorEconomico: "",
-        dataCarga: "",
-        foto: "",
-        baixado: "",
-    };
-
-    var patrimonios = [];
-
     Patrimonio.findAll().then(response => {
-        var patrimoniosFind = response;
+        var patrimoniosFind = JSON.parse(JSON.stringify(response));
         GrupoPatrimonio.findAll().then(response => {
             var gruposPatrimonio = response;
             Setor.findAll().then(response => {
@@ -82,55 +36,38 @@ exports.getAll = (req, res, next) => {
                         var pessoas = response;
                         var i = 0, k = 0;
                         for(i in patrimoniosFind){
-                            patrimonio.id = patrimoniosFind[i].id;
-                            patrimonio.codigo = patrimoniosFind[i].codigo;
-                            patrimonio.vinculo = patrimoniosFind[i].vinculo;
-                            patrimonio.identificacao = patrimoniosFind[i].identificacao;
-                            patrimonio.descricao = patrimoniosFind[i].descricao;
-                            patrimonio.observacoes = patrimoniosFind[i].observacoes;
-                            patrimonio.dataEntrada = Helpers.formatDate(patrimoniosFind[i].dataEntrada);
-                            patrimonio.idResponsavel = patrimoniosFind[i].idResponsavel;
-                            patrimonio.idGrupo =  patrimoniosFind[i].idGrupo;
-                            patrimonio.idSetor = patrimoniosFind[i].idSetor;
-                            patrimonio.idSituacao = patrimoniosFind[i].idSituacao;
-                            patrimonio.valorEconomico = patrimoniosFind[i].valorEconomico;
-                            patrimonio.dataCarga = Helpers.formatDate(patrimoniosFind[i].dataCarga);
-                            patrimonio.foto = patrimoniosFind[i].foto;
-                            patrimonio.baixado = patrimoniosFind[i].baixado;
+                            patrimoniosFind[i].dataEntrada = Helpers.formatDate(patrimoniosFind[i].dataEntrada);
+                            patrimoniosFind[i].dataCarga = Helpers.formatDate(patrimoniosFind[i].dataCarga);
 
                             for(k in gruposPatrimonio) {
-                                if(gruposPatrimonio[k].id == patrimonio.idGrupo){
-                                    patrimonio.grupo = gruposPatrimonio[k].grupo;
+                                if(gruposPatrimonio[k].id == patrimoniosFind[i].idGrupo){
+                                    patrimoniosFind[i].grupo = gruposPatrimonio[k].grupo;
                                     break;
                                 }
                             }
                             k = 0;
                             for(k in setores) {
-                                if(setores[k].id == patrimonio.idSetor) {
-                                    patrimonio.setor = setores[k].setor;
+                                if(setores[k].id == patrimoniosFind[i].idSetor) {
+                                    patrimoniosFind[i].setor = setores[k].setor;
                                     break;
                                 }
                             }
                             k = 0;
                             for(k in situacaoPatrimonio) {
-                                if(situacaoPatrimonio[k].id == patrimonio.idSituacao) {
-                                    patrimonio.situacao = situacaoPatrimonio[k].situacao;
+                                if(situacaoPatrimonio[k].id == patrimoniosFind[i].idSituacao) {
+                                    patrimoniosFind[i].situacao = situacaoPatrimonio[k].situacao;
                                     break;
                                 }
                             }
                             k = 0;
                             for(k in pessoas) {
-                                if(pessoas[k].id == patrimonio.idResponsavel) {
-                                    patrimonio.responsavelNome = pessoas[k].nome;
+                                if(pessoas[k].id == patrimoniosFind[i].idResponsavel) {
+                                    patrimoniosFind[i].responsavelNome = pessoas[k].nome;
                                     break;
                                 }
                             }
-                            console.log(patrimonio.id);
-                            patrimonios.push(patrimonio);
-                            patrimonio = patrimonioDefault;
                         }
-
-                        res.status(200).json(patrimonios);
+                        res.status(200).json(patrimoniosFind);
                     });
                 });
 

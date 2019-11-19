@@ -1,8 +1,8 @@
 <template>
     <v-app>
-        <core-app-bar v-if="this.$route.name != 'Login'" />
+        <core-app-bar v-if="exibeMenu" />
 
-        <core-drawer v-if="this.$route.name != 'Login'"/>
+        <core-drawer v-if="exibeMenu"/>
 
         <core-view />
     </v-app>
@@ -10,10 +10,22 @@
 
 <script>
     export default {
+        data: () => ({
+            route: null
+        }),
         components: {
             CoreDrawer: () => import('@/components/core/Drawer'),
             CoreAppBar: () => import('@/components/core/AppBar'),
             CoreView: () => import('@/components/core/View')
+        },
+        computed: {
+            exibeMenu: function () {
+                if(this.$route.name != 'Login') {
+                    return true;
+                }
+
+                return false;
+            }
         }
     }
 </script>
