@@ -21,7 +21,23 @@ exports.get = (req, res, next) => {
 
 exports.getAll = (req, res, next) => {
     Contrato.findAll().then(response => {
-        res.status(200).json(JSON.parse(JSON.stringify(response)));
+        var contratos = JSON.parse(JSON.stringify(response));
+        contratos.forEach(element => {
+            if(element.dataHomologacao != null && element.dataVigencia != null) {
+                element.dataHomologacao = element.dataHomologacao.split('T')[0].split('-').reverse().join('/');
+                element.dataVigencia = element.dataVigencia.split('T')[0].split('-').reverse().join('/');
+                element.valorContrato = "R$ " + element.valorContrato.toString().replace('.', ',');
+                element.valorConsumido = "R$ " + element.valorConsumido.toString().replace('.', ',');
+            }
+            if(element.situacao) {
+                element.situacao = "Ativo";
+            }
+
+            if(!element.situacao) {
+                element.situacao = "Inativo";
+            }
+        });
+        res.status(200).json(contratos);
     });
 }
 
@@ -31,15 +47,19 @@ exports.post = (req, res, next) => {
     var dataHomologacao = req.body.dataHomologacao;
     var dataVigencia = req.body.dataVigencia;
     var categoria = req.body.categoria;
-    var situacao = req.body.situacao;
+    var situacao = req.body.situacao == "Ativo" ? true : false;
+    var valorContrato = req.body.valorContrato;
 
     var data = {
         numeroContrato: numeroContrato,
         tipoContrato: tipoContrato,
-        dataHomologacao: dataHomologacao,
-        dataVigencia: dataVigencia,
+        dataHomologacao: dataHomologacao.split('/').reverse().join('-'),
+        dataVigencia: dataVigencia.split('/').reverse().join('-'),
         categoria: categoria,
-        situacao :situacao,
+        situacao: situacao,
+        valorContrato: Helpers.converteMoeda(valorContrato),
+        valorConsumido: 0.0,
+        saldo: Helpers.converteMoeda(valorContrato),
         createdAt: Helpers.getDataHoraAtual()
     };
 
@@ -56,18 +76,20 @@ exports.update = (req, res, next) => {
     var dataHomologacao = req.body.dataHomologacao;
     var dataVigencia = req.body.dataVigencia;
     var categoria = req.body.categoria;
-    var situacao = req.body.situacao;
+    var situacao = req.body.situacao == "Ativo" ? true : false;
+    var valorContrato = req.body.valorContrato;
 
     var data = {
         numeroContrato: numeroContrato,
         tipoContrato: tipoContrato,
-        dataHomologacao: dataHomologacao,
-        dataVigencia: dataVigencia,
+        dataHomologacao: dataHomologacao.split('/').reverse().join('-'),
+        dataVigencia: dataVigencia.split('/').reverse().join('-'),
         categoria: categoria,
         situacao :situacao,
+        valorContrato: Helpers.converteMoeda(valorContrato),
         createdAt: Helpers.getDataHoraAtual()
     };
-
+    
     Contrato.update(data, {
         where: {
             id: id

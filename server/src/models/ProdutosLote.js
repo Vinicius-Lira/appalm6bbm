@@ -44,15 +44,15 @@ const ProdutosLote = sequelize.define('produtoslote', {
         }
     },
     qtdContratada: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE(8, 2),
         allowNull: false
     },
     qtdRecebida: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE(8, 2),
         allowNull: false
     },
     qtdRestante: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DOUBLE(8, 2),
         allowNull: false
     },
     valorUnitario: {

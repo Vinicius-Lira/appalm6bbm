@@ -89,7 +89,7 @@ const Fornecedor = sequelize.define('fornecedor', {
   tableName: 'fornecedor'
 });
 
-DescargaPatrimonio.addHook('beforeValidate', (fornecedor, options) => {
+Fornecedor.addHook('beforeValidate', (fornecedor, options) => {
     var data = new Date();
     let data2 = new Date(data.valueOf() - data.getTimezoneOffset() * 60000);
     var data = data2.toISOString().replace(/\.\d{3}Z$/, '');

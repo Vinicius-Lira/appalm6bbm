@@ -57,7 +57,7 @@
                 <v-dialog v-model="dialog" max-width="1000px">
 
                     <template v-slot:activator="{ on }">
-                        <v-btn color="primary" class="mb-2"  @click="novo">Novo</v-btn>
+                        <v-btn color="primary" class="mb-2"  @click="novo">Nova</v-btn>
                     </template>
 
                     <v-card>
@@ -69,10 +69,48 @@
                             <v-container>
                                 <v-row>
                                     <v-col cols="12" sm="12" md="12">
+                                        <v-autocomplete
+                                            v-model="editedItem.idProduto"
+                                            :items="produtos"
+                                            :rules="[v => !!v || 'Obrigatório selecionar o produto!']"
+                                            label="Produto"
+                                            outlined
+                                            item-value="id" item-text="produto"
+                                        ></v-autocomplete>
+                                    </v-col>                                    
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12" sm="12" md="3">
                                         <v-text-field
-                                            v-model="editedItem.grupo"
-                                            :rules="[v => !!v || 'Obrigatório prencher a grupo!']"
-                                            label="Grupo"
+                                            v-model="editedItem.tamanho"
+                                            :rules="[v => !!v || 'Obrigatório prencher o tamanho!']"
+                                            label="Tamanho"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="3">
+                                        <v-text-field
+                                            v-model="editedItem.cor"
+                                            :rules="[v => !!v || 'Obrigatório prencher a cor!']"
+                                            label="Cor"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="3">
+                                        <v-text-field
+                                            v-model="editedItem.qtdEstoque"
+                                            :rules="[v => !!v || 'Obrigatório prencher a Qtd. em estoque!']"
+                                            label="Qtd. Estoque"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="3">
+                                        <v-text-field
+                                            v-model="editedItem.qtdMinima"
+                                            :rules="[v => !!v || 'Obrigatório prencher a Qtd. minima!']"
+                                            label="Qtd. Mínimo"
                                             outlined
                                         ></v-text-field>
                                     </v-col>
@@ -133,30 +171,43 @@ export default {
         },
         headers: [
             {
-                text: 'Grupo',
+                text: 'Produto',
                 align: 'left',
                 sortable: true,
-                value: 'grupo',
+                value: 'produto',
             },
+            { text: 'Tamanho', value: 'tamanho' },
+            { text: 'Cor', value: 'cor' },
+            { text: 'Qtd. Estoque', value: 'qtdEstoque' },
+            { text: 'Qtd. Mínima', value: 'qtdMinima' },
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            grupo: "",
+            idProduto: "",
+            tamanho: "",
+            cor: "",
+            qtdEstoque: "",
+            qtdMinima: "",
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            grupo: "",
+            idProduto: "",
+            tamanho: "",
+            cor: "",
+            qtdEstoque: "",
+            qtdMinima: "",
             createdAt: "",
             updatedAt: ""
         },
+        produtos: [],
     }),
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Novo Grupo' : 'Editar Grupo'
+            return this.editedIndex === -1 ? 'Nova Propriedade Produto' : 'Editar Propriedade Produto'
         }
     },
     watch: {
@@ -190,7 +241,12 @@ export default {
             }
         },
         initialize () {
-            this.axios.get(process.env.VUE_APP_URL_API + '/grupoPatrimonio').then(response => {
+            
+            this.axios.get(process.env.VUE_APP_URL_API + '/produto').then(response => {
+                this.produtos = response.data;
+            });
+
+            this.axios.get(process.env.VUE_APP_URL_API + '/propriedadesProduto').then(response => {
                 this.desserts = response.data;
             });
         },
@@ -222,7 +278,7 @@ export default {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosApagar) {
-                            this.axios.delete(process.env.VUE_APP_URL_API + '/grupoPatrimonio/' + item.id + "/delete").then(response => {
+                            this.axios.delete(process.env.VUE_APP_URL_API + '/propriedadesProduto/' + item.id + "/delete").then(response => {
                                 if(response.data){
                                     this.snackbar = true;
                                     this.color = 'success';
@@ -262,7 +318,7 @@ export default {
         },
         save () {
             if (this.editedIndex > -1) {
-                this.axios.put(process.env.VUE_APP_URL_API + '/grupoPatrimonio', this.editedItem).then(response => {
+                this.axios.put(process.env.VUE_APP_URL_API + '/propriedadesProduto', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -278,9 +334,9 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post(process.env.VUE_APP_URL_API + '/grupoPatrimonio', this.editedItem).then(response => {
-                        if(response.data.id){
-                            this.textoSnackbar = "Batalhão inserido com sucesso!";
+                    this.axios.post(process.env.VUE_APP_URL_API + '/propriedadesProduto', this.editedItem).then(response => {
+                        if(response.data[0]){
+                            this.textoSnackbar = "Propriedade inserida com sucesso!";
                             this.snackbar = true;
                             this.color = 'success';
                             this.initialize();

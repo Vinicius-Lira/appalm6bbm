@@ -11,7 +11,15 @@ import NovaPessoa from '@/components/material/NovaPessoa';
 import EditPessoa from '@/components/material/EditPessoa';
 import PermissoesPessoa from '@/components/material/PermissoesPessoa';
 
+import ProdutosLote from '@/components/material/ProdutosLote';
+
+import ItemEntrada from '@/components/material/ItemEntrada';
+
 import Loading from '@/components/material/Loading';
+
+Vue.component('item-entrada', ItemEntrada);
+
+Vue.component('produtos-lote', ProdutosLote);
 
 Vue.component('loading', Loading);
 Vue.component('snackbar', Snackbar);

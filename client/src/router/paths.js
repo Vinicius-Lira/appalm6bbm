@@ -6,6 +6,41 @@ export default [
         view: 'Dashboard'
     },
     {
+        path: '/contratos',
+        name: 'Contratos',
+        view: 'Contratos'
+    },
+    {
+        path: '/lotes',
+        name: 'Lotes',
+        view: 'Lote'
+    },
+    {
+        path: '/fornecedor',
+        name: 'Fornecedor',
+        view: 'Fornecedor'
+    },
+    {
+        path: '/categoriaProdutos',
+        name: 'Categoria Produtos',
+        view: 'CategoriaProduto'
+    },
+    {
+        path: '/produtos',
+        name: 'Produtos',
+        view: 'Produtos'
+    },
+    {
+        path: '/propriedadesProduto',
+        name: 'Propriedades Produtos',
+        view: 'PropriedadesProduto'
+    },
+    {
+        path: '/entradas',
+        name: 'Entradas',
+        view: 'Entradas'
+    },
+    {
         path: '/grupoPatrimonio',
         name: 'Grupos Patrimônio',
         view: 'GrupoPatrimonio'

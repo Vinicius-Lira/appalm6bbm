@@ -219,8 +219,8 @@ export default {
     },
     methods: {
         novo() {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.patrimonioDescarregar) {
                             this.dialog = true;
@@ -261,8 +261,8 @@ export default {
             });
         },
         editItem (item) {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.patrimonioDescarregarEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
@@ -284,8 +284,8 @@ export default {
             }
         },
         deleteItem (item) {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.patrimonioDescarregarApagar) {
                              this.axios.delete(process.env.VUE_APP_URL_API + '/descargaPatrimonio/' + item.id + "/delete").then(response => {
@@ -313,10 +313,8 @@ export default {
                         this.textoSnackbar = "Tente novamente ocorreu um erro!";
                     }
                 });    
-            }
-           
+            } 
         },
-
         close () {
             this.dialog = false;
             setTimeout(() => {

@@ -68,14 +68,129 @@
                         <v-card-text>
                             <v-container>
                                 <v-row>
-                                    <v-col cols="12" sm="12" md="12">
+                                    <v-col cols="12" sm="12" md="3">
                                         <v-text-field
-                                            v-model="editedItem.grupo"
-                                            :rules="[v => !!v || 'Obrigatório prencher a grupo!']"
-                                            label="Grupo"
+                                            v-model="editedItem.codigoBarras"
+                                            label="Cód. Barra"
                                             outlined
                                         ></v-text-field>
                                     </v-col>
+
+                                    <v-col cols="12" sm="12" md="9">
+                                        <v-text-field
+                                            v-model="editedItem.produto"
+                                            label="Produto"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+
+                                <v-row>
+                                    <v-col cols="12" sm="12" md="6">
+                                        <v-text-field
+                                            v-model="editedItem.descricao"
+                                            label="Descrição"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="6">
+                                        <v-text-field
+                                            v-model="editedItem.observacoes"
+                                            label="Observações"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+
+                                <v-row>
+                                    <v-col cols="12" sm="12" md="3">
+                                        <v-text-field
+                                            v-model="editedItem.unidadeMedida"
+                                            label="Unidade Medida"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="2">
+                                        <v-text-field
+                                            v-model="editedItem.qtdEstoque"
+                                            label="Qtd. Estoque"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="2">
+                                        <v-text-field
+                                            v-model="editedItem.qtdMinima"
+                                            label="Qtd. Minima"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="5">
+                                        <v-select v-model="editedItem.idCategoriaProduto"
+                                            :items="categorias"
+                                            label="Categoria Produto"
+                                            :rules="[v => !!v || 'Obrigatória selecionar a categoria do produto']"
+                                            outlined
+                                            item-value="id" item-text="categoria"
+                                            required
+                                        ></v-select>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12" sm="12" md="3">
+                                        <v-text-field
+                                            v-model="editedItem.localizacao"
+                                            label="Localização"
+                                            :rules="[v => !!v || 'Obrigatório selecionar a localização']"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="3">
+                                        <v-text-field
+                                            v-model="editedItem.armario"
+                                            label="Armário"
+                                            :rules="[v => !!v || 'Obrigatório selecionar o armário']"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="6">
+                                        <v-file-input
+                                            color="deep-purple accent-4"
+                                            counter
+                                            label="Imagem"
+                                            multiple
+                                            placeholder=""
+                                            prepend-icon="mdi-camera"
+                                            outlined
+                                            :show-size="1000"
+                                            @change="setImage"
+                                        >
+                                           <template v-slot:selection="{ index, text }">
+                                                <v-chip
+                                                    v-if="index < 2"
+                                                    color="deep-purple accent-4"
+                                                    dark
+                                                    label
+                                                    small
+                                                >
+                                                   {{ text }}
+                                                </v-chip>
+
+                                                <span
+                                                    v-else-if="index === 2"
+                                                    class="overline grey--text text--darken-3 mx-2"
+                                                >
+                                                    +{{ foto.length - 2 }} Arquivo
+                                                </span>
+                                            </template>
+                                       </v-file-input>
+                                    </v-col>
+
                                 </v-row>
                             </v-container>
                         </v-card-text>
@@ -133,30 +248,56 @@ export default {
         },
         headers: [
             {
-                text: 'Grupo',
+                text: 'Produto',
                 align: 'left',
                 sortable: true,
-                value: 'grupo',
+                value: 'produto',
             },
+            { text: 'Descrição', value: 'descricao' },
+            { text: 'Unidade Medida', value: 'unidadeMedida' },
+            { text: 'Qtd. Estoque', value: 'qtdEstoque' },
+            { text: 'Qtd. Minima', value: 'qtdMinima' },
+            { text: 'Localização', value: 'localizacao' },
+            { text: 'Armário', value: 'armario' },
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            grupo: "",
+            codigoBarras: "",
+            produto: "",
+            descricao: "",
+            observacoes: "",
+            unidadeMedida: "",
+            qtdEstoque: "",
+            qtdMinima: "",
+            idCategoriaProduto: "",
+            localizacao: "",
+            armario: "",
+            imagem: "",
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            grupo: "",
+            codigoBarras: "",
+            produto: "",
+            descricao: "",
+            observacoes: "",
+            unidadeMedida: "",
+            qtdEstoque: "",
+            qtdMinima: "",
+            idCategoriaProduto: "",
+            localizacao: "",
+            armario: "",
+            imagem: "",
             createdAt: "",
             updatedAt: ""
         },
+        categorias: []
     }),
-
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Novo Grupo' : 'Editar Grupo'
+            return this.editedIndex === -1 ? 'Novo Produto' : 'Editar Produto'
         }
     },
     watch: {
@@ -190,7 +331,11 @@ export default {
             }
         },
         initialize () {
-            this.axios.get(process.env.VUE_APP_URL_API + '/grupoPatrimonio').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/categoriaProduto').then(response => {
+                this.categorias = response.data;
+            });
+
+            this.axios.get(process.env.VUE_APP_URL_API + '/produto').then(response => {
                 this.desserts = response.data;
             });
         },
@@ -222,11 +367,11 @@ export default {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosApagar) {
-                            this.axios.delete(process.env.VUE_APP_URL_API + '/grupoPatrimonio/' + item.id + "/delete").then(response => {
+                            this.axios.delete(process.env.VUE_APP_URL_API + '/produto/' + item.id + "/delete").then(response => {
                                 if(response.data){
                                     this.snackbar = true;
                                     this.color = 'success';
-                                    this.textoSnackbar = "Grupo apagado com sucesso!";
+                                    this.textoSnackbar = "Produto apagado com sucesso!";
                                     this.initialize();
                                 }else {
                                     this.snackbar = true;
@@ -260,9 +405,26 @@ export default {
         validaCampos() {
             return  this.editedItem.abreviacao != '' && this.editedItem.descricao != '';
         },
-        save () {
+        setImage: function (e) {
+            const file = e[0];
+            if (!file.type.includes('image/')) {
+                alert('Por favor selecione a foto!');
+                return;
+            }
+            if (typeof FileReader === 'function') {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    this.imgSrc = event.target.result;
+                    this.editedItem.imagem = this.imgSrc;
+                }
+                reader.readAsDataURL(file);
+            } else {
+                alert('Sorry, FileReader API not supported');
+            }
+        },
+        save() {
             if (this.editedIndex > -1) {
-                this.axios.put(process.env.VUE_APP_URL_API + '/grupoPatrimonio', this.editedItem).then(response => {
+                this.axios.put(process.env.VUE_APP_URL_API + '/produto', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -278,9 +440,9 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post(process.env.VUE_APP_URL_API + '/grupoPatrimonio', this.editedItem).then(response => {
+                    this.axios.post(process.env.VUE_APP_URL_API + '/produto', this.editedItem).then(response => {
                         if(response.data.id){
-                            this.textoSnackbar = "Batalhão inserido com sucesso!";
+                            this.textoSnackbar = "Produto inserido com sucesso!";
                             this.snackbar = true;
                             this.color = 'success';
                             this.initialize();

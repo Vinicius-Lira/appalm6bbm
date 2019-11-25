@@ -36,3 +36,7 @@ INSERT INTO escala(escala) VALUES('ADMINISTRATIVO');
 
 INSERT INTO pessoa(usuario, email,nome,matricula,dataNascimento,estadoCivil,dataIngresso,cartaoMunicipalSus, cartaoNacionalSus,sexo,tipoSanguineo,lts,tipoPessoa,idHierarquia,idSetor,idBatalhao,idEscala)
     VALUES('6b4aux', '6b4aux@cbm.sc.gov.br', '6b4aux', '123456-7','1997-05-05', 'SOLTEIRO', '2018-01-02', '123456', '9999 9999 9999 999', 'MASCULINO', 'O+', 0, 1,1,4,6,1);
+
+ALTER TABLE contrato MODIFY valorContrato FLOAT(10,2);
+ALTER TABLE contrato MODIFY valorConsumido FLOAT(10,2);
+ALTER TABLE contrato MODIFY saldo FLOAT(10,2);

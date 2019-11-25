@@ -8,7 +8,7 @@
             'items-per-page-options': [8,10,12,14]
         }"
     >
-
+        
         <template v-slot:top>
             <v-toolbar flat color="white">
 
@@ -53,9 +53,9 @@
                         </v-btn>
                 </v-snackbar>
                 <div class="flex-grow-1"></div>
-
+                
                 <v-dialog v-model="dialog" max-width="1000px">
-
+                    
                     <template v-slot:activator="{ on }">
                         <v-btn color="primary" class="mb-2"  @click="novo">Novo</v-btn>
                     </template>
@@ -68,11 +68,65 @@
                         <v-card-text>
                             <v-container>
                                 <v-row>
-                                    <v-col cols="12" sm="12" md="12">
+                                    <v-col cols="12" sm="12" md="3">
                                         <v-text-field
-                                            v-model="editedItem.grupo"
-                                            :rules="[v => !!v || 'Obrigatório prencher a grupo!']"
-                                            label="Grupo"
+                                            v-model="editedItem.numeroContrato"
+                                            :rules="[v => !!v || 'Obrigatório prencher número do contrato!']"
+                                            label="Nº Contrato"
+                                            v-mask="['###/####', '####/####', '#####/####']"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="3">
+                                        <v-select
+                                            v-model="editedItem.tipoContrato"
+                                            :items="tipoContratos"
+                                            label="Tipo Contrato"
+                                            outlined
+                                        ></v-select>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="3">
+                                        <v-text-field
+                                            v-model="editedItem.dataHomologacao"
+                                            v-mask="['##/##/####']"
+                                            label="Data Homologação"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="3">
+                                        <v-text-field
+                                            v-model="editedItem.dataVigencia"
+                                            v-mask="['##/##/####']"
+                                            label="Data Vigencia"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                    <v-col cols="12" sm="12" md="4">
+                                        <v-autocomplete
+                                            v-model="editedItem.categoria"
+                                            :items="categoriaContrato"
+                                            label="Categoria"
+                                            outlined
+                                        ></v-autocomplete>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="4">
+                                        <v-select
+                                            v-model="editedItem.situacao"
+                                            :items="situacoes"
+                                            item-value="value" item-text="text"
+                                            label="Situação"
+                                            outlined
+                                        ></v-select>
+                                    </v-col>
+
+                                    <v-col cols="12" sm="12" md="4">
+                                        <v-text-field
+                                            v-model="editedItem.valorContrato"
+                                            v-money="money"
+                                            label="Valor Contrato"
                                             outlined
                                         ></v-text-field>
                                     </v-col>
@@ -115,6 +169,9 @@
 </template>
 
 <script>
+
+import {VMoney} from 'v-money';
+
 export default {
     name: 'obm',
     data: () => ({
@@ -133,30 +190,82 @@ export default {
         },
         headers: [
             {
-                text: 'Grupo',
+                text: 'Nº Contrato',
                 align: 'left',
                 sortable: true,
-                value: 'grupo',
+                value: 'numeroContrato',
             },
+            { text: 'Tipo Con.', value: 'tipoContrato', sortable: true },
+            { text: 'Dt. Homologação', value: 'dataHomologacao', sortable: true },
+            { text: 'Dt. Vigencia', value: 'dataVigencia', sortable: true },
+            { text: 'Categoria', value: 'categoria', sortable: true },
+            { text: 'Situação', value: 'situacao', sortable: true },
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            grupo: "",
+            numeroContrato: null,
+            tipoContrato: null,
+            dataHomologacao: "",
+            dataVigencia: "",
+            categoria: null,
+            situacao: false,
+            valorContrato: 0.0,
+            valorConsumido: 0.0,
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            grupo: "",
+            numeroContrato: null,
+            tipoContrato: null,
+            dataHomologacao: "",
+            dataVigencia: "",
+            categoria: null,
+            situacao: "",
+            valorContrato: "",
+            valorConsumido: "",
             createdAt: "",
             updatedAt: ""
         },
+        money: {
+            decimal: ',',
+            thousands: '.',
+            prefix: 'R$ ',
+            suffix: '',
+            precision: 2,
+            masked: false
+        },
+        tipoContratos: [
+            'Pregão Presencial',
+            'Compra Direta'
+        ],
+        categoriaContrato: [
+            'APH',
+            'Gêneros Alimentícios',
+            'Materiais de Expediente',
+            'Informática',
+            'Fardamento',
+            'Pneus',
+            'Restaurante',
+            'Higiene e Limpeza',
+        ],
+        situacoes: [
+            {
+                text: "Ativo",
+                value: "Ativo"
+            },
+            {
+                text: "Inativo",
+                value: "Inativo"
+            }
+        ],
+        dialogLotes: false,
     }),
-
+    directives: {money: VMoney},
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Novo Grupo' : 'Editar Grupo'
+            return this.editedIndex === -1 ? 'Novo Contrato' : 'Editar Contrato'
         }
     },
     watch: {
@@ -168,6 +277,9 @@ export default {
         this.initialize()
     },
     methods: {
+        closeLotes() {
+            this.dialogLotes = false;
+        },
         novo() {
             if(localStorage.getItem("usuarioAppB4")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
@@ -190,11 +302,12 @@ export default {
             }
         },
         initialize () {
-            this.axios.get(process.env.VUE_APP_URL_API + '/grupoPatrimonio').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/contrato').then(response => {
                 this.desserts = response.data;
             });
         },
         editItem (item) {
+            console.log(item);
             if(localStorage.getItem("usuarioAppB4")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
@@ -222,7 +335,7 @@ export default {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosApagar) {
-                            this.axios.delete(process.env.VUE_APP_URL_API + '/grupoPatrimonio/' + item.id + "/delete").then(response => {
+                            this.axios.delete(process.env.VUE_APP_URL_API + '/contrato/' + item.id + "/delete").then(response => {
                                 if(response.data){
                                     this.snackbar = true;
                                     this.color = 'success';
@@ -262,7 +375,7 @@ export default {
         },
         save () {
             if (this.editedIndex > -1) {
-                this.axios.put(process.env.VUE_APP_URL_API + '/grupoPatrimonio', this.editedItem).then(response => {
+                this.axios.put(process.env.VUE_APP_URL_API + '/contrato', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -278,9 +391,9 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post(process.env.VUE_APP_URL_API + '/grupoPatrimonio', this.editedItem).then(response => {
+                    this.axios.post(process.env.VUE_APP_URL_API + '/contrato', this.editedItem).then(response => {
                         if(response.data.id){
-                            this.textoSnackbar = "Batalhão inserido com sucesso!";
+                            this.textoSnackbar = "Contrato inserido com sucesso!";
                             this.snackbar = true;
                             this.color = 'success';
                             this.initialize();

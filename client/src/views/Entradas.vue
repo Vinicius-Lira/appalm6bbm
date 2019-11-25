@@ -26,32 +26,7 @@
                         </v-col>
                     </v-row>
                 </v-container>
-                <v-snackbar
-                        v-model="snackbar"
-                        :bottom="y === 'bottom'"
-                        :color="color"
-                        :left="x === 'left'"
-                        :multi-line="mode === 'multi-line'"
-                        :right="x === 'right'"
-                        :timeout="timeout"
-                        :top="y === 'top'"
-                        :vertical="mode === 'vertical'"
-
-                        class="snackbar"
-                    >
-                        {{ textoSnackbar }}
-                        <v-btn
-                            dark
-                            text
-                            icon
-                            @click="snackbar = false"
-                        >
-                            <v-icon
-                                class="mr-2"
-                                @click="snackbar = false"
-                            >mdi-close</v-icon>
-                        </v-btn>
-                </v-snackbar>
+               
                 <div class="flex-grow-1"></div>
 
                 <v-dialog v-model="dialog" max-width="1000px">
@@ -67,14 +42,43 @@
 
                         <v-card-text>
                             <v-container>
-                                <v-row>
-                                    <v-col cols="12" sm="12" md="12">
+                                <v-row :style="{ margin: '0px', padding: '0px', height: '80px'}">
+                                    <v-col cols="12" sm="12" md="4">
                                         <v-text-field
-                                            v-model="editedItem.grupo"
-                                            :rules="[v => !!v || 'Obrigatório prencher a grupo!']"
-                                            label="Grupo"
+                                            v-model="editedItem.dataEntrada"
+                                            :rules="[v => !!v || 'Obrigatório prencher a data de entrada!']"
+                                            label="Data Entrada"
+                                            v-mask="['##/##/####']"
                                             outlined
                                         ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="4">
+                                        <v-text-field
+                                            v-model="editedItem.observacoes"
+                                            label="Observações"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="4">
+                                        <v-select
+                                            v-model="editedItem.idContrato"
+                                            :items="contratos"
+                                            item-value="id" item-text="numeroContrato"
+                                            label="Contrato"
+                                            outlined
+                                        ></v-select>
+                                    </v-col>
+                                </v-row>
+                                <v-row>
+                                     <v-subheader>Itens Entrada</v-subheader>
+                                    <v-col cols="12" sm="12" md="12">
+                                        <item-entrada 
+                                            v-bind:key="item.key"
+                                            v-for="item in itens"
+                                            v-bind:salva="salvaItens"
+                                            @idProduto="getIdProdutos"
+                                        >
+                                        </item-entrada>
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -133,30 +137,48 @@ export default {
         },
         headers: [
             {
-                text: 'Grupo',
+                text: 'Data Entrada',
                 align: 'left',
                 sortable: true,
-                value: 'grupo',
+                value: 'dataEntrada',
             },
+            { text: 'Observações', value: 'observacoes', sortable: false },
+            { text: 'Contrato', value: 'contrato', sortable: true },
+            { text: 'Resp. Entrada', value: 'pessoa', sortable: true },
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            grupo: "",
+            dataEntrada: "",
+            observacoes: "",
+            idContrato: null,
+            idPessoa: null,
+            usuario: localStorage.getItem("usuarioAppB4"),
+            itensEntrada: [],
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            grupo: "",
+            dataEntrada: "",
+            observacoes: "",
+            idContrato: null,
+            idPessoa: null,
+            usuario: localStorage.getItem("usuarioAppB4"),
+            itensEntrada: [],
             createdAt: "",
             updatedAt: ""
         },
+        contratos: [],
+        itens: [
+            {},{}
+        ],
+        salvaItens: false,
     }),
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Novo Grupo' : 'Editar Grupo'
+            return this.editedIndex === -1 ? 'Nova Entrada' : 'Editar Entrada'
         }
     },
     watch: {
@@ -168,6 +190,13 @@ export default {
         this.initialize()
     },
     methods: {
+        getIdProdutos(val){
+            this.editedItem.itensEntrada.push(val);
+
+            if(this.editedItem.itensEntrada.length == this.itens.length) {
+                this.registraEntrada();
+            }
+        },
         novo() {
             if(localStorage.getItem("usuarioAppB4")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
@@ -190,8 +219,12 @@ export default {
             }
         },
         initialize () {
-            this.axios.get(process.env.VUE_APP_URL_API + '/grupoPatrimonio').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/entrada').then(response => {
                 this.desserts = response.data;
+            });
+
+            this.axios.get(process.env.VUE_APP_URL_API + '/contrato').then(response => {
+                this.contratos = response.data;
             });
         },
         editItem (item) {
@@ -222,7 +255,7 @@ export default {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosApagar) {
-                            this.axios.delete(process.env.VUE_APP_URL_API + '/grupoPatrimonio/' + item.id + "/delete").then(response => {
+                            this.axios.delete(process.env.VUE_APP_URL_API + '/entrada/' + item.id + "/delete").then(response => {
                                 if(response.data){
                                     this.snackbar = true;
                                     this.color = 'success';
@@ -249,20 +282,20 @@ export default {
                 });    
             }
         },
-
         close () {
             this.dialog = false;
             setTimeout(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
-                this.editedIndex = -1
+                this.editedItem = Object.assign({}, this.defaultItem);
+                this.editedIndex = -1;
+                this.salvaItens = false;
             }, 300);
         },
         validaCampos() {
             return  this.editedItem.abreviacao != '' && this.editedItem.descricao != '';
         },
-        save () {
-            if (this.editedIndex > -1) {
-                this.axios.put(process.env.VUE_APP_URL_API + '/grupoPatrimonio', this.editedItem).then(response => {
+        registraEntrada() {
+             if (this.editedIndex > -1) {
+                this.axios.put(process.env.VUE_APP_URL_API + '/entrada', this.editedItem).then(response => {
                     if(response.data){
                         this.textoSnackbar = "Registro atualizado com sucesso!";
                         this.snackbar = true;
@@ -278,13 +311,14 @@ export default {
                 });
             } else {
                 if(this.validaCampos()){
-                    this.axios.post(process.env.VUE_APP_URL_API + '/grupoPatrimonio', this.editedItem).then(response => {
-                        if(response.data.id){
+                    this.axios.post(process.env.VUE_APP_URL_API + '/entrada', this.editedItem).then(response => {
+                        if(response.data){
                             this.textoSnackbar = "Batalhão inserido com sucesso!";
                             this.snackbar = true;
                             this.color = 'success';
                             this.initialize();
                             this.close();
+                            
                         }else {
                             this.snackbar = true;
                             this.color = 'error';
@@ -299,6 +333,9 @@ export default {
                     this.close();
                 }
             }
+        },
+        save () {
+            this.salvaItens = true;
         },
 
     }

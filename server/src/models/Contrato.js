@@ -26,11 +26,11 @@ sequelize.authenticate().then(function() {
 
 const Contrato = sequelize.define('contrato', {
     numeroContrato: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false
     },
     tipoContrato: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false
     },
     dataHomologacao: {
@@ -48,6 +48,18 @@ const Contrato = sequelize.define('contrato', {
     situacao: {
         type: Sequelize.BOOLEAN,
         allowNull: false
+    },
+    valorContrato: {
+        type: Sequelize.DOUBLE(8, 2),
+        allowNull: false
+    },
+    valorConsumido: {
+        type: Sequelize.DOUBLE(8, 2),
+        allowNull: false
+    },
+    saldo: {
+        type: Sequelize.DOUBLE(8, 2),
+        allowNull: false
     }
 },
 {
@@ -57,7 +69,7 @@ const Contrato = sequelize.define('contrato', {
   tableName: 'contrato'
 });
 
-DescargaPatrimonio.addHook('beforeValidate', (contrato, options) => {
+Contrato.addHook('beforeValidate', (contrato, options) => {
     var data = new Date();
     let data2 = new Date(data.valueOf() - data.getTimezoneOffset() * 60000);
     var data = data2.toISOString().replace(/\.\d{3}Z$/, '');

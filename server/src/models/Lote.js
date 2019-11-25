@@ -38,7 +38,7 @@ const Lote = sequelize.define('lote', {
             key: 'id'
         }
     },
-    valorContrato: {
+    valorLote: {
         type: Sequelize.DOUBLE(8, 2),
         allowNull: false
     },

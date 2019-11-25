@@ -173,7 +173,7 @@ export default {
             this.initialize();
         },
         deleteItem (item) {
-            if(localStorage.getItem("usuario")) {
+            if(localStorage.getItem("usuarioAppB4")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosApagar) {
@@ -205,7 +205,7 @@ export default {
             }
         },
         editarPessoa(item) {
-            if(localStorage.getItem("usuario")) {
+            if(localStorage.getItem("usuarioAppB4")) {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosEditar) {

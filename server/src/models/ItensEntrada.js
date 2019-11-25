@@ -24,54 +24,45 @@ sequelize.authenticate().then(function() {
     console.log("error: " + erro);
 });
 
-const Produto = sequelize.define('produto', {
-    codigoBarras: {
-        type: Sequelize.STRING,
-        allowNull: true
-    },
-    produto: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    descricao: {
-        type: Sequelize.STRING,
-        allowNull: true
-    },
-    observacoes: {
-        type: Sequelize.STRING,
-        allowNull: true
-    },
-    unidadeMedida: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    qtdEstoque: {
-        type: Sequelize.DOUBLE(8, 2),
-        allowNull: false
-    },
-    qtdMinima: {
-        type: Sequelize.DOUBLE(8, 2),
-        allowNull: false
-    },
-    idCategoriaProduto: {
+const ItensEntrada = sequelize.define('itensentrada', {
+    idEntrada: {
         type: Sequelize.INTEGER,
         references: {
             model: {
-                tableName: 'categoriaproduto'
+                tableName: 'entrada'
             },
             key: 'id'
         }
     },
-    localizacao: {
-        type: Sequelize.STRING,
-        allowNull: false
+    idContrato: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: {
+                tableName: 'contrato'
+            },
+            key: 'id'
+        }
     },
-    armario: {
-        type: Sequelize.STRING,
-        allowNull: false
+    idLote:{
+        type: Sequelize.INTEGER,
+        references: {
+            model: {
+                tableName: 'lote'
+            },
+            key: 'id'
+        }
     },
-    imagem: {
-        type: Sequelize.TEXT('medium'),
+    idProduto:{
+        type: Sequelize.INTEGER,
+        references: {
+            model: {
+                tableName: 'produto'
+            },
+            key: 'id'
+        }
+    },
+    qtdEntrada: {
+        type: Sequelize.DOUBLE(8,2),
         allowNull: false
     }
 },
@@ -79,18 +70,18 @@ const Produto = sequelize.define('produto', {
   charset: 'utf8',
   collate: 'utf8_general_ci',
   freezeTableName: true,
-  tableName: 'produto'
+  tableName: 'itensentrada'
 });
 
-Produto.addHook('beforeValidate', (produto, options) => {
+ItensEntrada.addHook('beforeValidate', (itesentrada, options) => {
     var data = new Date();
     let data2 = new Date(data.valueOf() - data.getTimezoneOffset() * 60000);
     var data = data2.toISOString().replace(/\.\d{3}Z$/, '');
-    produto.updatedAt = data;
+    itesentrada.updatedAt = data;
 });
 
-Produto.sync({
+ItensEntrada.sync({
     force: false
 });
 
-module.exports = Produto;
+module.exports = ItensEntrada;

@@ -185,7 +185,6 @@
                                             :rules="[v => !!v || 'Obrigatório prencher o valor econômico!']"
                                             label="Valor econônico"
                                             outlined
-
                                             v-money="money"
                                         ></v-text-field>
                                     </v-col>
@@ -213,7 +212,7 @@
                                     </v-col>
 
                                     <v-col cols="12" sm="6" md="4">
-                                       <v-file-input
+                                        <v-file-input
                                            color="deep-purple accent-4"
                                            counter
                                            label="Foto"
@@ -223,7 +222,7 @@
                                            outlined
                                            :show-size="1000"
                                            @change="setImage"
-                                       >
+                                        >
                                            <template v-slot:selection="{ index, text }">
                                                <v-chip
                                                    v-if="index < 2"
@@ -241,7 +240,7 @@
                                                >
                                                    +{{ foto.length - 2 }} Arquivo
                                                </span>
-                                           </template>
+                                            </template>
                                        </v-file-input>
                                    </v-col>
                                 </v-row>
@@ -346,13 +345,12 @@ export default {
                 value: 'codigo',
             },
             { text: 'Vínculo', value: 'vinculo' },
-            { text: 'Identificação', value: 'identificacao' },
             { text: 'Descrição', value: 'descricao' },
-            { text: 'Observações', value: 'observacoes' },
             { text: 'Data Entrada', value: 'dataEntrada' },
-            { text: 'Responsável', value: 'responsavelNome' },
             { text: 'Grupo', value: 'grupo' },
             { text: 'Setor', value: 'setor' },
+            { text: 'Responsável', value: 'responsavelNome' },
+            { text: 'Observações', value: 'observacoes' },
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
@@ -419,8 +417,8 @@ export default {
     },
     methods: {
         novo() {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.patrimonioCadastrar) {
                             this.dialog = true;
@@ -475,9 +473,9 @@ export default {
 
         },
         editItem (item) {
-            if(localStorage.getItem("usuario")) {
+            if(localStorage.getItem("usuarioAppB4")) {
                 this.openLoadingDialog();
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.patrimonioEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
@@ -500,8 +498,8 @@ export default {
             }  
         },
         deleteItem (item) {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.patrimonioApagar) {
                             this.axios.delete(process.env.VUE_APP_URL_API + '/patrimonio/' + item.id + "/delete").then(response => {

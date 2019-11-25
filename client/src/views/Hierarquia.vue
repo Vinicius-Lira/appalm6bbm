@@ -179,8 +179,8 @@ export default {
     },
     methods: {
         novo() {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosCadastrar) {
                             this.dialog = true;
@@ -206,8 +206,8 @@ export default {
         },
 
         editItem (item) {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
@@ -230,8 +230,8 @@ export default {
         },
 
         deleteItem (item) {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosApagar) {
                             this.axios.delete(process.env.VUE_APP_URL_API + '/hierarquia/' + item.id + "/delete").then(response => {

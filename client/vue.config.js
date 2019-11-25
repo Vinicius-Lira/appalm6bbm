@@ -10,3 +10,15 @@
 //         }
 //     }
 // };
+
+module.exports = {
+    // options...
+    publicPath: process.env.VUE_APP_BASE_URL,
+    // Other options include:
+    outputDir: undefined,
+    assetsDir: undefined,
+    runtimeCompiler: undefined,
+    productionSourceMap: undefined,
+    parallel: undefined,
+    css: undefined
+  }

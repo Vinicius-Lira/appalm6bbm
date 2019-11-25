@@ -239,8 +239,8 @@ export default {
     },
     methods: {
         novo() {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.patrimonioMovimentar) {
                             this.dialog = true;
@@ -282,8 +282,8 @@ export default {
         },
 
         editItem (item) {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.patrimonioMovimentarEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
@@ -305,8 +305,8 @@ export default {
             }
         },
         deleteItem (item) {
-            if(localStorage.getItem("usuario")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuario")).then(response => {
+            if(localStorage.getItem("usuarioAppB4")) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.patrimonioMovimentarApagar) {
                             this.axios.delete(process.env.VUE_APP_URL_API + '/movimentacaoPatrimonio/' + item.id + "/delete").then(response => {
@@ -335,9 +335,7 @@ export default {
                     }
                 });    
             }
-            
         },
-
         close () {
             this.dialog = false;
             setTimeout(() => {

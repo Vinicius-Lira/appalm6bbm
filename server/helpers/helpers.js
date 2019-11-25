@@ -67,11 +67,23 @@ async function calculaSegundosSessao(dataInicial){
     return await segundos < 0 ? segundos * -1 : segundos;
 }
 
+function converteMoeda(value) {
+    var valor = value.split(' ')[1].replace('.', '').replace(',', '.');
+    console.log(valor);
+    var result = 0;
+    var i = 0;
+    for(i in valor) {
+        result += valor[i];
+    }
+    return parseFloat(result);
+}
+
 const Helpers = {
     getDataHoraAtual,
     formatDate,
     generateToken,
-    calculaSegundosSessao
+    calculaSegundosSessao,
+    converteMoeda
 };
 
 module.exports = Helpers;
