@@ -2,6 +2,8 @@
 const Helpers = require("./../../helpers/helpers");
 const PropriedadesProduto = require('./../models/PropriedadesProduto');
 const Produto = require('./../models/Produto');
+const Lote = require('./../models/Lote');
+const ProdutosLote = require('./../models/ProdutosLote');
 
 exports.get = (req, res, next) => {
     const id = req.params.id;
@@ -18,6 +20,89 @@ exports.get = (req, res, next) => {
         res.status(200).json(find);
     });
 
+}
+
+exports.getByIdProdutoIdContrato = (req, res, next) => {
+    var idProduto = req.params.idProduto;
+    var idContrato = req.params.idContrato;
+
+    PropriedadesProduto.findAll().then(response => {
+        var propriedadesProduto = JSON.parse(JSON.stringify(response));
+        Produto.findAll().then(response => {
+            var produtos = JSON.parse(JSON.stringify(response));
+            var propriedadesProdutoBuscado = [];
+
+            Lote.findAll().then(response => {
+                var lotes = JSON.parse(JSON.stringify(response));
+                ProdutosLote.findAll().then(response => {
+                    var produtosLote = JSON.parse(JSON.stringify(response));
+                    var propriedadesProdutosLote = [];
+                    lotes.forEach(lote => {
+                        if(lote.idContrato == idContrato){
+                            produtosLote.forEach(produto => {
+                                if(produto.idLote == lote.id) {
+                                    propriedadesProdutosLote.push(produto.idPropriedadeProduto);
+                                }
+                            });
+                        }
+                    });
+
+                    propriedadesProduto.forEach(element => {
+                        if(element.idProduto == idProduto) {
+                            propriedadesProdutosLote.forEach(id => {
+                                if(id == element.id){
+                                    propriedadesProdutoBuscado.push(element);
+                                }
+                            });
+                        }
+                    });
+                    
+                    propriedadesProdutoBuscado.forEach(element => {
+                        for(var i = 0; i < produtos.length; i++) {
+                            if(element.idProduto == produtos[i].id) {
+                                element.produto = produtos[i].produto;
+                                break;
+                            }
+                        }
+                    });
+
+                    res.status(200).json(propriedadesProdutoBuscado);
+                });
+            });
+            
+            
+        });
+    });
+}
+
+exports.getByIdProduto = (req, res, next) => {
+    var idProduto = req.params.idProduto;
+
+    PropriedadesProduto.findAll().then(response => {
+        var propriedadesProduto = JSON.parse(JSON.stringify(response));
+        Produto.findAll().then(response => {
+            var produtos = JSON.parse(JSON.stringify(response));
+            var propriedadesProdutoBuscado = [];
+            
+            propriedadesProduto.forEach(element => {
+                if(element.idProduto == idProduto) {
+                    propriedadesProdutoBuscado.push(element);
+                }
+            });
+            
+            propriedadesProdutoBuscado.forEach(element => {
+                for(var i = 0; i < produtos.length; i++) {
+                    if(element.idProduto == produtos[i].id) {
+                        element.produto = produtos[i].produto;
+                        break;
+                    }
+                }
+            });
+
+            res.status(200).json(propriedadesProdutoBuscado);
+            
+        });
+    });
 }
 
 exports.getAll = (req, res, next) => {

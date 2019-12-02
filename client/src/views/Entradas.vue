@@ -38,16 +38,20 @@
                     <v-card>
                         <v-card-title>
                             <span class="headline">{{ formTitle }}</span>
+                            
                         </v-card-title>
 
                         <v-card-text>
+                            <v-alert v-model="alertaCampos" type="warning">
+                                {{ mensagemAlerta }}
+                            </v-alert>
                             <v-container>
                                 <v-row :style="{ margin: '0px', padding: '0px', height: '80px'}">
                                     <v-col cols="12" sm="12" md="4">
                                         <v-text-field
                                             v-model="editedItem.dataEntrada"
                                             :rules="[v => !!v || 'Obrigatório prencher a data de entrada!']"
-                                            label="Data Entrada"
+                                            label="Data Entrada *"
                                             v-mask="['##/##/####']"
                                             outlined
                                         ></v-text-field>
@@ -64,7 +68,7 @@
                                             v-model="editedItem.idContrato"
                                             :items="contratos"
                                             item-value="id" item-text="numeroContrato"
-                                            label="Contrato"
+                                            label="Contrato *"
                                             outlined
                                         ></v-select>
                                     </v-col>
@@ -76,9 +80,15 @@
                                             v-bind:key="item.key"
                                             v-for="item in itens"
                                             v-bind:salva="salvaItens"
+                                            v-bind:idContrato="editedItem.idContrato"
+                                            v-bind:item="item"
                                             @idProduto="getIdProdutos"
                                         >
                                         </item-entrada>
+                                    </v-col>
+                                    <v-subheader>Todos os campos com * é obrigatório o seu preenchimento!</v-subheader>
+                                    <v-col cols="12" sm="12" md="12">
+                                        <v-btn color="primary" class="mb-2"  @click="adicionaProduto">Adicionar</v-btn>
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -169,11 +179,18 @@ export default {
             createdAt: "",
             updatedAt: ""
         },
+        item: {
+            idContrato: null,
+            idLote: null,
+            idProduto: null,
+            idPropriedadeProduto: null,
+            qtdEntrada: 0
+        },
         contratos: [],
-        itens: [
-            {},{}
-        ],
+        itens: [],
         salvaItens: false,
+        alertaCampos: false,
+        mensagemAlerta: ""
     }),
 
     computed: {
@@ -190,9 +207,30 @@ export default {
         this.initialize()
     },
     methods: {
+        validaCampos() {
+            var camposEntrada = this.editedItem.dataEntrada != "" && this.editedItem.idContrato != "";
+            var itens = false;
+            if(this.editedItem.dataEntrada == "") {
+                this.mensagemAlerta = "Obrigatório preencher a data da entrada!"
+            }
+            if(this.editedItem.idContrato == "") {
+                this.mensagemAlerta = "Selecionar o contrato!"
+            }
+            for(var i = 0; i < this.editedItem.itensEntrada.length; i++) {
+                if(this.editedItem.itensEntrada[i].idProduto != "" && this.editedItem.itensEntrada[i].idPropriedadeProduto != "" && this.editedItem.itensEntrada[i].qtdEntrada != "") {
+                    itens = true;
+                }
+            }
+
+            return camposEntrada && itens;
+        },
+        adicionaProduto() {
+            this.itens.push({});
+        },
         getIdProdutos(val){
             this.editedItem.itensEntrada.push(val);
-
+            console.log(this.editedItem.itensEntrada);
+            console.log(this.editedItem.itensEntrada.length);
             if(this.editedItem.itensEntrada.length == this.itens.length) {
                 this.registraEntrada();
             }
@@ -203,6 +241,7 @@ export default {
                     if(response.data) {
                         if(response.data.cadastrosCadastrar) {
                             this.dialog = true;
+                            this.itens.push({});
                         }
                         if(!response.data.cadastrosCadastrar) {
                             this.snackbar = true;
@@ -234,6 +273,9 @@ export default {
                         if(response.data.cadastrosEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
                             this.editedItem = Object.assign({}, item);
+                            this.axios.get(process.env.VUE_APP_URL_API + '/entrada/entradaItens/' + this.editedItem.id).then(response => {
+                                this.itens = response.data;
+                            });
                             this.dialog = true;
                         }
                         if(!response.data.cadastrosEditar) {
@@ -283,6 +325,7 @@ export default {
             }
         },
         close () {
+            this.itens = [];
             this.dialog = false;
             setTimeout(() => {
                 this.editedItem = Object.assign({}, this.defaultItem);
@@ -290,52 +333,63 @@ export default {
                 this.salvaItens = false;
             }, 300);
         },
-        validaCampos() {
-            return  this.editedItem.abreviacao != '' && this.editedItem.descricao != '';
-        },
         registraEntrada() {
-             if (this.editedIndex > -1) {
-                this.axios.put(process.env.VUE_APP_URL_API + '/entrada', this.editedItem).then(response => {
-                    if(response.data){
-                        this.textoSnackbar = "Registro atualizado com sucesso!";
-                        this.snackbar = true;
-                        this.color = 'success';
-                        this.initialize();
-                        this.close();
-                    }else {
-                        this.snackbar = true;
-                        this.color = 'error';
-                        this.textoSnackbar = "Ocorreu um erro ao atualizar!";
-                        this.close();
-                    }
-                });
-            } else {
-                if(this.validaCampos()){
-                    this.axios.post(process.env.VUE_APP_URL_API + '/entrada', this.editedItem).then(response => {
+            if(this.validaCampos()) {
+                if (this.editedIndex > -1) {
+                    this.axios.put(process.env.VUE_APP_URL_API + '/entrada', this.editedItem).then(response => {
                         if(response.data){
-                            this.textoSnackbar = "Batalhão inserido com sucesso!";
+                            this.textoSnackbar = "Registro atualizado com sucesso!";
                             this.snackbar = true;
                             this.color = 'success';
                             this.initialize();
                             this.close();
-                            
                         }else {
                             this.snackbar = true;
                             this.color = 'error';
-                            this.textoSnackbar = "Ocorreu um erro ao cadastrar!";
+                            this.textoSnackbar = "Ocorreu um erro ao atualizar!";
                             this.close();
                         }
                     });
-                }else {
-                    this.snackbar = true;
-                    this.color = 'error';
-                    this.textoSnackbar = "Existe campos vazios ou incorretos!";
-                    this.close();
+                } else {
+                    
+                    if(this.validaCampos()){
+                        
+                        this.axios.post(process.env.VUE_APP_URL_API + '/entrada', this.editedItem).then(response => {
+                            if(response.data){
+                                this.textoSnackbar = "Batalhão inserido com sucesso!";
+                                this.snackbar = true;
+                                this.color = 'success';
+                                this.initialize();
+                                this.close();
+                                
+                            }else {
+                                this.snackbar = true;
+                                this.color = 'error';
+                                this.textoSnackbar = "Ocorreu um erro ao cadastrar!";
+                                this.close();
+                            }
+                        });
+                    }else {
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Existe campos vazios ou incorretos!";
+                        this.close();
+                    }
                 }
             }
+
+            if(!this.validaCampos()) {
+                setTimeout(() => {
+                    this.salvaItens = false;
+                }, 300);
+                this.mensagemAlerta = "Verifique se todos os campos marcados com * estão preenchidos corretamente!"
+                this.alertaCampos = true;
+            }
+        
         },
         save () {
             this.salvaItens = true;
+            this.editedItem.itensEntrada = [];
         },
 
     }

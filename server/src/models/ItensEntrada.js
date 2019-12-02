@@ -61,6 +61,15 @@ const ItensEntrada = sequelize.define('itensentrada', {
             key: 'id'
         }
     },
+    idPropriedadeProduto: {
+        type: Sequelize.INTEGER,
+        references: {
+            model: {
+                tableName: 'propriedadeproduto'
+            },
+            key: 'id'
+        }
+    },
     qtdEntrada: {
         type: Sequelize.DOUBLE(8,2),
         allowNull: false

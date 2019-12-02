@@ -24,67 +24,50 @@ sequelize.authenticate().then(function() {
     console.log("error: " + erro);
 });
 
-const ProdutosLote = sequelize.define('produtoslote', {
-    idLote: {
+const Saida = sequelize.define('saida', {
+    dataSaida: {
+        type: Sequelize.DATE,
+        allowNull: false
+    },
+    observacoes: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    idSolicitante: {
         type: Sequelize.INTEGER,
         references: {
             model: {
-                tableName: 'lote'
+                tableName: 'pessoa'
             },
             key: 'id'
         }
     },
-    idProduto: {
+    idResponsavelEntrega: {
         type: Sequelize.INTEGER,
         references: {
             model: {
-                tableName: 'produto'
+                tableName: 'pessoa'
             },
             key: 'id'
         }
     },
-    idPropriedadeProduto: {
-        type: Sequelize.INTEGER,
-        references: {
-            model: {
-                tableName: 'propriedadeproduto'
-            },
-            key: 'id'
-        }
-    },
-    qtdContratada: {
-        type: Sequelize.DOUBLE(8, 2),
-        allowNull: false
-    },
-    qtdRecebida: {
-        type: Sequelize.DOUBLE(8, 2),
-        allowNull: false
-    },
-    qtdRestante: {
-        type: Sequelize.DOUBLE(8, 2),
-        allowNull: false
-    },
-    valorUnitario: {
-        type: Sequelize.DOUBLE(8, 2),
-        allowNull: false
-    }
 },
 {
   charset: 'utf8',
   collate: 'utf8_general_ci',
   freezeTableName: true,
-  tableName: 'produtoslote'
+  tableName: 'saida'
 });
 
-ProdutosLote.addHook('beforeValidate', (produtoslote, options) => {
+Entrada.addHook('beforeValidate', (saida, options) => {
     var data = new Date();
     let data2 = new Date(data.valueOf() - data.getTimezoneOffset() * 60000);
     var data = data2.toISOString().replace(/\.\d{3}Z$/, '');
-    produtoslote.updatedAt = data;
+    saida.updatedAt = data;
 });
 
-ProdutosLote.sync({
+Saida.sync({
     force: false
 });
 
-module.exports = ProdutosLote;
+module.exports = Saida;

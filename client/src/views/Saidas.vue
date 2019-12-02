@@ -8,7 +8,7 @@
             'items-per-page-options': [8,10,12,14]
         }"
     >
-        
+
         <template v-slot:top>
             <v-toolbar flat color="white">
 
@@ -26,109 +26,69 @@
                         </v-col>
                     </v-row>
                 </v-container>
-                <v-snackbar
-                        v-model="snackbar"
-                        :bottom="y === 'bottom'"
-                        :color="color"
-                        :left="x === 'left'"
-                        :multi-line="mode === 'multi-line'"
-                        :right="x === 'right'"
-                        :timeout="timeout"
-                        :top="y === 'top'"
-                        :vertical="mode === 'vertical'"
-
-                        class="snackbar"
-                    >
-                        {{ textoSnackbar }}
-                        <v-btn
-                            dark
-                            text
-                            icon
-                            @click="snackbar = false"
-                        >
-                            <v-icon
-                                class="mr-2"
-                                @click="snackbar = false"
-                            >mdi-close</v-icon>
-                        </v-btn>
-                </v-snackbar>
+               
                 <div class="flex-grow-1"></div>
-                
+
                 <v-dialog v-model="dialog" max-width="1000px">
-                    
+
                     <template v-slot:activator="{ on }">
-                        <v-btn color="primary" class="mb-2"  @click="novo">Novo</v-btn>
+                        <v-btn color="primary" class="mb-2"  @click="novo">Nova</v-btn>
                     </template>
 
                     <v-card>
                         <v-card-title>
                             <span class="headline">{{ formTitle }}</span>
+                            
                         </v-card-title>
 
                         <v-card-text>
+                            <v-alert v-model="alertaCampos" type="warning">
+                                {{ mensagemAlerta }}
+                            </v-alert>
                             <v-container>
-                                <v-row>
+                                <v-row :style="{ margin: '0px', padding: '0px', height: '80px'}">
                                     <v-col cols="12" sm="12" md="3">
                                         <v-text-field
-                                            v-model="editedItem.numeroContrato"
-                                            :rules="[v => !!v || 'Obrigatório prencher número do contrato!']"
-                                            label="Nº Contrato"
-                                            v-mask="['###/####', '####/####', '#####/####']"
+                                            v-model="editedItem.dataSaida"
+                                            :rules="[v => !!v || 'Obrigatório prencher a data de saída!']"
+                                            label="Data Saída *"
+                                            v-mask="['##/##/####']"
                                             outlined
                                         ></v-text-field>
                                     </v-col>
-                                    <v-col cols="12" sm="12" md="3">
+                                    <v-col cols="12" sm="12" md="4">
+                                        <v-text-field
+                                            v-model="editedItem.observacoes"
+                                            label="Observações"
+                                            outlined
+                                        ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="5">
                                         <v-select
-                                            v-model="editedItem.tipoContrato"
-                                            :items="tipoContratos"
-                                            label="Tipo Contrato"
+                                            v-model="editedItem.idSolicitante"
+                                            :items="contratos"
+                                            item-value="id" item-text="nome"
+                                            label="Solicitante *"
                                             outlined
                                         ></v-select>
-                                    </v-col>
-                                    <v-col cols="12" sm="12" md="3">
-                                        <v-text-field
-                                            v-model="editedItem.dataHomologacao"
-                                            v-mask="['##/##/####']"
-                                            label="Data Homologação"
-                                            outlined
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="12" md="3">
-                                        <v-text-field
-                                            v-model="editedItem.dataVigencia"
-                                            v-mask="['##/##/####']"
-                                            label="Data Vigencia"
-                                            outlined
-                                        ></v-text-field>
                                     </v-col>
                                 </v-row>
                                 <v-row>
-                                    <v-col cols="12" sm="12" md="4">
-                                        <v-autocomplete
-                                            v-model="editedItem.categoria"
-                                            :items="categoriaContrato"
-                                            label="Categoria"
-                                            outlined
-                                        ></v-autocomplete>
+                                     <v-subheader>Itens Saída</v-subheader>
+                                    <v-col cols="12" sm="12" md="12">
+                                        <item-saida
+                                            v-bind:key="item.key"
+                                            v-for="item in itens"
+                                            v-bind:salva="salvaItens"
+                                            v-bind:idContrato="editedItem.idContrato"
+                                            v-bind:item="item"
+                                            @idProduto="getIdProdutos"
+                                        >
+                                        </item-saida>
                                     </v-col>
-
-                                    <v-col cols="12" sm="12" md="4">
-                                        <v-select
-                                            v-model="editedItem.situacao"
-                                            :items="situacoes"
-                                            item-value="value" item-text="text"
-                                            label="Situação"
-                                            outlined
-                                        ></v-select>
-                                    </v-col>
-
-                                    <v-col cols="12" sm="12" md="4">
-                                        <v-text-field
-                                            v-model="editedItem.valorContrato"
-                                            v-money="money"
-                                            label="Valor Contrato"
-                                            outlined
-                                        ></v-text-field>
+                                    <v-subheader>Todos os campos com * é obrigatório o seu preenchimento!</v-subheader>
+                                    <v-col cols="12" sm="12" md="12">
+                                        <v-btn color="primary" class="mb-2"  @click="adicionaProduto">Adicionar</v-btn>
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -169,9 +129,6 @@
 </template>
 
 <script>
-
-import {VMoney} from 'v-money';
-
 export default {
     name: 'obm',
     data: () => ({
@@ -190,82 +147,55 @@ export default {
         },
         headers: [
             {
-                text: 'Nº Contrato',
+                text: 'Data Saida',
                 align: 'left',
                 sortable: true,
-                value: 'numeroContrato',
+                value: 'dataSaida',
             },
-            { text: 'Tipo Con.', value: 'tipoContrato', sortable: true },
-            { text: 'Dt. Homologação', value: 'dataHomologacao', sortable: true },
-            { text: 'Dt. Vigencia', value: 'dataVigencia', sortable: true },
-            { text: 'Categoria', value: 'categoria', sortable: true },
-            { text: 'Situação', value: 'situacao', sortable: true },
+            { text: 'Observações', value: 'observacoes', sortable: false },
+            { text: 'Solicitante', value: 'solicitante', sortable: true },
+            { text: 'Resp. Entrega', value: 'responsavelEntrega', sortable: true },
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
         editedIndex: -1,
         editedItem: {
-            numeroContrato: null,
-            tipoContrato: null,
-            dataHomologacao: "",
-            dataVigencia: "",
-            categoria: null,
-            situacao: false,
-            valorContrato: 0.0,
-            valorConsumido: 0.0,
+            dataSaida: "",
+            observacoes: "",
+            idSolicitante: null,
+            idPessoa: null,
+            usuario: localStorage.getItem("usuarioAppB4"),
+            itensSaida: [],
             createdAt: "",
             updatedAt: ""
         },
         defaultItem: {
-            numeroContrato: null,
-            tipoContrato: null,
-            dataHomologacao: "",
-            dataVigencia: "",
-            categoria: null,
-            situacao: "",
-            valorContrato: "",
-            valorConsumido: "",
+            dataSaida: "",
+            observacoes: "",
+            idSolicitante: null,
+            idPessoa: null,
+            usuario: localStorage.getItem("usuarioAppB4"),
+            itensSaida: [],
             createdAt: "",
             updatedAt: ""
         },
-        money: {
-            decimal: ',',
-            thousands: '.',
-            prefix: 'R$ ',
-            suffix: '',
-            precision: 2,
-            masked: false
+        item: {
+            idContrato: null,
+            idLote: null,
+            idProduto: null,
+            idPropriedadeProduto: null,
+            qtdEntrada: 0
         },
-        tipoContratos: [
-            'Pregão Presencial',
-            'Compra Direta'
-        ],
-        categoriaContrato: [
-            'APH',
-            'Gêneros Alimentícios',
-            'Materiais de Expediente',
-            'Informática',
-            'Fardamento',
-            'Pneus',
-            'Restaurante',
-            'Higiene e Limpeza',
-        ],
-        situacoes: [
-            {
-                text: "Ativo",
-                value: "Ativo"
-            },
-            {
-                text: "Inativo",
-                value: "Inativo"
-            }
-        ],
-        dialogLotes: false,
+        contratos: [],
+        itens: [],
+        salvaItens: false,
+        alertaCampos: false,
+        mensagemAlerta: ""
     }),
-    directives: {money: VMoney},
+
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'Novo Contrato' : 'Editar Contrato'
+            return this.editedIndex === -1 ? 'Nova Saída' : 'Editar Saída'
         }
     },
     watch: {
@@ -277,8 +207,32 @@ export default {
         this.initialize()
     },
     methods: {
-        closeLotes() {
-            this.dialogLotes = false;
+        validaCampos() {
+            var camposEntrada = this.editedItem.dataEntrada != "" && this.editedItem.idContrato != "";
+            var itens = false;
+            if(this.editedItem.dataEntrada == "") {
+                this.mensagemAlerta = "Obrigatório preencher a data da entrada!"
+            }
+            if(this.editedItem.idContrato == "") {
+                this.mensagemAlerta = "Selecionar o contrato!"
+            }
+            for(var i = 0; i < this.editedItem.itensEntrada.length; i++) {
+                if(this.editedItem.itensEntrada[i].idProduto != "" && this.editedItem.itensEntrada[i].idPropriedadeProduto != "" && this.editedItem.itensEntrada[i].qtdEntrada != "") {
+                    itens = true;
+                }
+            }
+
+            return camposEntrada && itens;
+        },
+        adicionaProduto() {
+            this.itens.push({});
+        },
+        getIdProdutos(val){
+            this.editedItem.itensEntrada.push(val);
+
+            if(this.editedItem.itensEntrada.length == this.itens.length) {
+                this.registraEntrada();
+            }
         },
         novo() {
             if(localStorage.getItem("usuarioAppB4")) {
@@ -286,6 +240,7 @@ export default {
                     if(response.data) {
                         if(response.data.cadastrosCadastrar) {
                             this.dialog = true;
+                            this.itens.push({});
                         }
                         if(!response.data.cadastrosCadastrar) {
                             this.snackbar = true;
@@ -302,8 +257,12 @@ export default {
             }
         },
         initialize () {
-            this.axios.get(process.env.VUE_APP_URL_API + '/contrato').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/entrada').then(response => {
                 this.desserts = response.data;
+            });
+
+            this.axios.get(process.env.VUE_APP_URL_API + '/contrato').then(response => {
+                this.contratos = response.data;
             });
         },
         editItem (item) {
@@ -313,6 +272,9 @@ export default {
                         if(response.data.cadastrosEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
                             this.editedItem = Object.assign({}, item);
+                            this.axios.get(process.env.VUE_APP_URL_API + '/entrada/entradaItens/' + this.editedItem.id).then(response => {
+                                this.itens = response.data;
+                            });
                             this.dialog = true;
                         }
                         if(!response.data.cadastrosEditar) {
@@ -334,7 +296,7 @@ export default {
                 this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
                     if(response.data) {
                         if(response.data.cadastrosApagar) {
-                            this.axios.delete(process.env.VUE_APP_URL_API + '/contrato/' + item.id + "/delete").then(response => {
+                            this.axios.delete(process.env.VUE_APP_URL_API + '/entrada/' + item.id + "/delete").then(response => {
                                 if(response.data){
                                     this.snackbar = true;
                                     this.color = 'success';
@@ -361,38 +323,21 @@ export default {
                 });    
             }
         },
-
         close () {
+            this.itens = [];
             this.dialog = false;
             setTimeout(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
-                this.editedIndex = -1
+                this.editedItem = Object.assign({}, this.defaultItem);
+                this.editedIndex = -1;
+                this.salvaItens = false;
             }, 300);
         },
-        validaCampos() {
-            return  this.editedItem.abreviacao != '' && this.editedItem.descricao != '';
-        },
-        save () {
-            if (this.editedIndex > -1) {
-                this.axios.put(process.env.VUE_APP_URL_API + '/contrato', this.editedItem).then(response => {
-                    if(response.data){
-                        this.textoSnackbar = "Registro atualizado com sucesso!";
-                        this.snackbar = true;
-                        this.color = 'success';
-                        this.initialize();
-                        this.close();
-                    }else {
-                        this.snackbar = true;
-                        this.color = 'error';
-                        this.textoSnackbar = "Ocorreu um erro ao atualizar!";
-                        this.close();
-                    }
-                });
-            } else {
-                if(this.validaCampos()){
-                    this.axios.post(process.env.VUE_APP_URL_API + '/contrato', this.editedItem).then(response => {
-                        if(response.data.id){
-                            this.textoSnackbar = "Contrato inserido com sucesso!";
+        registraEntrada() {
+            if(this.validaCampos()) {
+                if (this.editedIndex > -1) {
+                    this.axios.put(process.env.VUE_APP_URL_API + '/entrada', this.editedItem).then(response => {
+                        if(response.data){
+                            this.textoSnackbar = "Registro atualizado com sucesso!";
                             this.snackbar = true;
                             this.color = 'success';
                             this.initialize();
@@ -400,17 +345,50 @@ export default {
                         }else {
                             this.snackbar = true;
                             this.color = 'error';
-                            this.textoSnackbar = "Ocorreu um erro ao cadastrar!";
+                            this.textoSnackbar = "Ocorreu um erro ao atualizar!";
                             this.close();
                         }
                     });
-                }else {
-                    this.snackbar = true;
-                    this.color = 'error';
-                    this.textoSnackbar = "Existe campos vazios ou incorretos!";
-                    this.close();
+                } else {
+                    
+                    if(this.validaCampos()){
+                        
+                        this.axios.post(process.env.VUE_APP_URL_API + '/entrada', this.editedItem).then(response => {
+                            if(response.data){
+                                this.textoSnackbar = "Batalhão inserido com sucesso!";
+                                this.snackbar = true;
+                                this.color = 'success';
+                                this.initialize();
+                                this.close();
+                                
+                            }else {
+                                this.snackbar = true;
+                                this.color = 'error';
+                                this.textoSnackbar = "Ocorreu um erro ao cadastrar!";
+                                this.close();
+                            }
+                        });
+                    }else {
+                        this.snackbar = true;
+                        this.color = 'error';
+                        this.textoSnackbar = "Existe campos vazios ou incorretos!";
+                        this.close();
+                    }
                 }
             }
+
+            if(!this.validaCampos()) {
+                setTimeout(() => {
+                    this.salvaItens = false;
+                }, 300);
+                this.mensagemAlerta = "Verifique se todos os campos marcados com * estão preenchidos corretamente!"
+                this.alertaCampos = true;
+            }
+        
+        },
+        save () {
+            this.salvaItens = true;
+            this.editedItem.itensEntrada = [];
         },
 
     }

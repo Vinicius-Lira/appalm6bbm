@@ -2,6 +2,8 @@
 const Helpers = require("./../../helpers/helpers");
 const Produto = require('./../models/Produto');
 const CategoriaProduto = require('./../models/CategoriaProduto');
+const Lote = require('./../models/Lote');
+const ProdutosLote = require('./../models/ProdutosLote');
 
 exports.get = (req, res, next) => {
     const id = req.params.id;
@@ -37,6 +39,36 @@ exports.getAll = (req, res, next) => {
         });
     });
     
+}
+
+exports.getProdutosByIdContrato = (req, res, next) => {
+    var idContrato = req.params.idContrato;    
+    Produto.findAll().then(response => {
+        var produtos = JSON.parse(JSON.stringify(response));
+        Lote.findAll().then(response => {
+            var lotes = JSON.parse(JSON.stringify(response));
+            ProdutosLote.findAll().then(response => {
+                var produtosLote = JSON.parse(JSON.stringify(response));
+                var produtosContrato = [];
+                for(var i = 0; i < lotes.length; i++) {
+                    if(lotes[i].idContrato == idContrato) {
+                        for(var k = 0; k < produtosLote.length; k++) {
+                            if(lotes[i].id == produtosLote[k].idLote) {
+                                console.log(produtos.length);
+                                produtos.forEach(element => {
+                                    if(element.id == produtosLote[k].idProduto) {
+                                        produtosContrato.push(element);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+
+                res.status(200).json(produtosContrato);
+            });
+        });
+    });
 }
 
 exports.post = (req, res, next) => {

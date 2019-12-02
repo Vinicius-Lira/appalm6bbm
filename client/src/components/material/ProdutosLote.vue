@@ -42,16 +42,26 @@
                                                             :items="produtos"
                                                             outlined
                                                             item-value="id" item-text="produto"
+                                                            @change="buscaPropriedades"
                                                         ></v-autocomplete>
                                                     </v-col>
-                                                    <v-col cols="12" sm="12" md="6">
+                                                    <v-col cols="12" sm="12" md="4">
                                                         <v-text-field
                                                             v-model="editedItem.qtdContratada"
                                                             label="Qtd. Contratada"
                                                             outlined
                                                         ></v-text-field>
                                                     </v-col>
-                                                    <v-col cols="12" sm="12" md="6">
+                                                    <v-col cols="12" sm="12" md="4">
+                                                        <v-select
+                                                            :items="propriedades"
+                                                            v-model="editedItem.idPropriedadeProduto"
+                                                            label="Propriedade Produto"
+                                                            item-value="id" item-text="tamanho"
+                                                            outlined
+                                                        ></v-select>
+                                                    </v-col>
+                                                    <v-col cols="12" sm="12" md="4">
                                                         <v-text-field
                                                             v-model="editedItem.valorUnitario"
                                                             label="Valor Unitário"
@@ -134,6 +144,7 @@ export default {
                 sortable: true,
                 value: 'produto',
             },
+            { text: 'Propriedade', value: 'propriedade' },
             { text: 'Qtd. Contratada', value: 'qtdContratada' },
             { text: 'Qtd. Recebida', value: 'qtdRecebida' },
             { text: 'Qtd. Restante', value: 'qtdRestante' },
@@ -144,7 +155,8 @@ export default {
         editedIndex: -1,
         editedItem: {
             idLote: "",
-            idProduto: "",
+            idProduto: null,
+            idPropriedadeProduto: null,
             qtdContratada: "",
             qtdRecebida: "",
             qtdRestante: "",
@@ -154,7 +166,8 @@ export default {
         },
         defaultItem: {
             idLote: "",
-            idProduto: "",
+            idProduto: null,
+            idPropriedadeProduto: null,
             qtdContratada: "",
             qtdRecebida: "",
             qtdRestante: "",
@@ -162,7 +175,8 @@ export default {
             createdAt: "",
             updatedAt: ""
         },
-        produtos: []
+        produtos: [],
+        propriedades: []
     }),
     directives: {money: VMoney},
     computed: {
@@ -197,6 +211,13 @@ export default {
         this.initialize();
     },
     methods: {
+        buscaPropriedades() {
+            if(this.editedItem.idProduto != null) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/propriedadesProduto/produtoid/' + this.editedItem.idProduto).then(response => {
+                    this.propriedades = response.data;
+                });
+            }
+        },
         getProdutosLote() {
             this.axios.get(process.env.VUE_APP_URL_API + '/produtosLote/lote/' + this.idLote).then(response => {
                 this.desserts = response.data;
@@ -227,6 +248,8 @@ export default {
             this.axios.get(process.env.VUE_APP_URL_API + '/produto').then(response => {
                 this.produtos = response.data;
             });
+
+            this.getProdutosLote();
         },
         editItem (item) {
             if(localStorage.getItem("usuarioAppB4")) {
@@ -235,7 +258,10 @@ export default {
                         if(response.data.cadastrosEditar) {
                             this.editedIndex = this.desserts.indexOf(item);
                             this.editedItem = Object.assign({}, item);
-                            this.dialog = true;
+                            this.dialogNovo = true;
+                            this.axios.get(process.env.VUE_APP_URL_API + '/propriedadesProduto/produtoid/' + this.editedItem.idProduto).then(response => {
+                                this.propriedades = response.data;
+                            });
                         }
                         if(!response.data.cadastrosEditar) {
                             this.snackbar = true;

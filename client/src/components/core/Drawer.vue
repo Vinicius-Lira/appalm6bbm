@@ -175,8 +175,8 @@
               </v-list-item>
 
               <v-list-item
-                :key="'Movimentações'"
-                :to="'/patrimonioMovimentacoes'"
+                :key="'Saidas'"
+                :to="'/saidas'"
                 active-class="error white--text"
                 :style="{ 'padding-left': '40px' }"
               >

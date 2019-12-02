@@ -41,6 +41,11 @@ export default [
         view: 'Entradas'
     },
     {
+        path: '/saidas',
+        name: 'Saídas',
+        view: 'Saidas'
+    },
+    {
         path: '/grupoPatrimonio',
         name: 'Grupos Patrimônio',
         view: 'GrupoPatrimonio'

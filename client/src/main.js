@@ -8,6 +8,8 @@ import { sync } from 'vuex-router-sync';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import VueTheMask from 'vue-the-mask';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
 Vue.use(VueTheMask);
 Vue.use(VueAxios, axios);

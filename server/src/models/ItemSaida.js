@@ -24,17 +24,17 @@ sequelize.authenticate().then(function() {
     console.log("error: " + erro);
 });
 
-const ProdutosLote = sequelize.define('produtoslote', {
-    idLote: {
+const ItemSaida = sequelize.define('itemsaida', {
+    idSaida: {
         type: Sequelize.INTEGER,
         references: {
             model: {
-                tableName: 'lote'
+                tableName: 'saida'
             },
             key: 'id'
         }
     },
-    idProduto: {
+    idProduto:{
         type: Sequelize.INTEGER,
         references: {
             model: {
@@ -52,20 +52,8 @@ const ProdutosLote = sequelize.define('produtoslote', {
             key: 'id'
         }
     },
-    qtdContratada: {
-        type: Sequelize.DOUBLE(8, 2),
-        allowNull: false
-    },
-    qtdRecebida: {
-        type: Sequelize.DOUBLE(8, 2),
-        allowNull: false
-    },
-    qtdRestante: {
-        type: Sequelize.DOUBLE(8, 2),
-        allowNull: false
-    },
-    valorUnitario: {
-        type: Sequelize.DOUBLE(8, 2),
+    qtdSaida: {
+        type: Sequelize.DOUBLE(8,2),
         allowNull: false
     }
 },
@@ -73,18 +61,18 @@ const ProdutosLote = sequelize.define('produtoslote', {
   charset: 'utf8',
   collate: 'utf8_general_ci',
   freezeTableName: true,
-  tableName: 'produtoslote'
+  tableName: 'itemsaida'
 });
 
-ProdutosLote.addHook('beforeValidate', (produtoslote, options) => {
+ItemSaida.addHook('beforeValidate', (itemsaida, options) => {
     var data = new Date();
     let data2 = new Date(data.valueOf() - data.getTimezoneOffset() * 60000);
     var data = data2.toISOString().replace(/\.\d{3}Z$/, '');
-    produtoslote.updatedAt = data;
+    itemsaida.updatedAt = data;
 });
 
-ProdutosLote.sync({
+ItemSaida.sync({
     force: false
 });
 
-module.exports = ProdutosLote;
+module.exports = ItemSaida;

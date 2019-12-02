@@ -46,7 +46,7 @@ exports.post = (req, res, next) => {
         if(existeUsuario) {
             Login.create(data).then(response => {
                 if(response){
-                    axios.get('http://localhost?usuario=' + usuario + '&' + 'passwd=' + senha).then(response => {
+                    axios.get('http://10.193.92.110/?usuario=' + usuario + '&' + 'passwd=' + senha).then(response => {
                         if(response.data){
                             res.status(200).json({
                                 response: true,
