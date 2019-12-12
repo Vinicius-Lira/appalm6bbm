@@ -16,10 +16,17 @@ import ProdutosLote from '@/components/material/ProdutosLote';
 import ItemEntrada from '@/components/material/ItemEntrada';
 import ItemSaida from '@/components/material/ItemSaida';
 
+import ConfirmaUsuario from '@/components/material/ConfirmaUsuario';
+
+import Saida from '@/components/material/Saida';
+
 import Loading from '@/components/material/Loading';
+
+Vue.component('confirma-usuario', ConfirmaUsuario);
 
 Vue.component('item-entrada', ItemEntrada);
 Vue.component('item-saida', ItemSaida);
+Vue.component('saida', Saida);
 
 Vue.component('produtos-lote', ProdutosLote);
 

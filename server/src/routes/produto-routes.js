@@ -6,6 +6,7 @@ const controller = require('./../controllers/produto-controller');
 
 router.get('/',  controller.getAll);
 router.get('/getProdutosByIdContrato/:idContrato', controller.getProdutosByIdContrato);
+router.get('/getPropriedadesProdutosSaida/:idProduto', controller.getPropriedadesProdutosSaida);
 router.get('/:id',  controller.get);
 router.post('/',    controller.post);
 router.put('/',     controller.update);

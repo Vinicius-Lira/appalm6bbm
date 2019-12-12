@@ -74,7 +74,7 @@
                                     </v-col>
                                 </v-row>
                                 <v-row>
-                                     <v-subheader>Itens Entrada</v-subheader>
+                                    <v-subheader>Itens Entrada</v-subheader>
                                     <v-col cols="12" sm="12" md="12">
                                         <item-entrada 
                                             v-bind:key="item.key"
@@ -229,8 +229,6 @@ export default {
         },
         getIdProdutos(val){
             this.editedItem.itensEntrada.push(val);
-            console.log(this.editedItem.itensEntrada);
-            console.log(this.editedItem.itensEntrada.length);
             if(this.editedItem.itensEntrada.length == this.itens.length) {
                 this.registraEntrada();
             }

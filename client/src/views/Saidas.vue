@@ -28,83 +28,29 @@
                 </v-container>
                
                 <div class="flex-grow-1"></div>
+                <saida
+                    v-bind:openDialog="novaSaida"
+                    @close="close"
+                ></saida>
+               
 
                 <v-dialog v-model="dialog" max-width="1000px">
-
+                    
                     <template v-slot:activator="{ on }">
                         <v-btn color="primary" class="mb-2"  @click="novo">Nova</v-btn>
                     </template>
-
-                    <v-card>
-                        <v-card-title>
-                            <span class="headline">{{ formTitle }}</span>
-                            
-                        </v-card-title>
-
-                        <v-card-text>
-                            <v-alert v-model="alertaCampos" type="warning">
-                                {{ mensagemAlerta }}
-                            </v-alert>
-                            <v-container>
-                                <v-row :style="{ margin: '0px', padding: '0px', height: '80px'}">
-                                    <v-col cols="12" sm="12" md="3">
-                                        <v-text-field
-                                            v-model="editedItem.dataSaida"
-                                            :rules="[v => !!v || 'Obrigatório prencher a data de saída!']"
-                                            label="Data Saída *"
-                                            v-mask="['##/##/####']"
-                                            outlined
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="12" md="4">
-                                        <v-text-field
-                                            v-model="editedItem.observacoes"
-                                            label="Observações"
-                                            outlined
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12" sm="12" md="5">
-                                        <v-select
-                                            v-model="editedItem.idSolicitante"
-                                            :items="contratos"
-                                            item-value="id" item-text="nome"
-                                            label="Solicitante *"
-                                            outlined
-                                        ></v-select>
-                                    </v-col>
-                                </v-row>
-                                <v-row>
-                                     <v-subheader>Itens Saída</v-subheader>
-                                    <v-col cols="12" sm="12" md="12">
-                                        <item-saida
-                                            v-bind:key="item.key"
-                                            v-for="item in itens"
-                                            v-bind:salva="salvaItens"
-                                            v-bind:idContrato="editedItem.idContrato"
-                                            v-bind:item="item"
-                                            @idProduto="getIdProdutos"
-                                        >
-                                        </item-saida>
-                                    </v-col>
-                                    <v-subheader>Todos os campos com * é obrigatório o seu preenchimento!</v-subheader>
-                                    <v-col cols="12" sm="12" md="12">
-                                        <v-btn color="primary" class="mb-2"  @click="adicionaProduto">Adicionar</v-btn>
-                                    </v-col>
-                                </v-row>
-                            </v-container>
-                        </v-card-text>
-
-                        <v-card-actions>
-                            <div class="flex-grow-1"></div>
-                            <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
-                            <v-btn color="blue darken-1" text @click="save">Salvar</v-btn>
-                        </v-card-actions>
-                    </v-card>
                 </v-dialog>
             </v-toolbar>
         </template>
 
         <template v-slot:item.action="{ item }">
+            <v-icon
+                small
+                class="mr-2"
+                @click="editItem(item)"
+            >
+                mdi-eye
+            </v-icon>
             <v-icon
                 small
                 class="mr-2"
@@ -133,6 +79,7 @@ export default {
     name: 'obm',
     data: () => ({
         dialog: false,
+        novaSaida: false,
         search: "",
         textoSnackbar: "",
         color: 'success',
@@ -158,46 +105,9 @@ export default {
             { text: 'Ações', value: 'action', sortable: false },
         ],
         desserts: [],
-        editedIndex: -1,
-        editedItem: {
-            dataSaida: "",
-            observacoes: "",
-            idSolicitante: null,
-            idPessoa: null,
-            usuario: localStorage.getItem("usuarioAppB4"),
-            itensSaida: [],
-            createdAt: "",
-            updatedAt: ""
-        },
-        defaultItem: {
-            dataSaida: "",
-            observacoes: "",
-            idSolicitante: null,
-            idPessoa: null,
-            usuario: localStorage.getItem("usuarioAppB4"),
-            itensSaida: [],
-            createdAt: "",
-            updatedAt: ""
-        },
-        item: {
-            idContrato: null,
-            idLote: null,
-            idProduto: null,
-            idPropriedadeProduto: null,
-            qtdEntrada: 0
-        },
-        contratos: [],
-        itens: [],
-        salvaItens: false,
-        alertaCampos: false,
-        mensagemAlerta: ""
+        mensagemAlerta: "",
+        
     }),
-
-    computed: {
-        formTitle () {
-            return this.editedIndex === -1 ? 'Nova Saída' : 'Editar Saída'
-        }
-    },
     watch: {
         dialog (val) {
             val || this.close()
@@ -207,23 +117,6 @@ export default {
         this.initialize()
     },
     methods: {
-        validaCampos() {
-            var camposEntrada = this.editedItem.dataEntrada != "" && this.editedItem.idContrato != "";
-            var itens = false;
-            if(this.editedItem.dataEntrada == "") {
-                this.mensagemAlerta = "Obrigatório preencher a data da entrada!"
-            }
-            if(this.editedItem.idContrato == "") {
-                this.mensagemAlerta = "Selecionar o contrato!"
-            }
-            for(var i = 0; i < this.editedItem.itensEntrada.length; i++) {
-                if(this.editedItem.itensEntrada[i].idProduto != "" && this.editedItem.itensEntrada[i].idPropriedadeProduto != "" && this.editedItem.itensEntrada[i].qtdEntrada != "") {
-                    itens = true;
-                }
-            }
-
-            return camposEntrada && itens;
-        },
         adicionaProduto() {
             this.itens.push({});
         },
@@ -234,30 +127,8 @@ export default {
                 this.registraEntrada();
             }
         },
-        novo() {
-            if(localStorage.getItem("usuarioAppB4")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
-                    if(response.data) {
-                        if(response.data.cadastrosCadastrar) {
-                            this.dialog = true;
-                            this.itens.push({});
-                        }
-                        if(!response.data.cadastrosCadastrar) {
-                            this.snackbar = true;
-                            this.color = 'error';
-                            this.textoSnackbar = "Você não tem permissão para cadastrar!";
-                        }
-                    }
-                    if(!response.data){
-                        this.snackbar = true;
-                        this.color = 'error';
-                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
-                    }
-                });    
-            }
-        },
         initialize () {
-            this.axios.get(process.env.VUE_APP_URL_API + '/entrada').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/saida').then(response => {
                 this.desserts = response.data;
             });
 
@@ -265,132 +136,12 @@ export default {
                 this.contratos = response.data;
             });
         },
-        editItem (item) {
-            if(localStorage.getItem("usuarioAppB4")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
-                    if(response.data) {
-                        if(response.data.cadastrosEditar) {
-                            this.editedIndex = this.desserts.indexOf(item);
-                            this.editedItem = Object.assign({}, item);
-                            this.axios.get(process.env.VUE_APP_URL_API + '/entrada/entradaItens/' + this.editedItem.id).then(response => {
-                                this.itens = response.data;
-                            });
-                            this.dialog = true;
-                        }
-                        if(!response.data.cadastrosEditar) {
-                            this.snackbar = true;
-                            this.color = 'error';
-                            this.textoSnackbar = "Você não tem permissão para editar!";
-                        }
-                    }
-                    if(!response.data){
-                        this.snackbar = true;
-                        this.color = 'error';
-                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
-                    }
-                });    
-            }
+        close() {
+             this.novaSaida = false;
         },
-        deleteItem (item) {
-            if(localStorage.getItem("usuarioAppB4")) {
-                this.axios.get(process.env.VUE_APP_URL_API + '/permissao/' + localStorage.getItem("usuarioAppB4")).then(response => {
-                    if(response.data) {
-                        if(response.data.cadastrosApagar) {
-                            this.axios.delete(process.env.VUE_APP_URL_API + '/entrada/' + item.id + "/delete").then(response => {
-                                if(response.data){
-                                    this.snackbar = true;
-                                    this.color = 'success';
-                                    this.textoSnackbar = "Grupo apagado com sucesso!";
-                                    this.initialize();
-                                }else {
-                                    this.snackbar = true;
-                                    this.color = 'error';
-                                    this.textoSnackbar = "Ocorreu um erro ao tentar apagar o registro!";
-                                }
-                            });
-                        }
-                        if(!response.data.cadastrosApagar) {
-                            this.snackbar = true;
-                            this.color = 'error';
-                            this.textoSnackbar = "Você não tem permissão para apagar!";
-                        }
-                    }
-                    if(!response.data){
-                        this.snackbar = true;
-                        this.color = 'error';
-                        this.textoSnackbar = "Tente novamente ocorreu um erro!";
-                    }
-                });    
-            }
-        },
-        close () {
-            this.itens = [];
-            this.dialog = false;
-            setTimeout(() => {
-                this.editedItem = Object.assign({}, this.defaultItem);
-                this.editedIndex = -1;
-                this.salvaItens = false;
-            }, 300);
-        },
-        registraEntrada() {
-            if(this.validaCampos()) {
-                if (this.editedIndex > -1) {
-                    this.axios.put(process.env.VUE_APP_URL_API + '/entrada', this.editedItem).then(response => {
-                        if(response.data){
-                            this.textoSnackbar = "Registro atualizado com sucesso!";
-                            this.snackbar = true;
-                            this.color = 'success';
-                            this.initialize();
-                            this.close();
-                        }else {
-                            this.snackbar = true;
-                            this.color = 'error';
-                            this.textoSnackbar = "Ocorreu um erro ao atualizar!";
-                            this.close();
-                        }
-                    });
-                } else {
-                    
-                    if(this.validaCampos()){
-                        
-                        this.axios.post(process.env.VUE_APP_URL_API + '/entrada', this.editedItem).then(response => {
-                            if(response.data){
-                                this.textoSnackbar = "Batalhão inserido com sucesso!";
-                                this.snackbar = true;
-                                this.color = 'success';
-                                this.initialize();
-                                this.close();
-                                
-                            }else {
-                                this.snackbar = true;
-                                this.color = 'error';
-                                this.textoSnackbar = "Ocorreu um erro ao cadastrar!";
-                                this.close();
-                            }
-                        });
-                    }else {
-                        this.snackbar = true;
-                        this.color = 'error';
-                        this.textoSnackbar = "Existe campos vazios ou incorretos!";
-                        this.close();
-                    }
-                }
-            }
-
-            if(!this.validaCampos()) {
-                setTimeout(() => {
-                    this.salvaItens = false;
-                }, 300);
-                this.mensagemAlerta = "Verifique se todos os campos marcados com * estão preenchidos corretamente!"
-                this.alertaCampos = true;
-            }
-        
-        },
-        save () {
-            this.salvaItens = true;
-            this.editedItem.itensEntrada = [];
-        },
-
+        novo() {
+            this.novaSaida = true;
+        }
     }
 }
 </script>

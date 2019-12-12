@@ -2,8 +2,10 @@
 const Helpers = require("./../../helpers/helpers");
 const Produto = require('./../models/Produto');
 const CategoriaProduto = require('./../models/CategoriaProduto');
+const Contrato = require('./../models/Contrato');
 const Lote = require('./../models/Lote');
 const ProdutosLote = require('./../models/ProdutosLote');
+const PropriedadesProduto = require('./../models/PropriedadesProduto');
 
 exports.get = (req, res, next) => {
     const id = req.params.id;
@@ -69,6 +71,48 @@ exports.getProdutosByIdContrato = (req, res, next) => {
             });
         });
     });
+}
+
+exports.getPropriedadesProdutosSaida = (req, res, next) => {
+    var idProduto = req.params.idProduto;
+
+    Contrato.findAll().then(response => {
+        var contratos = JSON.parse(JSON.stringify(response));
+        Lote.findAll().then(response => {
+            var lotes = JSON.parse(JSON.stringify(response));
+            ProdutosLote.findAll().then(response => {
+                var produtosLote = JSON.parse(JSON.stringify(response));
+                PropriedadesProduto.findAll().then(response => {
+                    var propriedadesProduto = JSON.parse(JSON.stringify(response));
+                    var propriedades = [];
+                    produtosLote.forEach(produtoLote => {
+                        if(produtoLote.idProduto == idProduto) {
+                            lotes.forEach(lote => {
+                                if(lote.id == produtoLote.idLote && lote.situacao) {
+                                    contratos.forEach(contrato => {
+                                        if(contrato.id == lote.idContrato && contrato.situacao == true) {
+                                            propriedades.push(produtoLote.idPropriedadeProduto);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                    var propriedadesAtivas = [];
+                    propriedadesProduto.forEach(propriedade => {
+                        propriedades.forEach(prop => {
+                            if(prop == propriedade.id) {
+                                propriedadesAtivas.push(propriedade);
+                            }
+                        });
+                    });
+
+                    res.status(200).json(propriedadesAtivas);
+                });
+            });
+        });
+    });
+    
 }
 
 exports.post = (req, res, next) => {

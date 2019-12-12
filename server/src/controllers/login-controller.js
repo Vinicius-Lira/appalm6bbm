@@ -4,20 +4,27 @@ const Login = require('./../models/Login');
 const Pessoa = require('./../models/Pessoa');
 const axios = require('axios');
 
-exports.get = (req, res, next) => {
-    // const id = req.params.id;
-    // Batalhao.findAll().then(response => {
-    //     var find = [];
-    //     var data = JSON.parse(JSON.stringify(response));
-    //     for(var i = 0; i < data.length; i++){
-    //         if(data[i].id == id) {
-    //             find = data[i] ;
-    //             break;
-    //         }
-    //     }
-    //
-    //     res.status(200).json(find);
-    // });
+exports.autenticaSaida = (req, res, next) => {
+    var idUsuario = req.body.idUsuario;
+    var senha = req.body.senha;
+
+    Pessoa.findAll().then(response => {
+        var pessoas = response;
+        var i = 0;
+        for(i in pessoas){
+            if(pessoas[i].id === idUsuario){
+                axios.get('http://10.193.92.110/?usuario=' + pessoas[i].usuario + '&' + 'passwd=' + senha).then(response => {
+                    console.log(response);
+                    if(response.data){
+                        res.status(200).json(true);
+                    }else {
+                        res.status(200).json(false);
+                    }
+                });
+                break;
+            }
+        }
+    });
 }
 
 exports.post = (req, res, next) => {

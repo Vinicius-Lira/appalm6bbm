@@ -26,6 +26,7 @@ const produto = require('./routes/produto-routes');
 const propriedadesProduto = require('./routes/propriedadesProduto-routes');
 const produtosLote = require('./routes/produtosLote-routes');
 const entrada = require('./routes/entrada-routes');
+const saida = require('./routes/saida-routes');
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 1000000}));
@@ -72,5 +73,6 @@ app.use('/api/produto', produto);
 app.use('/api/propriedadesProduto', propriedadesProduto);
 app.use('/api/produtosLote', produtosLote);
 app.use('/api/entrada', entrada);
+app.use('/api/saida', saida);
 
 module.exports = app;

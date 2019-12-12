@@ -148,9 +148,6 @@ exports.post = (req, res, next) => {
                                                 });
                                             }
                                         });
-                                        console.log("\n");
-                                        console.log(item);
-                                        console.log("\n");
                                         for(var i = 0; i < produtosLote.length; i++) {
                                             if(item.idLote == produtosLote[i].idLote && item.idProduto == produtosLote[i].idProduto && item.idPropriedadeProduto == produtosLote[i].idPropriedadeProduto) {
                                                 console.log("idLote: " + item.idLote + " : "+ produtosLote[i].idLote);

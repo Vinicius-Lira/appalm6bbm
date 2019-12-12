@@ -1,58 +1,49 @@
 <template>
-    <v-container>
-        <v-row :style="{ margin: '0px', padding: '0px', height: '55px'}">
-            <v-col cols="12" sm="12" md="7" >
-                <v-autocomplete
-                    v-model="idProduto"
-                    label="Produto *"
-                    :items="produtos"
-                    :rules="[v => !!v || 'Obrigatório selecionar o produto!']"
-                    item-text="produto" item-value="id"
-                    outlined
-                    dense
-                    @change="getPropriedades"
-                ></v-autocomplete>
-            </v-col>
-            <v-col cols="12" sm="12" md="3">
-                <v-select
-                    :items="propriedades"
-                    v-model="idPropriedadeProduto"
-                    :rules="[v => !!v || 'Obrigatório prencher a qtd. entrada!']"
-                    label="Propriedade * "
-                    item-value="id" item-text="tamanho"
-                    outlined
-                    dense
-                ></v-select>
-            </v-col>
-            <v-col cols="12" sm="12" md="2">
-                <v-text-field
-                    v-model="qtdEntrada"
-                    :rules="[v => !!v || 'Obrigatório prencher a qtd. entrada!']"
-                    label="Qtd. Entrada *"
-                    outlined
-                    dense
-                ></v-text-field>
-            </v-col>
-
-        </v-row>
-    </v-container>
+    <v-row :style="{ 'padding-left' : '50px', 'height': '60px' }">
+        <v-col cols="12" sm="12" md="6">
+            <v-autocomplete
+                v-model="idProduto"
+                :items="produtos"
+                outlined
+                item-value="id" item-text="produto"
+                @change="buscaPropriedades"
+                label="Produto"
+            ></v-autocomplete>
+        </v-col>
+        <v-col cols="12" sm="12" md="3">
+            <v-select
+                :items="propriedades"
+                v-model="idPropriedadeProduto"
+                label="Propriedade Produto"
+                item-value="id" item-text="tamanho"
+                outlined
+            ></v-select>
+        </v-col>
+        <v-col cols="12" sm="12" md="2" :style="{ width: '9x' }">
+            <v-text-field
+                v-model="qtdSaida"
+                label="Qtd. Saída"
+                outlined
+            ></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="12" md="1">
+            <v-btn text icon :style="{ 'margin-top': '7px' }" @click="remove">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+        </v-col>
+        
+    </v-row>
 </template>
 
 <script>
 export default {
     data: () => ({
-        produtos: [],
         idProduto: null,
-        qtdEntrada: 0,
         idPropriedadeProduto: null,
+        qtdSaida: 0,
+        produtos: [],
         propriedades: [],
-        // qtdRules: [
-        //     value => {
-        //         this.axios.get(process.env.VUE_APP_URL_API + '/produtosLote/' + val).then(response => {
-        //             this.produtos = response.data;
-        //         });
-        //     }
-        // ]
+        itemRetorno: {}
     }),
     computed: {
         id: {
@@ -65,40 +56,49 @@ export default {
         }
     },
     watch: {
-        salva(val) {
+        getItens(val) {
             if(val) {
-                this.item.idProduto = this.idProduto;
-                this.item.idPropriedadeProduto = this.idPropriedadeProduto;
-                this.item.qtdEntrada = this.qtdEntrada;
-                this.$emit('idProduto', this.item);
+                var item = {};
+                item.index = this.index;
+                item.idProduto = this.idProduto;
+                item.idPropriedadeProduto = this.idPropriedadeProduto;
+                item.qtdSaida = this.qtdSaida;
+                this.$emit('item', item);
             }
         },
-        idContrato(val) {
-            this.axios.get(process.env.VUE_APP_URL_API + '/produto/getProdutosByIdContrato/' + val).then(response => {
+        item() {
+            this.idProduto = this.item.idProduto;
+            this.qtdSaida = this.item.qtdSaida;
+            this.idPropriedadeProduto = this.item.idPropriedadeProduto;
+            this.buscaPropriedades();
+        }
+    },
+    props: {
+        getItens: Boolean,
+        item: Object,
+        index: Number
+    },
+    created () {
+        this.getProdutos();
+        this.buscaPropriedades();
+        this.idProduto = this.item.idProduto;
+        this.qtdSaida = this.item.qtdSaida;
+        this.idPropriedadeProduto = this.item.idPropriedadeProduto;
+        
+    },
+    methods: {
+        getProdutos() {
+            this.axios.get(process.env.VUE_APP_URL_API + '/produto').then(response => {
                 this.produtos = response.data;
             });
         },
-    },
-    props: {
-        salva: Boolean,
-        idContrato: Number,
-        item: Object,
-    },
-    created () {
-       this.axios.get(process.env.VUE_APP_URL_API + '/produto/getProdutosByIdContrato/' + this.idContrato).then(response => {
-            this.produtos = response.data;
-        });
-
-        this.idProduto = this.item.idProduto;
-        this.qtdEntrada = this.item.qtdEntrada;
-        this.idPropriedadeProduto = this.item.idPropriedadeProduto;
-        this.getPropriedades();
-    },
-    methods: {
-        getPropriedades() {
-            this.axios.get(process.env.VUE_APP_URL_API + '/propriedadesProduto/produtoidProdutoidContrato/' + this.idProduto + "/" + this.idContrato).then(response => {
+        buscaPropriedades() {
+            this.axios.get(process.env.VUE_APP_URL_API + '/produto/getPropriedadesProdutosSaida/' + this.idProduto).then(response => {
                 this.propriedades = response.data;
             });
+        },
+        remove() {
+            this.$emit('remove', this.index);
         }
     }
 }
@@ -107,7 +107,7 @@ export default {
 <style>
     @media only screen and (max-width: 640px) {
         .snackbar {
-            margin-top: -10px;
+            margin-top: -10px; 
         }
     }
 
