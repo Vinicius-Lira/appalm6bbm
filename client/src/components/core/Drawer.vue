@@ -1,15 +1,16 @@
 <template>
     <v-navigation-drawer
-    id="app-drawer"
-    v-model="inputValue"
-    :src="image"
-    app
-    color="grey darken-2"
-    dark
-    floating
-    mobile-break-point="991"
-    persistent
-    width="260"
+      id="app-drawer"
+      v-model="inputValue"
+      :src="image"
+      app
+      color="grey darken-3"
+      dark
+      class="menu-lateral"
+      floating
+      mobile-break-point="991"
+      persistent
+      width="260"
     >
         <template v-slot:img="attrs">
             <v-img
@@ -66,6 +67,7 @@
                 :to="'/contratos'"
                 active-class="error white--text"
                 :style="{ 'padding-left': '40px' }"
+                
               >
                 <v-list-item-icon>
                   <v-icon>mdi-circle-outline</v-icon>
@@ -418,5 +420,9 @@
 <style>
   .menu-accordion {
     text-decoration: none;
+  }
+
+  .menu-lateral {
+    background-color: #FA8775;
   }
 </style>
