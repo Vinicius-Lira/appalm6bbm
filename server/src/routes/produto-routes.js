@@ -5,6 +5,7 @@ const router = express.Router();
 const controller = require('./../controllers/produto-controller');
 
 router.get('/',  controller.getAll);
+router.get('/produtosEmEstoque', controller.getAllEmEstoque);
 router.get('/getProdutosByIdContrato/:idContrato', controller.getProdutosByIdContrato);
 router.get('/getPropriedadesProdutosSaida/:idProduto', controller.getPropriedadesProdutosSaida);
 router.get('/:id',  controller.get);

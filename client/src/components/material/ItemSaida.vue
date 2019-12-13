@@ -1,5 +1,5 @@
 <template>
-    <v-row :style="{ 'padding-left' : '50px', 'height': '60px' }">
+    <v-row :style="{ 'padding-left' : '50px', 'height': '60px' }" >
         <v-col cols="12" sm="12" md="6">
             <v-autocomplete
                 v-model="idProduto"
@@ -43,7 +43,8 @@ export default {
         qtdSaida: 0,
         produtos: [],
         propriedades: [],
-        itemRetorno: {}
+        itemRetorno: {},
+        alertaSemEstoque: false,
     }),
     computed: {
         id: {
@@ -88,7 +89,7 @@ export default {
     },
     methods: {
         getProdutos() {
-            this.axios.get(process.env.VUE_APP_URL_API + '/produto').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/produto/produtosEmEstoque').then(response => {
                 this.produtos = response.data;
             });
         },
@@ -99,7 +100,7 @@ export default {
         },
         remove() {
             this.$emit('remove', this.index);
-        }
+        },
     }
 }
 </script>

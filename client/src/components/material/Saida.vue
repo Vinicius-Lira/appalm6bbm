@@ -60,13 +60,13 @@
                                 ></v-autocomplete>
                             </v-col>
                         </v-row>
-                        
+                        <small>* campos obrigatórios!</small>
                         <v-row>
                             <v-col cols="12" sm="12" md="12">
                                 <v-subheader>Itens Saída</v-subheader>
                             </v-col>
                         </v-row>
-
+                        
                         <v-row
                             v-for="(item, index) in itens"
                             v-bind:key="index"

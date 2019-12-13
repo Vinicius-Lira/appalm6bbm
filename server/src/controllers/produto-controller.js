@@ -40,7 +40,29 @@ exports.getAll = (req, res, next) => {
             res.status(200).json(produtos);
         });
     });
-    
+}
+
+exports.getAllEmEstoque = (req, res, next) => {
+    Produto.findAll().then(response => {
+        var produtos = JSON.parse(JSON.stringify(response));
+        CategoriaProduto.findAll().then(response => {
+            var categorias = JSON.parse(JSON.stringify(response));
+            var produtosEmEstoque = [];
+            produtos.forEach(element => {
+                for(var i = 0; i < categorias.length; i++) {
+                    if(element.idCategoriaProduto == categorias[i].id) {
+                        element.categoria = categorias[i].categoria;
+                    }
+                }
+
+                if(element.qtdEstoque > 0) {
+                    produtosEmEstoque.push(element);
+                }
+            });
+
+            res.status(200).json(produtosEmEstoque);
+        });
+    });
 }
 
 exports.getProdutosByIdContrato = (req, res, next) => {
