@@ -7,6 +7,7 @@ const Lote = require('./../models/Lote');
 const ProdutosLote = require('./../models/ProdutosLote');
 const Contrato = require('./../models/Contrato');
 const Produto = require('./../models/Produto');
+const PropriedadesProduto = require('./../models/PropriedadesProduto');
 
 exports.get = (req, res, next) => {
     const id = req.params.id;
@@ -106,85 +107,95 @@ exports.post = (req, res, next) => {
             var lotes = JSON.parse(JSON.stringify(response));
             ProdutosLote.findAll().then(response => {
                 var produtosLote = JSON.parse(JSON.stringify(response));
-    
-                Pessoa.findAll().then(response => {
-                    const pessoas = JSON.parse(JSON.stringify(response));
-                    for(var i = 0; i < pessoas.length; i++) {
-                        if(pessoas[i].usuario.localeCompare(usuario) == 0) {
-                            data.idPessoa = pessoas[i].id;
-                            break;
+                PropriedadesProduto.findAll().then(response => {
+                    var propriedadesProduto = JSON.parse(JSON.stringify(response));
+                    Pessoa.findAll().then(response => {
+                        const pessoas = JSON.parse(JSON.stringify(response));
+                        for(var i = 0; i < pessoas.length; i++) {
+                            if(pessoas[i].usuario.localeCompare(usuario) == 0) {
+                                data.idPessoa = pessoas[i].id;
+                                break;
+                            }
                         }
-                    }
-                    Entrada.create(data).then(response => {
-                        var entrada = JSON.parse(JSON.stringify(response));
-                        if(entrada.id){
-                            itensEntrada.forEach(element => {
-                                element.idContrato = idContrato;
-                                element.idEntrada = entrada.id;
-                
-                                for(var i = 0; i < produtosLote.length; i++) {
-                                    if(element.idProduto == produtosLote[i].idProduto) {
-                                        for(var k = 0; k < lotes.length; k++) {
-                                            if(produtosLote[i].idLote == lotes[k].id && lotes[k].situacao == true && lotes[k].idContrato == idContrato) {
-                                                element.idLote = lotes[k].id;
-                                                break;
+                        Entrada.create(data).then(response => {
+                            var entrada = JSON.parse(JSON.stringify(response));
+                            if(entrada.id){
+                                itensEntrada.forEach(element => {
+                                    element.idContrato = idContrato;
+                                    element.idEntrada = entrada.id;
+                    
+                                    for(var i = 0; i < produtosLote.length; i++) {
+                                        if(element.idProduto == produtosLote[i].idProduto) {
+                                            for(var k = 0; k < lotes.length; k++) {
+                                                if(produtosLote[i].idLote == lotes[k].id && lotes[k].situacao == true && lotes[k].idContrato == idContrato) {
+                                                    element.idLote = lotes[k].id;
+                                                    break;
+                                                }
                                             }
+                                            break;
                                         }
-                                        break;
                                     }
-                                }
-                            });
-                            ItensEntrada.bulkCreate(itensEntrada).then(response => {
-                                var itensInseridos = JSON.parse(JSON.stringify(response));
-                                if(itensInseridos) {
-                                    itensInseridos.forEach(item => {
-                                        produtos.forEach(produto => {
-                                            if(item.idProduto == produto.id) {
-                                                produto.qtdEstoque = parseFloat(produto.qtdEstoque) + parseFloat(item.qtdEntrada);
-                                                Produto.update(produto, {
-                                                    where: {
-                                                        id: produto.id
+                                });
+                                ItensEntrada.bulkCreate(itensEntrada).then(response => {
+                                    var itensInseridos = JSON.parse(JSON.stringify(response));
+                                    if(itensInseridos) {
+                                        itensInseridos.forEach(item => {
+                                            produtos.forEach(produto => {
+                                                if(item.idProduto == produto.id) {
+                                                    produto.qtdEstoque = parseFloat(produto.qtdEstoque) + parseFloat(item.qtdEntrada);
+                                                    Produto.update(produto, {
+                                                        where: {
+                                                            id: produto.id
+                                                        }
+                                                    });
+                                                }
+                                            });
+
+                                            propriedadesProduto.forEach(propriedade => {
+                                                if(propriedade.idProduto == item.idProduto && propriedade.id == item.idPropriedadeProduto) {
+                                                    propriedade.qtdEstoque = parseFloat(propriedade.qtdEstoque) + parseFloat(item.qtdEntrada);
+                                                    PropriedadesProduto.update(propriedade, {
+                                                        where: {
+                                                            id: propriedade.id
+                                                        }
+                                                    });
+                                                }
+                                            });
+
+                                            for(var i = 0; i < produtosLote.length; i++) {
+                                                if(item.idLote == produtosLote[i].idLote && item.idProduto == produtosLote[i].idProduto && item.idPropriedadeProduto == produtosLote[i].idPropriedadeProduto) {    
+                                                    produtosLote[i].qtdRecebida = produtosLote[i].qtdRecebida + parseFloat(item.qtdEntrada);
+                                                    produtosLote[i].qtdRestante = produtosLote[i].qtdContratada - produtosLote[i].qtdRecebida;
+                                                    ProdutosLote.update(produtosLote[i], {
+                                                        where: {
+                                                            id: produtosLote[i].id
+                                                        }
+                                                    });
+                                                    
+                                                    for(var k = 0; k < lotes.length; k++) {
+                                                        if(item.idLote == lotes[k].id) {
+                                                            lotes[k].valorConsumido = lotes[k].valorConsumido + (item.qtdEntrada * parseFloat(produtosLote[i].valorUnitario));
+                                                            Lote.update(lotes[k], {
+                                                                where: {
+                                                                    id: lotes[k].id
+                                                                }
+                                                            });
+                                                        }
                                                     }
-                                                });
+        
+                                                }
                                             }
                                         });
-                                        for(var i = 0; i < produtosLote.length; i++) {
-                                            if(item.idLote == produtosLote[i].idLote && item.idProduto == produtosLote[i].idProduto && item.idPropriedadeProduto == produtosLote[i].idPropriedadeProduto) {
-                                                console.log("idLote: " + item.idLote + " : "+ produtosLote[i].idLote);
-                                                console.log("idProduto: " + item.idProduto + " : " + produtosLote[i].idProduto);
-                                                console.log("idPropriedadeProduto: " + item.idPropriedadeProduto + "  :  " +  produtosLote[i].idPropriedadeProduto);
-    
-                                                produtosLote[i].qtdRecebida = produtosLote[i].qtdRecebida + parseFloat(item.qtdEntrada);
-                                                produtosLote[i].qtdRestante = produtosLote[i].qtdContratada - produtosLote[i].qtdRecebida;
-                                                ProdutosLote.update(produtosLote[i], {
-                                                    where: {
-                                                        id: produtosLote[i].id
-                                                    }
-                                                });
-                                                
-                                                for(var k = 0; k < lotes.length; k++) {
-                                                    console.log("\n" + lotes[k].id + "\n");
-                                                    if(item.idLote == lotes[k].id) {
-                                                        
-                                                        lotes[k].valorConsumido = lotes[k].valorConsumido + (item.qtdEntrada * parseFloat(produtosLote[i].valorUnitario));
-                                                        console.log("\n\nValor consumido: "+ lotes[k].valorConsumido +"\n\n");
-                                                        Lote.update(lotes[k], {
-                                                            where: {
-                                                                id: lotes[k].id
-                                                            }
-                                                        });
-                                                    }
-                                                }
-    
-                                            }
-                                        }
-                                    });
-                                    res.status(200).json(itensInseridos);
-                                }
-                            });
-                        }
+                                        res.status(200).json(itensInseridos);
+                                    }
+                                });
+                            }
+                        });
                     });
                 });
+
+
+                
             });
         });
     });

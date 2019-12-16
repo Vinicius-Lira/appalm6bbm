@@ -48,16 +48,16 @@ exports.getAllEmEstoque = (req, res, next) => {
         CategoriaProduto.findAll().then(response => {
             var categorias = JSON.parse(JSON.stringify(response));
             var produtosEmEstoque = [];
-            produtos.forEach(element => {
+            produtos.forEach(produto => {
                 for(var i = 0; i < categorias.length; i++) {
-                    if(element.idCategoriaProduto == categorias[i].id) {
-                        element.categoria = categorias[i].categoria;
+                    if(produto.idCategoriaProduto == categorias[i].id) {
+                        produto.categoria = categorias[i].categoria;
                     }
                 }
-
-                if(element.qtdEstoque > 0) {
-                    produtosEmEstoque.push(element);
+                if(produto.qtdEstoque > 0) {
+                    produtosEmEstoque.push(produto);
                 }
+                
             });
 
             res.status(200).json(produtosEmEstoque);
@@ -107,8 +107,10 @@ exports.getPropriedadesProdutosSaida = (req, res, next) => {
                 PropriedadesProduto.findAll().then(response => {
                     var propriedadesProduto = JSON.parse(JSON.stringify(response));
                     var propriedades = [];
+
                     produtosLote.forEach(produtoLote => {
                         if(produtoLote.idProduto == idProduto) {
+                            
                             lotes.forEach(lote => {
                                 if(lote.id == produtoLote.idLote && lote.situacao) {
                                     contratos.forEach(contrato => {
@@ -120,10 +122,11 @@ exports.getPropriedadesProdutosSaida = (req, res, next) => {
                             });
                         }
                     });
+
                     var propriedadesAtivas = [];
                     propriedadesProduto.forEach(propriedade => {
                         propriedades.forEach(prop => {
-                            if(prop == propriedade.id) {
+                            if(prop == propriedade.id && propriedade.qtdEstoque > 0) {
                                 propriedadesAtivas.push(propriedade);
                             }
                         });

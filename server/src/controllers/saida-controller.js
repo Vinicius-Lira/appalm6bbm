@@ -90,7 +90,7 @@ exports.post = (req, res, next) => {
                                     var item = itens[i];
                                     produtos.forEach(produto => {
                                         if(produto.id == itens[i].idProduto) {
-                                            produto.qtdEstoque -= parseFloat(itens[i].qtdSaida);
+                                            produto.qtdEstoque = parseFloat(produto.qtdEstoque) - parseFloat(itens[i].qtdSaida);
                                             Produto.update(produto, {
                                                 where: {
                                                     id: produto.id
@@ -99,7 +99,7 @@ exports.post = (req, res, next) => {
                                                 if(response) {
                                                     propriedadesProduto.forEach(propriedade => {
                                                         if(propriedade.idProduto == item.idProduto && propriedade.id == item.idPropriedadeProduto) {
-                                                            propriedade.qtdEstoque -= parseFloat(item.qtdSaida);
+                                                            propriedade.qtdEstoque = parseFloat(propriedade.qtdEstoque) - parseFloat(item.qtdSaida);
                                                             PropriedadesProduto.update(propriedade, {
                                                                 where: {
                                                                     id: propriedade.id
