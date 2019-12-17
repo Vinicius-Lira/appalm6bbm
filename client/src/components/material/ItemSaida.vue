@@ -23,6 +23,7 @@
             <v-text-field
                 v-model="qtdSaida"
                 label="Qtd. Saída"
+                @keyup="verificaEstoque"
                 outlined
             ></v-text-field>
         </v-col>
@@ -31,7 +32,7 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
         </v-col>
-        
+
     </v-row>
 </template>
 
@@ -85,11 +86,11 @@ export default {
         this.idProduto = this.item.idProduto;
         this.qtdSaida = this.item.qtdSaida;
         this.idPropriedadeProduto = this.item.idPropriedadeProduto;
-        
+
     },
     methods: {
         getProdutos() {
-            this.axios.get(process.env.VUE_APP_URL_API + '/produto/produtosEmEstoque').then(response => {
+            this.axios.get(process.env.VUE_APP_URL_API + '/produto').then(response => {
                 this.produtos = response.data;
             });
         },
@@ -101,6 +102,13 @@ export default {
         remove() {
             this.$emit('remove', this.index);
         },
+        verificaEstoque() {
+            if(this.qtdSaida != "") {
+                this.axios.get(process.env.VUE_APP_URL_API + '/produto/verificaEstoque/' + this.idPropriedadeProduto + '/' + this.qtdSaida + '/').then(response => {
+                    console.log(response.data);
+                });
+            }
+        }
     }
 }
 </script>
@@ -108,7 +116,7 @@ export default {
 <style>
     @media only screen and (max-width: 640px) {
         .snackbar {
-            margin-top: -10px; 
+            margin-top: -10px;
         }
     }
 

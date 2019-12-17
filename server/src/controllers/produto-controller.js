@@ -29,10 +29,10 @@ exports.getAll = (req, res, next) => {
         var produtos = JSON.parse(JSON.stringify(response));
         CategoriaProduto.findAll().then(response => {
             var categorias = JSON.parse(JSON.stringify(response));
-            produtos.forEach(element => {
+            produtos.forEach(produto => {
                 for(var i = 0; i < categorias.length; i++) {
-                    if(element.idCategoriaProduto == categorias[i].id) {
-                        element.categoria = categorias[i].categoria;
+                    if(produto.idCategoriaProduto == categorias[i].id) {
+                        produto.categoria = categorias[i].categoria;
                     }
                 }
             });
@@ -57,7 +57,7 @@ exports.getAllEmEstoque = (req, res, next) => {
                 if(produto.qtdEstoque > 0) {
                     produtosEmEstoque.push(produto);
                 }
-                
+
             });
 
             res.status(200).json(produtosEmEstoque);
@@ -65,8 +65,31 @@ exports.getAllEmEstoque = (req, res, next) => {
     });
 }
 
+exports.verificaEstoque = (req, res, next) => {
+    var idProduto = req.params.idProduto;
+    var idPropriedade = req.params.idPropriedade;
+    var qtd = req.params.qtd;
+
+    PropriedadesProduto.findAll({
+        where: {
+            id: idPropriedade
+        }
+    }).then(response => {
+        var propriedade = JSON.parse(JSON.stringify(response));
+
+        if(propriedade[0].qtdEstoque > qtd) {
+            res.status(200).json(true);
+        }
+
+        if(!(propriedade[0].qtdEstoque > qtd)) {
+            res.status(200).json(false);
+        }
+    });
+
+}
+
 exports.getProdutosByIdContrato = (req, res, next) => {
-    var idContrato = req.params.idContrato;    
+    var idContrato = req.params.idContrato;
     Produto.findAll().then(response => {
         var produtos = JSON.parse(JSON.stringify(response));
         Lote.findAll().then(response => {
@@ -98,46 +121,15 @@ exports.getProdutosByIdContrato = (req, res, next) => {
 exports.getPropriedadesProdutosSaida = (req, res, next) => {
     var idProduto = req.params.idProduto;
 
-    Contrato.findAll().then(response => {
-        var contratos = JSON.parse(JSON.stringify(response));
-        Lote.findAll().then(response => {
-            var lotes = JSON.parse(JSON.stringify(response));
-            ProdutosLote.findAll().then(response => {
-                var produtosLote = JSON.parse(JSON.stringify(response));
-                PropriedadesProduto.findAll().then(response => {
-                    var propriedadesProduto = JSON.parse(JSON.stringify(response));
-                    var propriedades = [];
+    PropriedadesProduto.findAll({
+        where: {
+            idProduto: idProduto
+        }
+    }).then(response => {
+        var propriedades = JSON.parse(JSON.stringify(response));
 
-                    produtosLote.forEach(produtoLote => {
-                        if(produtoLote.idProduto == idProduto) {
-                            
-                            lotes.forEach(lote => {
-                                if(lote.id == produtoLote.idLote && lote.situacao) {
-                                    contratos.forEach(contrato => {
-                                        if(contrato.id == lote.idContrato && contrato.situacao == true) {
-                                            propriedades.push(produtoLote.idPropriedadeProduto);
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-
-                    var propriedadesAtivas = [];
-                    propriedadesProduto.forEach(propriedade => {
-                        propriedades.forEach(prop => {
-                            if(prop == propriedade.id && propriedade.qtdEstoque > 0) {
-                                propriedadesAtivas.push(propriedade);
-                            }
-                        });
-                    });
-
-                    res.status(200).json(propriedadesAtivas);
-                });
-            });
-        });
+        res.status(200).json(propriedades);
     });
-    
 }
 
 exports.post = (req, res, next) => {

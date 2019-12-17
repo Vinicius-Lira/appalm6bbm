@@ -45,7 +45,21 @@ exports.getAll = (req, res, next) => {
 
             res.status(200).json(saidas);
         });
-        
+
+    });
+}
+
+exports.getByIdSaida = (req, res, next) => {
+    var idSaida = req.params.idSaida;
+
+    ItemSaida.findAll({
+        where: {
+            idSaida: idSaida
+        }
+    }).then(response => {
+        var itensSaida = JSON.parse(JSON.stringify(response));
+
+        res.status(200).json(itensSaida);
     });
 }
 
@@ -85,7 +99,7 @@ exports.post = (req, res, next) => {
                             var propriedadesProduto = JSON.parse(JSON.stringify(response));
                             Produto.findAll().then(response => {
                                 var produtos = JSON.parse(JSON.stringify(response));
-    
+
                                 for(var i = 0; i < itens.length; i++) {
                                     var item = itens[i];
                                     produtos.forEach(produto => {
@@ -109,7 +123,7 @@ exports.post = (req, res, next) => {
                                                     });
                                                 }
                                             });
-                                        }                                    
+                                        }
                                     });
                                 }
                             });

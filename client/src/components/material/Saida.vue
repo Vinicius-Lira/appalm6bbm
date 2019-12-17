@@ -3,7 +3,7 @@
             <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
                 <v-card>
                     <v-toolbar dark color="red">
-                        <v-btn icon dark @click="dialog = false">
+                        <v-btn icon dark @click="close">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
                         <v-toolbar-title>Saída</v-toolbar-title>
@@ -27,12 +27,14 @@
                                 </v-alert>
                             </v-col>
                         </v-row>
+
                         <confirma-usuario
                             v-bind:openDialog="validaUsuario"
                             v-bind:idUsuario="saida.idSolicitante"
                             @senhaCorreta="salvaSaida"
                             @close="closeValidaUsuario"
                         ></confirma-usuario>
+
                         <v-row :style="{ margin: '0px', padding: '0px', height: '80px'}">
                             <v-col cols="12" sm="12" md="3">
                                 <v-text-field
@@ -66,7 +68,7 @@
                                 <v-subheader>Itens Saída</v-subheader>
                             </v-col>
                         </v-row>
-                        
+
                         <v-row
                             v-for="(item, index) in itens"
                             v-bind:key="index"
@@ -80,7 +82,7 @@
                                     @remove="removeItem"
                                 ></item-saida>
                             </v-col>
-                            
+
                         </v-row>
                         <v-row>
                             <v-col cols="12" sm="12" md="12">
@@ -97,6 +99,13 @@
     export default {
         data: () => ({
             saida: {
+                dataSaida: "",
+                observacoes: "",
+                idSolicitante: null,
+                idResponsavelEntrega: null,
+                itens: []
+            },
+            saidaDafult: {
                 dataSaida: "",
                 observacoes: "",
                 idSolicitante: null,
@@ -120,9 +129,22 @@
             erro: false,
         }),
         watch: {
+            saidaEdit(val) {
+                if(val) {
+                    this.saida.dataSaida = val.dataSaida;
+                    this.saida.observacoes = val.observacoes;
+                    this.saida.idSolicitante = val.idSolicitante;
+                    this.saida.idResponsavelEntrega = val.idResponsavelEntrega;
 
+                    this.axios.get(process.env.VUE_APP_URL_API + '/saida/getItensIdSaida/' + val.id).then(response => {
+                        this.itens = response.data;
+                    });
+                }
+            }
         },
         created(){
+            console.log(this.saidaDafult);
+            this.saida = this.saidaDafult;
             this.itens.push(this.item);
             this.item = this.itemDafault;
             this.getPessoas();
@@ -138,9 +160,14 @@
             }
         },
         props: {
-            openDialog: Boolean
+            openDialog: Boolean,
+            saidaEdit: Object
         },
         methods: {
+            close() {
+                this.saida = this.saidaDafult;
+                this.dialog = false;
+            },
             getItens(item) {
                 this.saida.itens.push(item);
             },
@@ -208,13 +235,14 @@
                     if(this.validaCampos()) {
                         this.validaUsuario = true;
                     }
-                    
+
                 }, 300);
             },
             salvaSaida() {
                 this.closeValidaUsuario();
                 this.axios.post(process.env.VUE_APP_URL_API + '/saida', this.saida).then(response => {
                     if(response.data){
+                        this.saida = this.saidaDafult;
                         this.$emit('close');
                     }
 
@@ -227,7 +255,6 @@
                 this.validaUsuario = false;
             }
         },
-        
+
     }
 </script>
-

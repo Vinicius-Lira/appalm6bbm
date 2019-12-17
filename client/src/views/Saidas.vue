@@ -11,7 +11,6 @@
 
         <template v-slot:top>
             <v-toolbar flat color="white">
-
                 <v-container>
                     <v-row>
                         <v-col cols="12" sm="12" md="5">
@@ -26,16 +25,17 @@
                         </v-col>
                     </v-row>
                 </v-container>
-               
+
                 <div class="flex-grow-1"></div>
+
                 <saida
                     v-bind:openDialog="novaSaida"
+                    v-bind:saidaEdit="saida"
                     @close="close"
                 ></saida>
-               
 
                 <v-dialog v-model="dialog" max-width="1000px">
-                    
+
                     <template v-slot:activator="{ on }">
                         <v-btn color="primary" class="mb-2"  @click="novo">Nova</v-btn>
                     </template>
@@ -106,7 +106,8 @@ export default {
         ],
         desserts: [],
         mensagemAlerta: "",
-        
+        saida: null
+
     }),
     watch: {
         dialog (val) {
@@ -117,6 +118,10 @@ export default {
         this.initialize()
     },
     methods: {
+        editItem(item){
+            this.saida = item;
+            this.novaSaida = true;
+        },
         adicionaProduto() {
             this.itens.push({});
         },
@@ -138,6 +143,7 @@ export default {
         },
         close() {
              this.novaSaida = false;
+             this.saida = null;
         },
         novo() {
             this.novaSaida = true;
