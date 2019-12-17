@@ -77,11 +77,11 @@ exports.verificaEstoque = (req, res, next) => {
     }).then(response => {
         var propriedade = JSON.parse(JSON.stringify(response));
 
-        if(propriedade[0].qtdEstoque > qtd) {
+        if(propriedade[0].qtdEstoque >= qtd) {
             res.status(200).json(true);
         }
 
-        if(!(propriedade[0].qtdEstoque > qtd)) {
+        if(propriedade[0].qtdEstoque < qtd) {
             res.status(200).json(false);
         }
     });

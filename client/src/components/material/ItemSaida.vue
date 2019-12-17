@@ -1,39 +1,46 @@
 <template>
-    <v-row :style="{ 'padding-left' : '50px', 'height': '60px' }" >
-        <v-col cols="12" sm="12" md="6">
-            <v-autocomplete
-                v-model="idProduto"
-                :items="produtos"
-                outlined
-                item-value="id" item-text="produto"
-                @change="buscaPropriedades"
-                label="Produto"
-            ></v-autocomplete>
-        </v-col>
-        <v-col cols="12" sm="12" md="3">
-            <v-select
-                :items="propriedades"
-                v-model="idPropriedadeProduto"
-                label="Propriedade Produto"
-                item-value="id" item-text="tamanho"
-                outlined
-            ></v-select>
-        </v-col>
-        <v-col cols="12" sm="12" md="2" :style="{ width: '9x' }">
-            <v-text-field
-                v-model="qtdSaida"
-                label="Qtd. Saída"
-                @keyup="verificaEstoque"
-                outlined
-            ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="12" md="1">
-            <v-btn text icon :style="{ 'margin-top': '7px' }" @click="remove">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-        </v-col>
+    <v-container>
+        <v-row :style="{ 'padding-left' : '50px', 'height': '60px' }" >
+            <v-col cols="12" sm="12" md="6">
+                <v-autocomplete
+                    v-model="idProduto"
+                    :items="produtos"
+                    outlined
+                    item-value="id" item-text="produto"
+                    @change="buscaPropriedades"
+                    label="Produto"
+                ></v-autocomplete>
+            </v-col>
+            <v-col cols="12" sm="12" md="3">
+                <v-select
+                    :items="propriedades"
+                    v-model="idPropriedadeProduto"
+                    label="Propriedade Produto"
+                    item-value="id" item-text="tamanho"
+                    outlined
+                ></v-select>
+            </v-col>
+            <v-col cols="12" sm="12" md="2" :style="{ width: '9x' }">
+                <v-text-field
+                    v-model="qtdSaida"
+                    label="Qtd. Saída"
+                    @keyup="verificaEstoque"
+                    outlined
+                ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="12" md="1">
+                <v-btn text icon :style="{ 'margin-top': '7px' }" @click="remove">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+            </v-col>
+        </v-row>
 
-    </v-row>
+        <v-row v-if="avisoQtdEstoque">
+            <v-col cols="12" sm="12" md="6">
+                <small :style="{color: 'red', 'margin-left': '100px'}">A quantidade para saída é superior a em estoque!</small>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
@@ -46,6 +53,7 @@ export default {
         propriedades: [],
         itemRetorno: {},
         alertaSemEstoque: false,
+        avisoQtdEstoque: false,
     }),
     computed: {
         id: {
@@ -105,7 +113,13 @@ export default {
         verificaEstoque() {
             if(this.qtdSaida != "") {
                 this.axios.get(process.env.VUE_APP_URL_API + '/produto/verificaEstoque/' + this.idPropriedadeProduto + '/' + this.qtdSaida + '/').then(response => {
-                    console.log(response.data);
+                    if(!response.data) {
+                        this.avisoQtdEstoque = true;
+                    }
+
+                    if(response.data) {
+                        this.avisoQtdEstoque = false;
+                    }
                 });
             }
         }

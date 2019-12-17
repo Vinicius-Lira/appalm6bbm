@@ -127,6 +127,7 @@
             getItem: false,
             validaUsuario: false,
             erro: false,
+            validQtd: false,
         }),
         watch: {
             saidaEdit(val) {
@@ -143,7 +144,6 @@
             }
         },
         created(){
-            console.log(this.saidaDafult);
             this.saida = this.saidaDafult;
             this.itens.push(this.item);
             this.item = this.itemDafault;
@@ -221,9 +221,27 @@
                     if(itens[i].qtdSaida == "") {
                         return false;
                     }
+
+                    if(itens[i].idProduto != "" && itens[i].idPropriedadeProduto != "" && itens[i].qtdSaida != "") {
+                        this.validaQtd(itens[i].idPropriedade, itens[i].qtdSaida)
+                        if(!this.validQtd) {
+                            return false;
+                        }
+                    }
                 }
 
                 return true;
+            },
+            validaQtd(idPropriedade, qtdSaida) {
+                this.axios.get(process.env.VUE_APP_URL_API + '/produto/verificaEstoque/' + idPropriedade + '/' + qtdSaida + '/').then(response => {
+                    if(!response.data) {
+                        this.validQtd = true;
+                    }
+
+                    if(response.data) {
+                        this.validQtd = false;
+                    }
+                });
             },
             salvar() {
                  this.erro = false;
