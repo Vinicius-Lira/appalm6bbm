@@ -34,6 +34,13 @@
                     @close="close"
                 ></saida>
 
+                <visualizar-saida
+                    v-bind:open="dialogViewSaida"
+                    v-bind:idSaida="idSaida"
+                    @close="closeView"
+                >
+                </visualizar-saida>
+
                 <v-dialog v-model="dialog" max-width="1000px">
 
                     <template v-slot:activator="{ on }">
@@ -47,7 +54,7 @@
             <v-icon
                 small
                 class="mr-2"
-                @click="editItem(item)"
+                @click="visualizarSaida(item)"
             >
                 mdi-eye
             </v-icon>
@@ -106,8 +113,9 @@ export default {
         ],
         desserts: [],
         mensagemAlerta: "",
-        saida: null
-
+        saida: null,
+        dialogViewSaida: false,
+        idSaida: null,
     }),
     watch: {
         dialog (val) {
@@ -118,6 +126,11 @@ export default {
         this.initialize()
     },
     methods: {
+        visualizarSaida(item) {
+            this.dialogViewSaida = true;
+            this.idSaida = item.id;
+            this.dialogViewSaida = true;
+        },
         editItem(item){
             this.saida = item;
             this.novaSaida = true;
@@ -144,6 +157,10 @@ export default {
         close() {
              this.novaSaida = false;
              this.saida = null;
+        },
+        closeView() {
+            this.dialogViewSaida = false;
+            this.idSaida = null;
         },
         novo() {
             this.novaSaida = true;

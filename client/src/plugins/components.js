@@ -22,6 +22,10 @@ import Saida from '@/components/material/Saida';
 
 import Loading from '@/components/material/Loading';
 
+import VisualizarSaida from '@/components/material/VisualizarSaida';
+
+Vue.component('visualizar-saida', VisualizarSaida);
+
 Vue.component('confirma-usuario', ConfirmaUsuario);
 
 Vue.component('item-entrada', ItemEntrada);

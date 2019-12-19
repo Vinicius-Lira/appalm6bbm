@@ -35,15 +35,16 @@
             </v-col>
         </v-row>
 
-        <v-row v-if="avisoQtdEstoque">
-            <v-col cols="12" sm="12" md="6">
-                <small :style="{color: 'red', 'margin-left': '100px'}">A quantidade para saída é superior a em estoque!</small>
+        <v-row v-show="avisoQtdEstoque" class="linha-alerta-qtd">
+            <v-col cols="12" sm="12" md="12">
+                <small class="texto-alerta-qtd">A quantidade para saída é superior a em estoque!</small>
             </v-col>
         </v-row>
     </v-container>
 </template>
 
 <script>
+
 export default {
     data: () => ({
         idProduto: null,
@@ -54,6 +55,7 @@ export default {
         itemRetorno: {},
         alertaSemEstoque: false,
         avisoQtdEstoque: false,
+        erro: false,
     }),
     computed: {
         id: {
@@ -81,6 +83,7 @@ export default {
             this.qtdSaida = this.item.qtdSaida;
             this.idPropriedadeProduto = this.item.idPropriedadeProduto;
             this.buscaPropriedades();
+            this.verificaEstoque();
         }
     },
     props: {
@@ -94,7 +97,6 @@ export default {
         this.idProduto = this.item.idProduto;
         this.qtdSaida = this.item.qtdSaida;
         this.idPropriedadeProduto = this.item.idPropriedadeProduto;
-
     },
     methods: {
         getProdutos() {
@@ -121,8 +123,13 @@ export default {
                         this.avisoQtdEstoque = false;
                     }
                 });
+
             }
-        }
+
+            if(this.qtdSaida == "") {
+                this.avisoQtdEstoque = false;
+            }
+        },
     }
 }
 </script>
@@ -138,5 +145,15 @@ export default {
         .snackbar {
             margin-top: -50px;
         }
+    }
+
+    .linha-alerta-qtd {
+        margin-bottom: -43px;
+    }
+
+    .texto-alerta-qtd {
+        color: red;
+        float: right;
+        margin-right: 150px;
     }
 </style>

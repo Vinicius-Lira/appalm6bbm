@@ -8,19 +8,23 @@ const PropriedadesProduto = require('./../models/PropriedadesProduto');
 
 exports.get = (req, res, next) => {
     const id = req.params.id;
-    Saida.findAll().then(response => {
-        var find = [];
-        var data = JSON.parse(JSON.stringify(response));
-        for(var i = 0; i < data.length; i++){
-            if(data[i].id == id) {
-                find = data[i] ;
-                break;
-            }
+    Saida.findAll({
+        where: {
+            id: id
         }
+    }).then(response => {
+        var saida = JSON.parse(JSON.stringify(response));
 
-        res.status(200).json(find);
+        Pessoa.findAll({
+            where: {
+                id: saida[0].idSolicitante
+            }
+        }).then(response => {
+            var pessoa = JSON.parse(JSON.stringify(response));
+            saida[0].solicitante = pessoa[0].nome;
+            res.status(200).json(saida[0]);
+        });
     });
-
 }
 
 exports.getAll = (req, res, next) => {
@@ -58,8 +62,30 @@ exports.getByIdSaida = (req, res, next) => {
         }
     }).then(response => {
         var itensSaida = JSON.parse(JSON.stringify(response));
+        Produto.findAll().then(response => {
+            var produto = JSON.parse(JSON.stringify(response));
+            PropriedadesProduto.findAll().then(response => {
+                var propriedadesProduto = JSON.parse(JSON.stringify(response));
 
-        res.status(200).json(itensSaida);
+                itensSaida.forEach(item => {
+                    for(var i = 0; i < produto.length; i++){
+                        if(item.idProduto == produto[i].id) {
+                            item.produto = produto[i].produto;
+                            break;
+                        }
+                    }
+
+                    for(var k = 0; k < propriedadesProduto.length; k++) {
+                        if(item.idPropriedadeProduto == propriedadesProduto[k].id) {
+                            item.propriedadeproduto = propriedadesProduto[k].tamanho;
+                            break;
+                        }
+                    }
+                });
+
+                res.status(200).json(itensSaida);
+            });
+        });
     });
 }
 
