@@ -8,92 +8,92 @@ export default [
     {
         path: '/contratos',
         name: 'Contratos',
-        view: 'Contratos'
+        view: 'almoxarifado/Contratos'
     },
     {
         path: '/lotes',
         name: 'Lotes',
-        view: 'Lote'
+        view: 'almoxarifado/Lote'
     },
     {
         path: '/fornecedor',
         name: 'Fornecedor',
-        view: 'Fornecedor'
+        view: 'almoxarifado/Fornecedor'
     },
     {
         path: '/categoriaProdutos',
         name: 'Categoria Produtos',
-        view: 'CategoriaProduto'
+        view: 'cadastros/CategoriaProduto'
     },
     {
         path: '/produtos',
         name: 'Produtos',
-        view: 'Produtos'
+        view: 'almoxarifado/Produtos'
     },
     {
         path: '/propriedadesProduto',
         name: 'Propriedades Produtos',
-        view: 'PropriedadesProduto'
+        view: 'almoxarifado/PropriedadesProduto'
     },
     {
         path: '/entradas',
         name: 'Entradas',
-        view: 'Entradas'
+        view: 'almoxarifado/Entradas'
     },
     {
         path: '/saidas',
         name: 'Saídas',
-        view: 'Saidas'
+        view: 'almoxarifado/Saidas'
     },
     {
         path: '/grupoPatrimonio',
         name: 'Grupos Patrimônio',
-        view: 'GrupoPatrimonio'
+        view: 'cadastros/GrupoPatrimonio'
     },
     {
         path: '/hierarquia',
         name: 'Hierarquias',
-        view: 'Hierarquia'
+        view: 'cadastros/Hierarquia'
     },
     {
         path: '/obms',
         name: 'OBM',
-        view: 'Obms'
+        view: 'cadastros/Obms'
     },
     {
         path: '/pessoas',
         name: 'Pessoas',
-        view: 'Pessoas'
+        view: 'cadastros/Pessoas'
     },
     {
         path: '/setores',
         name: 'Setores',
-        view: 'Setores'
+        view: 'cadastros/Setores'
     },
     {
         path: '/situacaoPatrimonio',
         name: 'Situações Patrimônio',
-        view: 'SituacaoPatrimonio'
+        view: 'cadastros/SituacaoPatrimonio'
     },
     {
         path: '/patrimonio',
         name: 'Patrimônio',
-        view: 'Patrimonio'
+        view: 'patrimonio/Patrimonio'
     },
     {
         path: '/patrimonioMovimentacoes',
         name: 'Movimentação Patrimônio',
-        view: 'MovimentacoesPatrimonio'
+        view: 'patrimonio/MovimentacoesPatrimonio'
     },
     {
         path: '/patrimonioBaixas',
         name: 'Baixa Patrimônio',
-        view: 'BaixaPatrimonio'
+        view: 'patrimonio/BaixaPatrimonio'
     },
     {
         path: '/login',
         name: 'Login',
-        view: 'Login',
+        view: 'login/Login',
         meta: {
             requiresAuth: true
         }

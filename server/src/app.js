@@ -6,27 +6,32 @@ const router = express.Router();
 
 // Carrega as Rotas
 const index = require('./routes/index');
-const batalhao = require('./routes/obm-routes');
-const contrato = require('./routes/contrato-routes');
-const hierarquia = require('./routes/hierarquia-routes');
-const setor = require('./routes/setor-routes');
-const pessoa = require('./routes/pessoa-routes');
-const descargaPatrimonio = require('./routes/descargaPatrimonio-routes');
-const grupoPatrimonio = require('./routes/grupoPatrimonio-routes');
-const movimentacaoPatrimonio = require('./routes/movimentacaoPatrimonio-routes');
-const situacaoPatrimonio = require('./routes/situacaoPatrimonio-routes');
-const responsavelSetor = require('./routes/responsavelSetor-routes');
-const permissao = require('./routes/permissao-routes');
-const patrimonio = require('./routes/patrimonio-routes');
-const login = require('./routes/login-routes');
-const fornecedor = require('./routes/fornecedor-routes');
-const lote = require('./routes/lote-routes');
-const categoriaProduto = require('./routes/categoriaProduto-routes');
-const produto = require('./routes/produto-routes');
-const propriedadesProduto = require('./routes/propriedadesProduto-routes');
-const produtosLote = require('./routes/produtosLote-routes');
-const entrada = require('./routes/entrada-routes');
-const saida = require('./routes/saida-routes');
+const batalhao = require('./routes/cadastros/obm-routes');
+const hierarquia = require('./routes/cadastros/hierarquia-routes');
+const setor = require('./routes/cadastros/setor-routes');
+const pessoa = require('./routes/cadastros/pessoa-routes');
+const grupoPatrimonio = require('./routes/cadastros/grupoPatrimonio-routes');
+
+const responsavelSetor = require('./routes/cadastros/responsavelSetor-routes');
+const permissao = require('./routes/cadastros/permissao-routes');
+
+
+const patrimonio = require('./routes/patrimonio/patrimonio-routes');
+const situacaoPatrimonio = require('./routes/patrimonio/situacaoPatrimonio-routes');
+const descargaPatrimonio = require('./routes/patrimonio/descargaPatrimonio-routes');
+const movimentacaoPatrimonio = require('./routes/patrimonio/movimentacaoPatrimonio-routes');
+
+const login = require('./routes/login/login-routes');
+
+const contrato = require('./routes/almoxarifado/contrato-routes');
+const fornecedor = require('./routes/almoxarifado/fornecedor-routes');
+const lote = require('./routes/almoxarifado/lote-routes');
+const categoriaProduto = require('./routes/almoxarifado/categoriaProduto-routes');
+const produto = require('./routes/almoxarifado/produto-routes');
+const propriedadesProduto = require('./routes/almoxarifado/propriedadesProduto-routes');
+const produtosLote = require('./routes/almoxarifado/produtosLote-routes');
+const entrada = require('./routes/almoxarifado/entrada-routes');
+const saida = require('./routes/almoxarifado/saida-routes');
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 1000000}));

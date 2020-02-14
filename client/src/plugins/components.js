@@ -11,28 +11,7 @@ import NovaPessoa from '@/components/material/NovaPessoa';
 import EditPessoa from '@/components/material/EditPessoa';
 import PermissoesPessoa from '@/components/material/PermissoesPessoa';
 
-import ProdutosLote from '@/components/material/ProdutosLote';
-
-import ItemEntrada from '@/components/material/ItemEntrada';
-import ItemSaida from '@/components/material/ItemSaida';
-
-import ConfirmaUsuario from '@/components/material/ConfirmaUsuario';
-
-import Saida from '@/components/material/Saida';
-
 import Loading from '@/components/material/Loading';
-
-import VisualizarSaida from '@/components/material/VisualizarSaida';
-
-Vue.component('visualizar-saida', VisualizarSaida);
-
-Vue.component('confirma-usuario', ConfirmaUsuario);
-
-Vue.component('item-entrada', ItemEntrada);
-Vue.component('item-saida', ItemSaida);
-Vue.component('saida', Saida);
-
-Vue.component('produtos-lote', ProdutosLote);
 
 Vue.component('loading', Loading);
 Vue.component('snackbar', Snackbar);
