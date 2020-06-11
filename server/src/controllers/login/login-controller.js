@@ -13,7 +13,7 @@ exports.autenticaSaida = (req, res, next) => {
         var i = 0;
         for(i in pessoas){
             if(pessoas[i].id === idUsuario){
-                // http://10.193.92.110
+                res.status(200).json(true);
                 axios.get('http://localhost:9000/?usuario=' + pessoas[i].usuario + '&' + 'passwd=' + senha).then(response => {
                     console.log(response);
                     if(response.data){
