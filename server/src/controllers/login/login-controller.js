@@ -4,6 +4,10 @@ const Login = require('./../../models/login/Login');
 const Pessoa = require('./../../models/cadastros/Pessoa');
 const axios = require('axios');
 
+require('dotenv').config();
+
+const { SERVER_LOGIN_URL } = process.env;
+
 exports.autenticaSaida = (req, res, next) => {
     var idUsuario = req.body.idUsuario;
     var senha = req.body.senha;
@@ -14,7 +18,7 @@ exports.autenticaSaida = (req, res, next) => {
         for(i in pessoas){
             if(pessoas[i].id === idUsuario){
                 res.status(200).json(true);
-                axios.get('http://localhost:9000/?usuario=' + pessoas[i].usuario + '&' + 'passwd=' + senha).then(response => {
+                axios.get(SERVER_LOGIN_URL + '?usuario=' + pessoas[i].usuario + '&' + 'passwd=' + senha).then(response => {
                     console.log(response);
                     if(response.data){
                         res.status(200).json(true);
@@ -54,7 +58,7 @@ exports.post = (req, res, next) => {
         if(existeUsuario) {
             Login.create(data).then(response => {
                 if(response){
-                    axios.get('http://localhost:9000/?usuario=' + usuario + '&' + 'passwd=' + senha).then(response => {
+                    axios.get((SERVER_LOGIN_URL + '/?usuario=' + usuario + '&' + 'passwd=' + senha).then(response => {
                         if(response.data){
                             res.status(200).json({
                                 response: true,
